@@ -1,5 +1,8 @@
 # SWL (Seecr Web Lib)
 
+[![Tests](https://github.com/seecr/swl/actions/workflows/test.yml/badge.svg)](https://github.com/seecr/swl/actions/workflows/test.yml)
+[![PyPI](https://img.shields.io/pypi/v/swl.svg)](https://pypi.org/project/swl/)
+
 Interactive web applications in Python, without a JavaScript frontend.
 
 SWL is a small layer on top of [Starlette](https://www.starlette.io),

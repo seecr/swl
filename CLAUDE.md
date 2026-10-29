@@ -63,6 +63,10 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
 ## Working agreements
 
 - Python >= 3.11; all dependencies come from PyPI. `env/` is a local virtualenv, ignored.
+- Versions come from git tags via `setuptools_scm` (tags like `5.0.0`); `swl/_version.py` is
+  generated and git-ignored. Pushing a version tag to GitHub publishes that version to PyPI
+  (`.github/workflows/publish.yml`), and PyPI never accepts a version twice. Don't push tags
+  unless asked. `.github/workflows/test.yml` runs the tests on every push.
 - Never push or publish to PyPI; that is the maintainers' decision. Commit messages are prefixed
   `JJ: `. No `Claude-Session:` lines in commit messages.
 - Keep changes on a branch; report behaviour changes and anything left undone.
