@@ -1,0 +1,37 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # Modal content for a new or existing task (task_new, task_edit). The form posts itself on submit,
+ # so both the Save button and Enter in the title field save the task.
+ #}
+{% extends "swl/modal-content.j2" %}
+
+{% block modal_title %}{{ "Edit task" if task else "New task" }}{% endblock %}
+
+{% block modal_content %}
+<form class="swl-stack" hx-post="{{ register('task_save') }}">
+    {% if task %}<input type="hidden" name="task_id" value="{{ task.id }}">{% endif %}
+    <div class="swl-field">
+        <label for="task-title">Title</label>
+        <input id="task-title" type="text" name="title" class="{{ SWL.ui.input }}" value="{{ task.title if task else '' }}">
+    </div>
+    <div class="swl-field">
+        <label for="task-notes">Notes <span class="swl-muted">(optional)</span></label>
+        <textarea id="task-notes" name="notes" class="{{ SWL.ui.textarea }}" rows="3">{{ task.notes if task else '' }}</textarea>
+    </div>
+    <div class="swl-end">
+        <button type="button" class="{{ SWL.ui.button }}" data-swl-close>Cancel</button>
+        <button type="submit" class="{{ SWL.ui.button_primary }}">Save</button>
+    </div>
+</form>
+{% endblock %}

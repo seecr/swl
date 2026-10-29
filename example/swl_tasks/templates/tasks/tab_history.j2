@@ -1,0 +1,25 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{# The "History" tab of the detail panel: what happened to the task, newest first. #}
+{% if task.history %}
+<ul class="swl-list">
+    {% for entry in task.history|reverse %}
+    <li>
+        <span class="swl-muted task-when">{{ entry.at.replace("T", " ") }}</span>
+        <span>{{ entry.what }}</span>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="swl-muted">No history yet.</p>
+{% endif %}

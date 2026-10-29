@@ -1,0 +1,39 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2024, 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # Base for modal content. Blocks:
+ #   modal_title     the title
+ #   modal_icon      optional, shown left of the title (e.g. an avatar or an icon)
+ #   modal_subtitle  optional, a line below the title
+ #   modal_content   the body
+ #   modal_footer    optional, buttons at the bottom
+ # A button with data-swl-close (or data-bs-dismiss="modal") closes the modal.
+ #}
+<div class="swl-modal-header">
+    <div class="swl-modal-heading">
+        {% if self.modal_icon()|trim %}{% block modal_icon %}{% endblock %}{% endif %}
+        <div>
+            <h5 id="swl-modal-label" class="swl-modal-title">{% block modal_title %}{% endblock %}</h5>
+            {% if self.modal_subtitle()|trim %}
+            <p class="swl-modal-subtitle">{% block modal_subtitle %}{% endblock %}</p>
+            {% endif %}
+        </div>
+    </div>
+    <button type="button" class="swl-icon-button" data-swl-close aria-label="Close">
+        <i class="bi bi-x-lg" title="Close"></i>
+    </button>
+</div>
+<div class="swl-modal-body">{% block modal_content %}{% endblock %}</div>
+{% if self.modal_footer()|trim %}
+<div class="swl-modal-footer">{% block modal_footer %}{% endblock %}</div>
+{% endif %}

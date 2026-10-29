@@ -1,0 +1,39 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # The detail panel (views.render_detail): the selected task with its tabs.
+ #
+ # The tabs are ordinary buttons. Clicking one posts task_detail with that tab; the action renders
+ # this whole panel again with that tab active and only that tab's content, and updates the url.
+ # Nothing is hidden and shown in the browser, so the server always knows which tab you are on.
+ #}
+{% if task %}
+<div class="swl-card">
+    <header>
+        <nav class="swl-tabs" role="tablist">
+            {% for name in tabs %}
+            <button type="button" role="tab" aria-selected="{{ 'true' if name == tab else 'false' }}"
+                    hx-post="{{ register('task_detail') }}" hx-include="#filters"
+                    hx-vals='{{ {"task": task.id, "tab": name}|tojson }}'>{{ name|capitalize }}</button>
+            {% endfor %}
+        </nav>
+    </header>
+    <div class="swl-card-body" role="tabpanel" hx-vals:inherited='{{ {"task_id": task.id}|tojson }}'>
+        {% include "tasks/tab_" ~ tab ~ ".j2" %}
+    </div>
+</div>
+{% elif missing %}
+<p class="swl-muted">This task no longer exists.</p>
+{% else %}
+<p class="swl-muted">Select a task to see its details here.</p>
+{% endif %}

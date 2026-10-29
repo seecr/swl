@@ -1,0 +1,22 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2024, 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{# "My account": rendered by the show_account action, with user = the logged-in user's data. #}
+{% extends "swl/modal-content.j2" %}
+
+{% block modal_icon %}<span class="swl-avatar swl-avatar-lg {{ 'swl-avatar-admin' if user['admin'] }}" aria-hidden="true"><i class="bi bi-person-fill"></i></span>{% endblock %}
+{% block modal_title %}My account{% endblock %}
+{% block modal_subtitle %}{{ user['username'] }} · {{ "Administrator" if user['admin'] else "User" }}{% endblock %}
+
+{% block modal_content %}
+{% include "swl/account_password.j2" %}
+{% endblock %}

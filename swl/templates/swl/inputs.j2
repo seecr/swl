@@ -1,0 +1,60 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2024, 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+
+{% macro random_id(len) -%}{% for i in range(0,len) -%}{{ [0,1,2,3,4,5,6,7,8,9,"a","b","c","d","e","f"]|random }}{% endfor %}{%- endmacro -%}
+
+{% macro label(id, text, mandatory=False) %}
+    <label for="{{ id }}">{{ text }}</label>
+{% endmacro %}
+
+{% macro floating_label(id, text, mandatory) %}
+<div class="form-floating">
+    {{ caller() }}
+    {{ label(id, text, mandatory) }}
+</div>
+{% endmacro %}
+
+{% macro text_input(label, name, value="", form=None, mandatory=False, autocomplete="") %}
+    {% set _id = random_id(10) %}
+    {% call floating_label(_id, label) %}
+    <input type="text" {% if form != None %}form="{{ form }}"{% endif %} class="form-control" id="{{ _id }}" name="{{ name }}" value="{{ value }}" placeholder="{{ label }}" {% if autocomplete != "" %}autocomplete="{{ autocomplete }}"{% endif %}></input>
+    {% endcall %}
+{% endmacro %}
+
+{% macro password_input(label, name, form=None, mandatory=False, autocomplete="") %}
+    {% set _id = random_id(10) %}
+    {% call floating_label(_id, label) %}
+    <input type="password" {% if form != None %}form="{{ form }}"{% endif %} class="form-control" id="{{ _id }}" name="{{ name }}" placeholder="{{ label }}" {% if autocomplete != "" %}autocomplete="{{ autocomplete }}"{% endif %}></input>
+    {% endcall %}
+{% endmacro %}
+
+{% macro number_input(label, name, value="", form=None, mandatory=False) %}
+    {% set _id = random_id(10) %}
+    {% call floating_label(_id, label) %}
+    <input type="number" {% if form != None %}form="{{ form }}"{% endif %} class="form-control" id="{{ _id }}" name="{{ name }}" value="{{ value }}" placeholder="{{ label }}"></input>
+    {% endcall %}
+{% endmacro %}
+
+{% macro date_input(label, name, value="", form=None, mandatory=False) %}
+    {% set _id = random_id(10) %}
+    {% call floating_label(_id, label) %}
+    <input type="date" {% if form != None %}form="{{ form }}"{% endif %} class="form-control" id="{{ _id }}" name="{{ name }}" value="{{ value }}" placeholder="{{ label }}"></input>
+    {% endcall %}
+{% endmacro %}
+
+{% macro textarea_input(label, name, value="", height="2em", form=None, mandatory=False) %}
+    {% set _id = random_id(10) %}
+    {% call floating_label(_id, label) %}
+    <textarea {% if form != None %}form="{{ form }}"{% endif %} class="form-control" name="{{ name }}" id="{{ _id }}" style="height: {{ height }}">{{ value }}</textarea>
+    {% endcall %}
+{% endmacro %}

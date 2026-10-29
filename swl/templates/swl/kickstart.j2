@@ -1,0 +1,13 @@
+{#
+ # Kickstart: post an action as soon as the page and its placeholders have loaded.
+ #
+ # Used to rebuild a deep link: an action calls set_url() so the address bar describes the screen
+ # (e.g. /orders?order=123); the page route reads that and renders the page with
+ #   kickstart={"action": register("order_show"), "kwargs": {"order": "123"}}
+ # so the same action runs again after a reload. kwargs is a dict (or a JSON string).
+ #}
+{% if kickstart is defined %}
+    <script>
+        window.addEventListener("load", () => swl.kickstart({{ kickstart["action"]|tojson }}, {{ kickstart.get("kwargs", {})|tojson }}));
+    </script>
+{% endif %}

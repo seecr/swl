@@ -1,0 +1,29 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2024 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # The SWL dialog for confirmations (hx-confirm, swl.ui.confirm) and messages (swl.ui.error/info).
+ # A native <dialog>; swl.js fills in the icon, title and message and shows the buttons it needs.
+ #}
+<dialog class="swl-dialog" aria-labelledby="swl-dialog-title" aria-describedby="swl-dialog-msg">
+    <div class="swl-dialog-box">
+        <div class="swl-dialog-header">
+            <h5 id="swl-dialog-title"><i class="bi bi-question-diamond-fill swl-icon-warning"></i><span data-swl-lang-key="confirm">Confirm</span></h5>
+        </div>
+        <div id="swl-dialog-msg"></div>
+        <div class="swl-dialog-buttons">
+            <button class="swl-btn swl-btn-decline" type="button"><i class="bi bi-x-lg"></i><span data-swl-lang-key="no">No</span></button>
+            <button class="swl-btn swl-btn-primary swl-btn-confirm" type="button"><i class="bi bi-check-lg"></i><span data-swl-lang-key="yes">Yes</span></button>
+            <button class="swl-btn swl-btn-primary swl-btn-ok" type="button"><span data-swl-lang-key="ok">Ok</span></button>
+        </div>
+    </div>
+</dialog>

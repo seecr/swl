@@ -1,0 +1,35 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+
+{#
+ # An element that loads its content from an SWL action with htmx: once when the page loads, and
+ # again whenever it is rehydrated (SuccessResponse.rehydrate(id) or swl.rehydrate(id) in javascript).
+ #
+ #   id         - element id; also posted as "placeholder"
+ #   action     - action url, e.g. register('users_list')
+ #   context    - extra values posted with every request (hx-vals)
+ #   on_changed - object qids; when the server signals a change of one of them (websocket.js),
+ #                the placeholder reloads
+ #   trigger    - extra htmx triggers, e.g. "input delay:300ms from:#filters"
+ #   attrs      - extra attributes, e.g. {"hx-include": "#filters", "hx-sync": "this:replace"}
+ #   lazy       - only load when rehydrated, not when the page loads
+ #}
+{% macro placeholder(id, action, context=None, on_changed=None, tag="div", class_="", lazy=False, trigger=None, attrs=None) -%}
+{%- set triggers = ([] if lazy else ["load"]) + ["swl-refresh"] + ([trigger] if trigger else []) -%}
+<{{ tag }} id="{{ id }}"{% if class_ %} class="{{ class_ }}"{% endif %} hx-post="{{ action }}" hx-trigger="{{ triggers|join(', ') }}"
+    {%- if context %} hx-vals='{{ context|tojson }}'{% endif %}
+    {%- if on_changed %} data-swl-on-changed="{{ on_changed|join(' ') }}"{% endif %}
+    {%- for name, value in (attrs or {}).items() %} {{ name }}="{{ value }}"{% endfor %}>
+    {%- if caller is defined %}{{ caller() }}{% endif -%}
+</{{ tag }}>
+{%- endmacro %}

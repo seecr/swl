@@ -1,0 +1,59 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2024-2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # The list of users (users_list), inside users.j2. Each row is a form with the username, so the
+ # admin switch (user_set_admin) and the delete button (user_delete) post it.
+ #   - you cannot change your own admin status or delete yourself;
+ #   - an administrator cannot be deleted: switch admin off first;
+ #   - only administrators can change anything.
+ #}
+{% set me = request.user %}
+<h6 class="swl-section-title"><i class="bi bi-person-lines-fill"></i> {{ users|length }} {{ "user" if users|length == 1 else "users" }}</h6>
+<ul class="swl-list">
+    {% for user in users|sort(attribute="username") %}
+    {% set is_me = user['username'] == me.username %}
+    <li>
+        <form class="swl-list-row">
+            <input type="hidden" name="username" value="{{ user['username'] }}">
+            <span class="swl-avatar {{ 'swl-avatar-admin' if user['admin'] }}" aria-hidden="true"><i class="bi bi-person-fill"></i></span>
+            <div class="swl-grow">
+                <div>
+                    <strong>{{ user['username'] }}</strong>
+                    {% if is_me %}<span class="swl-badge">You</span>{% endif %}
+                </div>
+                <div class="swl-muted swl-small">{{ "Administrator" if user['admin'] else "User" }}</div>
+            </div>
+            <span title="{{ 'You cannot change your own administrator status' if is_me else 'Administrator' }}">
+                <input class="swl-switch" type="checkbox" role="switch" name="admin"
+                       aria-label="Administrator: {{ user['username'] }}"
+                       hx-post="{{ register('user_set_admin') }}"
+                       {{ "checked" if user['admin'] }} {{ "disabled" if is_me or not me.admin }}>
+            </span>
+            {% if is_me %}
+                {% set delete_title = "You cannot delete yourself" %}
+            {% elif user['admin'] %}
+                {% set delete_title = "Switch administrator off before deleting this user" %}
+            {% else %}
+                {% set delete_title = "Delete " ~ user['username'] %}
+            {% endif %}
+            <span title="{{ delete_title }}">
+                <button type="button" class="swl-icon-button swl-icon-danger" aria-label="{{ delete_title }}"
+                        hx-post="{{ register('user_delete') }}" hx-confirm="Delete user '{{ user['username'] }}'?"
+                        {{ "disabled" if is_me or user['admin'] or not me.admin }}>
+                    <i class="bi bi-trash"></i>
+                </button>
+            </span>
+        </form>
+    </li>
+    {% endfor %}
+</ul>

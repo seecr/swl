@@ -1,0 +1,102 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # The task list page. Everything SWL needs comes from swl/base.j2 (styles, htmx, the dialog and
+ # the toast) and the includes below; this page only adds its own markup and scripts.
+ #
+ # It works with each CSS framework SWL supports (python -m swl_tasks --framework swl|bootstrap|bulma):
+ # form elements and buttons get their classes from SWL.ui, the layout comes from swl.css
+ # (swl-nav, swl-container, swl-columns) and the example's own tasks.css.
+ #}
+{% extends "swl/base.j2" %}
+{% from "swl/placeholder.j2" import placeholder %}
+
+{% block head_extra %}
+        <script src="/static/swl/theme.js"></script>
+        <link rel="stylesheet" href="/example/tasks.css">
+{% endblock %}
+
+{% block body %}
+{% include "swl/modal.j2" %}
+{% include "swl/contextmenu.j2" %}
+
+<nav class="swl-nav">
+    <div class="swl-container">
+        <span class="swl-brand">SWL Tasks <span id="task-counts" class="swl-badge"></span></span>
+        <div class="task-toolbar">
+            {% include "tasks/style_switch.j2" %}
+            {% if user.admin %}
+            <button type="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" hx-post="{{ register('users_show') }}">
+                <i class="bi bi-people"></i> Users
+            </button>
+            {% endif %}
+            <button type="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" hx-post="{{ register('show_account') }}">
+                <i class="bi bi-person"></i> {{ user.username }}
+            </button>
+            <a role="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" href="/logout">Log out</a>
+        </div>
+    </div>
+</nav>
+
+<main class="swl-container">
+    {#
+     # A plain form that holds "where you are": the filter fields, and (hidden) the selected task and
+     # tab. The task list and the detail panel include it in their requests (hx-include), so every
+     # action knows the whole screen and can put it in the url (views.page_url).
+     #}
+    <form id="filters" class="task-filters">
+        <span id="selection" class="swl-hidden">{{ selection_html }}</span>
+        <input type="search" name="q" value="{{ q }}" class="{{ SWL.ui.input }}" placeholder="Search tasks..." aria-label="Search tasks">
+        <select name="status" class="{{ SWL.ui.select }}" aria-label="Show">
+            {% for value in statuses %}
+            <option value="{{ value }}" {{ "selected" if value == status }}>{{ value|capitalize }}</option>
+            {% endfor %}
+        </select>
+        <button type="button" class="{{ SWL.ui.button_primary }}" hx-post="{{ register('task_new') }}">
+            <i class="bi bi-plus-lg"></i> New task
+        </button>
+    </form>
+
+    {#
+     # The task list loads itself from the tasks_list action:
+     #  - when the page loads,
+     #  - 300ms after the last change in the #filters form (and posts that form),
+     #  - when an action rehydrates "tasks-list",
+     #  - when the server signals that "tasks" changed (websocket.js), e.g. in another tab.
+     #}
+    <div class="swl-columns">
+        <div class="swl-wide">
+            {{ placeholder("tasks-list", register('tasks_list'),
+                           trigger="input delay:300ms from:#filters",
+                           attrs={"hx-include": "#filters", "hx-sync": "this:queue last"},
+                           on_changed=["tasks"]) }}
+        </div>
+        <div>
+            {#
+             # The selected task, on its tabs. The page route renders its content straight away
+             # (detail_html), so it is lazy: it does not load when the page loads, only when it is
+             # rehydrated (after a change, or a change in another tab).
+             #}
+            {% call placeholder("task-detail", register('task_detail'), lazy=True,
+                                attrs={"hx-include": "#filters", "hx-sync": "this:queue last"},
+                                on_changed=["tasks"]) %}{{ detail_html }}{% endcall %}
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block body_extra %}
+<script type="module" id="swl-run" src="/static/swl/swl-run.js" lang="en_US"></script>
+<script type="module" src="/static/swl/websocket.js"></script>
+<script src="/example/tasks.js"></script>
+{% endblock %}

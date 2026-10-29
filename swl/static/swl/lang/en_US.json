@@ -1,0 +1,16 @@
+{
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "Ok",
+    "error": "Error",
+    "info": "Info",
+    "error_server": "The server could not process the request",
+    "error_network": "The server could not be reached",
+    "error_forbidden": "You are not allowed to do this, or your session has expired",
+    "error_not_found": "The requested action does not exist",
+    "error_invalid_response": "The server sent an unexpected response",
+    "error_unknown_function": "Unknown function",
+    "error_function_failed": "Error in function"
+}
+

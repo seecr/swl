@@ -1,0 +1,25 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2024 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+
+{% macro footer(year, name, version) %}
+<footer class="footer mt-auto bg-seecr fw-lighter px-2">
+    <div class="d-flex flex-row justify-content-between">
+        <div class="d-flex flex-row gap-1">
+            <span>Copyright &copy; {{ year }}</span>
+            <span class="seecr-orange">|</span>
+            <a href="https://seecr.nl" target="_blank">seecr</a>
+        </div>
+        <span>{{ name }} {{ VERSION }}</span>
+    </div>
+</footer>
+{% endmacro %}

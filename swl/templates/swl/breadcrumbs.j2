@@ -1,0 +1,33 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2024 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+
+<div class="d-flex flex-row gap-1">
+    <form><button type="button" class="btn btn-light" hx-post="{{ register('landing_page') }}"><i class="bi bi-house-fill"></i></button></form>
+    {% for crumb in breadcrumbs %}
+        <div class="align-content-center"><i class="bi bi-chevron-right"></i></div>
+        {% if loop.last %}
+            <div class="align-content-center">
+                <h5 class="m-0">{{ crumb.label }}</h5>
+            </div>
+        {% else %}
+            <form>
+                {% for key, values in crumb.arguments.items() %}
+                    {% for value in values %}
+                        <input type="hidden" name="{{ key }}" value="{{ value }}">
+                    {% endfor %}
+                {% endfor %}
+                <button type="button" class="btn btn-light" hx-post="{{ crumb.action }}">{{ crumb.label }}</button>
+            </form>
+        {% endif %}
+    {% endfor %}
+</div>

@@ -1,0 +1,16 @@
+{
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein",
+    "ok": "Ok",
+    "error": "Fehler",
+    "info": "Information",
+    "error_server": "Der Server konnte die Anfrage nicht verarbeiten",
+    "error_network": "Der Server ist nicht erreichbar",
+    "error_forbidden": "Sie haben dafür keine Berechtigung, oder Ihre Sitzung ist abgelaufen",
+    "error_not_found": "Die angeforderte Aktion existiert nicht",
+    "error_invalid_response": "Der Server hat eine unerwartete Antwort gesendet",
+    "error_unknown_function": "Unbekannte Funktion",
+    "error_function_failed": "Fehler in Funktion"
+}
+

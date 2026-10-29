@@ -1,0 +1,8 @@
+env/
+*.egg-info/
+dist/
+build/
+swl-tasks-data/
+*.swp
+.DS_store
+doc/swl-reference.pdf

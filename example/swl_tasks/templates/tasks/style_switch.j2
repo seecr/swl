@@ -1,0 +1,30 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # Switches for the look of the example: the CSS framework and light/dark colours.
+ #   - The framework is a cookie read by FrameworkCookieMiddleware (app.py); changing it reloads
+ #     the page, as the page then loads other stylesheets.
+ #   - Light/dark/auto is swl/static/swl/theme.js; it changes the page right away.
+ # Both are set in static/tasks.js.
+ #}
+<span class="task-style-switch">
+    <select id="framework-switch" class="{{ SWL.ui.select }}" aria-label="CSS framework" title="CSS framework">
+        {% for name, label in [("swl", "SWL"), ("bootstrap", "Bootstrap"), ("tabler", "Tabler"), ("bulma", "Bulma")] %}
+        <option value="{{ name }}" {{ "selected" if name == SWL.framework }}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="button" id="theme-switch" class="{{ SWL.ui.button }} {{ SWL.ui.small }}"
+            aria-label="Colours" title="Colours: automatic">
+        <i class="bi bi-circle-half"></i>
+    </button>
+</span>

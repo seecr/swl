@@ -1,0 +1,59 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2024-2025 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+
+{%- if lang is not defined -%}{% set lang="en" %}{%- endif -%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{lang}}" lang="{{lang}}" class="h-100" data-swl-framework="{{ SWL.framework }}">
+    <head>
+{% block head %}
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Language" content="{{lang}}">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        {# SWL shows errors in a dialog (swl.js), so error responses are never swapped into the page #}
+        <meta name="htmx-config" content='{"noSwap": [204, 304, "4xx", "5xx"]}'>
+
+{% if SWL.cdn_url != "" %}
+    <link rel="preconnect" href="{{ SWL.cdn_url }}">
+{% endif %}
+{% for stylesheet in SWL.styles %}
+        <link rel="stylesheet"
+              href="{{ stylesheet.href }}"
+              {% if stylesheet.integrity %}
+              integrity="{{ stylesheet.integrity }}"
+              crossorigin="anonymous"{% endif %}>
+{% endfor %}
+
+        <link rel="stylesheet" href="/static/swl/swl.css?version={{ VERSION }}">
+{% block head_extra %}{% endblock %}
+        <title>{{ title }}</title>
+{% endblock %}
+    </head>
+    <body class="{{ body_class }}">
+{# main body #}
+{% block body %}{% endblock %}
+{# scripts #}
+{% for script in SWL.scripts %}
+    <script src="{{ script.src }}"
+{% if script.integrity %}
+            integrity="{{ script.integrity }}"
+            crossorigin="anonymous"{% endif %}></script>
+{% endfor %}
+{# extra body #}
+{% block body_extra %}{% endblock %}
+
+{% include "swl/kickstart.j2" %}
+{% include "swl/dialog.j2" %}
+{% include "swl/toast.j2" %}
+    </body>
+</html>

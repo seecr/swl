@@ -1,0 +1,53 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # Rendered by the tasks_list action into the "tasks-list" placeholder.
+ #
+ # Each row carries the task id in hx-vals:inherited, so every request from inside the row (the
+ # checkbox, the delete button and the context menu) posts task_id. The title selects the task:
+ # it shows it in the detail panel (task_detail) and includes #filters, so the url can be updated.
+ #}
+{% if tasks %}
+<table class="task-table {{ SWL.ui.table }}">
+    <tbody>
+    {% for task in tasks %}
+        <tr class="{{ 'task-highlight' if task.id == highlight }} {{ 'task-selected' if task.id == selected }}"
+            hx-vals:inherited='{{ {"task_id": task.id}|tojson }}'
+            hx-post="{{ register('task_menu') }}" hx-trigger="contextmenu prevent">
+            <td class="task-fit">
+                <input type="checkbox" class="{{ SWL.ui.checkbox }}" aria-label="Done"
+                       hx-post="{{ register('task_toggle') }}" {{ "checked" if task.done }}>
+            </td>
+            <td>
+                <button type="button" class="swl-link {{ 'task-done' if task.done }}"
+                        hx-post="{{ register('task_detail') }}" hx-include="#filters"
+                        hx-vals='{{ {"task": task.id}|tojson }}'>{{ task.title }}</button>
+                {% if task.notes %}<div class="swl-muted swl-small task-snippet">{{ task.notes }}</div>{% endif %}
+            </td>
+            <td class="task-fit">
+                <button type="button" class="swl-icon-button swl-icon-danger" aria-label="Delete"
+                        hx-post="{{ register('task_delete') }}" hx-confirm="Delete '{{ task.title }}'?">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<p class="swl-muted swl-small">Click a task to see it on the right. Right-click a task for more actions.
+Reload the page: you are back where you were. Changes show up in other open browser tabs too.</p>
+{% elif filtered %}
+<p class="swl-muted">No tasks match the filter.</p>
+{% else %}
+<p class="swl-muted">No tasks yet. Add one with "New task".</p>
+{% endif %}

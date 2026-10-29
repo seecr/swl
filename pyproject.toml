@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swl"
+authors = [
+    {name = "Thijs Janssen", email = "thijs@seecr.nl"},
+    {name = "Johan Jonkers", email = "johan@seecr.nl"},
+]
+description = "Seecr Web Lib makes developing webbased apps easier"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["swl"]
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "argon2-cffi >= 25.1.0, < 26",
+    "httpx2 >= 2.16.0, < 3",
+    "pytest >= 9.2.0, < 10",
+    "pytest-asyncio >= 1.4.1, < 2",
+    "pytest-xdist >= 3.8.0, < 4",
+    "seecr-stdlib >= 0.6.5, < 1",
+    "seecr-testtools >= 0.4.3, < 1",
+    "setuptools-scm >= 10.3.4, < 11",
+    "starlette >= 1.10.0, < 2",
+    "starlette[full]",
+    "uvicorn >= 0.54.0, < 1",
+    "uvicorn[standard]",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/seecr/swl"
+Source = "https://github.com/seecr/swl"
+Changelog = "https://github.com/seecr/swl/blob/main/CHANGELOG.md"
+
+[tool.setuptools_scm]
+version_file = "swl/_version.py"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["swl*"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest]
+addopts = [
+    "-n5",
+]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

@@ -1,0 +1,16 @@
+{
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "Ok",
+    "error": "Erreur",
+    "info": "Informatie",
+    "error_server": "Le serveur n'a pas pu traiter la demande",
+    "error_network": "Le serveur est injoignable",
+    "error_forbidden": "Vous n'êtes pas autorisé à faire cela, ou votre session a expiré",
+    "error_not_found": "L'action demandée n'existe pas",
+    "error_invalid_response": "Le serveur a envoyé une réponse inattendue",
+    "error_unknown_function": "Fonction inconnue",
+    "error_function_failed": "Erreur dans la fonction"
+}
+

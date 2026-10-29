@@ -1,0 +1,46 @@
+
+/* Styles of the SWL example, on top of SWL's swl-base.css (colours: the --swl-* variables) */
+
+.task-toolbar { display: flex; flex-wrap: wrap; gap: .5rem; }
+.task-filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.25rem; }
+.task-filters > input[type=search] { flex: 1 1 14rem; width: auto; }
+.task-filters > select { width: auto; }
+.task-login { max-width: 24rem; padding-top: 3rem; }
+
+.task-table td { padding-top: .7rem; padding-bottom: .7rem; }
+.task-fit { width: 1%; white-space: nowrap; }
+.task-snippet { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 30rem; }
+
+.task-done { text-decoration: line-through; color: var(--swl-muted) !important; }
+.task-title { margin: 0 0 .5rem; font-size: 1.25rem; font-weight: 600; }
+/* the frameworks differ in margins around paragraphs: make them the same here */
+.swl-card-body > p, .swl-columns p { margin: 0 0 .75rem; }
+.task-notes { white-space: pre-wrap; }
+.task-when { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.task-status {
+    display: inline-block;
+    padding: .1rem .6rem;
+    border-radius: 1rem;
+    background: var(--swl-subtle-bg);
+    color: var(--swl-muted);
+    font-size: .8rem;
+    font-weight: 600;
+}
+.task-status-done { background: color-mix(in srgb, var(--swl-success) 15%, transparent); color: var(--swl-success); }
+
+/* The task shown in the detail panel */
+.task-selected > td { background-color: color-mix(in srgb, var(--swl-accent) 9%, transparent); }
+
+/* The row of the task that was just saved or toggled (tasks_list "highlight") */
+.task-highlight > td { animation: task-highlight 1.5s ease-out; }
+@keyframes task-highlight {
+    from { background-color: color-mix(in srgb, var(--swl-warning) 25%, transparent); }
+    to { background-color: transparent; }
+}
+
+/* The look switches (style_switch.j2) */
+.task-style-switch { display: inline-flex; align-items: center; gap: .5rem; }
+.task-style-switch > select:not([multiple]) { width: auto; height: auto; padding-top: .25rem; padding-bottom: .25rem; font-size: .875rem; }
+.task-login-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.task-login-header > h1 { margin: 0; }

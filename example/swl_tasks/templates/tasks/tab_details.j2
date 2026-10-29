@@ -1,0 +1,32 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{# The "Details" tab of the detail panel. The buttons post task_id (hx-vals:inherited in detail.j2). #}
+<h2 class="task-title {{ 'task-done' if task.done }}">{{ task.title }}</h2>
+<p><span class="task-status {{ 'task-status-done' if task.done }}">{{ "Done" if task.done else "Open" }}</span></p>
+{% if task.notes %}
+<p class="task-notes">{{ task.notes }}</p>
+{% else %}
+<p class="swl-muted">No notes.</p>
+{% endif %}
+<div class="task-toolbar">
+    <button type="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" hx-post="{{ register('task_edit') }}">
+        <i class="bi bi-pencil"></i> Edit
+    </button>
+    <button type="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" hx-post="{{ register('task_toggle') }}">
+        <i class="bi bi-check2-square"></i> {{ "Mark as open" if task.done else "Mark as done" }}
+    </button>
+    <button type="button" class="{{ SWL.ui.button_danger }} {{ SWL.ui.small }}" hx-post="{{ register('task_delete') }}"
+            hx-confirm="Delete '{{ task.title }}'?">
+        <i class="bi bi-trash"></i> Delete
+    </button>
+</div>

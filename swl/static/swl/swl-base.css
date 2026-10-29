@@ -1,0 +1,145 @@
+/* begin license *
+ *
+ * "SWL"(Seecr Web Lib) makes developing webbased apps easier
+ *
+ * Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+ *
+ * This file is part of "Seecr Web Lib"
+ *
+ * "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+ * SPDX-License-Identifier: MIT
+ *
+ * end license */
+
+/*
+ * SWL base styles: an optional, small stylesheet that makes plain HTML look good without a CSS
+ * framework. Forms, buttons, tables and headings are styled as they are; buttons can have the
+ * classes primary, danger and small. Layout classes (swl-container, swl-nav, swl-columns, ...) are in
+ * swl.css, as they work with every framework. Colours come from the --swl-* variables in swl.css.
+ * It is loaded with "ui.framework": "swl" (see swl/frameworks.py).
+ */
+
+:root:root {
+    color-scheme: light dark;
+    --swl-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --swl-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --swl-focus: color-mix(in srgb, var(--swl-accent) 35%, transparent);
+}
+
+/* Dark colours: with the computer's setting, or chosen with data-theme on <html> (theme.js) */
+@media (prefers-color-scheme: dark) {
+    :root:root:not([data-theme=light]) {
+        color-scheme: dark;
+        --swl-bg: #16181d;
+        --swl-fg: #e6e8eb;
+        --swl-muted: #9aa1ab;
+        --swl-border: #2f343c;
+        --swl-subtle-bg: #1f2329;
+        --swl-accent: #4c8dff;
+        --swl-overlay: rgba(0, 0, 0, .6);
+    }
+}
+:root:root[data-theme=dark] {
+    color-scheme: dark;
+    --swl-bg: #16181d;
+    --swl-fg: #e6e8eb;
+    --swl-muted: #9aa1ab;
+    --swl-border: #2f343c;
+    --swl-subtle-bg: #1f2329;
+    --swl-accent: #4c8dff;
+    --swl-overlay: rgba(0, 0, 0, .6);
+}
+:root:root[data-theme=light] { color-scheme: light; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+    margin: 0;
+    background: var(--swl-bg);
+    color: var(--swl-fg);
+    font-family: var(--swl-font);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 { margin: 0 0 .5rem; font-weight: 600; line-height: 1.25; }
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.2rem; }
+h4, h5 { font-size: 1.05rem; }
+h6 { font-size: .95rem; }
+p, ul, ol, table, pre { margin: 0 0 1rem; }
+a { color: var(--swl-accent); text-underline-offset: .15em; }
+hr { border: 0; border-top: 1px solid var(--swl-border); margin: 1rem 0; }
+code, pre { font-family: var(--swl-mono); font-size: .9em; }
+small { font-size: .875em; }
+
+/* ---------------------------------------------------------------- forms */
+
+label { display: inline-block; }
+input:not([type=checkbox], [type=radio], [type=range], [type=file], [type=hidden]), select, textarea {
+    display: block;
+    width: 100%;
+    padding: .5rem .75rem;
+    border: 1px solid var(--swl-border);
+    border-radius: var(--swl-radius);
+    background: var(--swl-bg);
+    color: var(--swl-fg);
+    font: inherit;
+    line-height: 1.4;
+}
+textarea { resize: vertical; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible {
+    outline: none;
+    border-color: var(--swl-accent);
+    box-shadow: 0 0 0 .2rem var(--swl-focus);
+}
+input[type=checkbox], input[type=radio] {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    accent-color: var(--swl-accent);
+    vertical-align: middle;
+    cursor: pointer;
+}
+input:disabled, select:disabled, textarea:disabled, button:disabled { opacity: .55; cursor: not-allowed; }
+
+/* ---------------------------------------------------------------- buttons */
+
+button, [role=button], input[type=submit] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    padding: .5rem .95rem;
+    border: 1px solid var(--swl-border);
+    border-radius: var(--swl-radius);
+    background: var(--swl-bg);
+    color: var(--swl-fg);
+    font: inherit;
+    font-weight: 500;
+    line-height: 1.4;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color .15s, border-color .15s, filter .15s;
+}
+button:hover:not(:disabled), [role=button]:hover { background: var(--swl-subtle-bg); }
+button.primary, [type=submit]:not(.secondary, .danger, .swl-link) {
+    background: var(--swl-accent);
+    border-color: var(--swl-accent);
+    color: var(--swl-accent-fg);
+}
+button.primary:hover:not(:disabled), [type=submit]:not(.secondary, .danger, .swl-link):hover:not(:disabled) {
+    background: var(--swl-accent);
+    filter: brightness(1.08);
+}
+button.danger { color: var(--swl-danger); }
+button.danger:hover:not(:disabled) { background: color-mix(in srgb, var(--swl-danger) 10%, transparent); }
+button.small, [role=button].small { padding: .25rem .6rem; font-size: .875rem; }
+/* ---------------------------------------------------------------- tables */
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: .55rem .6rem; border-bottom: 1px solid var(--swl-border); text-align: left; vertical-align: middle; }
+th { font-weight: 600; }

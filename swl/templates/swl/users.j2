@@ -1,0 +1,56 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2024, 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{# User management: rendered by the users_show action, with user = the logged-in user's data. #}
+{% from "swl/placeholder.j2" import placeholder %}
+{% extends "swl/modal-content.j2" %}
+
+{% block modal_icon %}<span class="swl-avatar swl-avatar-lg" aria-hidden="true"><i class="bi bi-people"></i></span>{% endblock %}
+{% block modal_title %}Users{% endblock %}
+{% block modal_subtitle %}Who can log in, and who is an administrator{% endblock %}
+
+{% block modal_content %}
+<div class="swl-stack" style="--swl-gap: 1.5rem">
+    {% if user['admin'] %}
+    <section class="swl-section">
+        <h6 class="swl-section-title"><i class="bi bi-person-plus"></i> Add a user</h6>
+        {# The form posts itself (user_create), so Enter works too. #}
+        <form class="swl-row" hx-post="{{ register('user_create') }}">
+            <div class="swl-field">
+                <label for="swl-new-username">Username</label>
+                <input type="text" class="{{ SWL.ui.input }}" id="swl-new-username" name="username"
+                       autocomplete="off" required minlength="3" pattern="[^ ]+" title="At least 3 characters, no spaces"
+                       data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" data-protonpass-ignore>
+            </div>
+            <div class="swl-field">
+                <label for="swl-new-user-password">Password</label>
+                <input type="password" class="{{ SWL.ui.input }}" id="swl-new-user-password" name="password"
+                       autocomplete="new-password" required>
+            </div>
+            <label class="swl-check swl-fit" for="swl-new-user-admin">
+                <input class="swl-switch" type="checkbox" role="switch" id="swl-new-user-admin" name="admin">
+                Administrator
+            </label>
+            <div class="swl-fit">
+                <button type="submit" class="{{ SWL.ui.button_primary }}"><i class="bi bi-plus-lg"></i> Add user</button>
+            </div>
+        </form>
+    </section>
+    {% else %}
+    <p class="swl-note"><i class="bi bi-info-circle"></i> Only administrators can add, change or delete users.</p>
+    {% endif %}
+
+    <section class="swl-section">
+        {{ placeholder("placeholder-users_list", register('users_list')) }}
+    </section>
+</div>
+{% endblock %}

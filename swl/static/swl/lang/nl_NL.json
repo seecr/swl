@@ -1,0 +1,16 @@
+{
+    "confirm": "Bevestigen",
+    "yes": "Ja",
+    "no": "Nee",
+    "ok": "Ok",
+    "error": "Fout",
+    "info": "Informatie",
+    "error_server": "De server kon het verzoek niet verwerken",
+    "error_network": "De server is niet bereikbaar",
+    "error_forbidden": "U heeft hiervoor geen rechten, of uw sessie is verlopen",
+    "error_not_found": "De gevraagde actie bestaat niet",
+    "error_invalid_response": "De server gaf een onverwacht antwoord",
+    "error_unknown_function": "Onbekende functie",
+    "error_function_failed": "Fout in functie"
+}
+

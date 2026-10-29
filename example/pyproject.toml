@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swl-tasks-example"
+version = "1.0.0"
+description = "Example application for Seecr Web Lib (SWL): a small task list"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["swl"]
+
+[project.scripts]
+swl-tasks = "swl_tasks.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["swl_tasks*"]
+
+[tool.setuptools.package-data]
+swl_tasks = ["templates/tasks/*.j2", "static/*"]
+
+[tool.pytest]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

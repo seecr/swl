@@ -1,0 +1,40 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{# Login page. The login action (swl.views.account) answers with a redirect to "next". #}
+{% extends "swl/base.j2" %}
+
+{% block head_extra %}
+        <script src="/static/swl/theme.js"></script>
+        <link rel="stylesheet" href="/example/tasks.css">
+{% endblock %}
+
+{% block body %}
+<main class="swl-container task-login">
+    <div class="task-login-header">
+        <h1>SWL Tasks</h1>
+        {% include "tasks/style_switch.j2" %}
+    </div>
+    <form class="swl-stack" hx-post="{{ register('login') }}">
+        <input type="hidden" name="next" value="{{ next }}">
+        <input type="text" name="username" class="{{ SWL.ui.input }}" placeholder="Username" autocomplete="username" aria-label="Username">
+        <input type="password" name="password" class="{{ SWL.ui.input }}" placeholder="Password" autocomplete="current-password" aria-label="Password">
+        <button type="submit" class="{{ SWL.ui.button_primary }}">Log in</button>
+    </form>
+    <p class="swl-muted swl-small">Demo account: {{ demo_user }} / {{ demo_password }}</p>
+</main>
+{% endblock %}
+
+{% block body_extra %}
+<script type="module" id="swl-run" src="/static/swl/swl-run.js" lang="en_US"></script>
+<script src="/example/tasks.js"></script>
+{% endblock %}

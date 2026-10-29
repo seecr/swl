@@ -1,0 +1,34 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2024 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+
+{% macro card(title, icon=None) %}
+<div class="card mb-3">
+    <div class="card-header">
+        <div class="d-flex flex-row">
+            <div class="w-100">
+                <h5 class="m-0">
+                    {% if icon is not none %}
+                        <i class="bi bi-{{ icon }}"></i>
+                        <span class="ps-2">{{ title }}</span>
+                    {% else %}
+                        <span>{{ title }}</span>
+                    {% endif %}
+                </h5>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        {{ caller() }}
+    </div>
+</div>
+{% endmacro %}
