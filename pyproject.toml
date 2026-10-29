@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools >= 77", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,14 +8,26 @@ authors = [
     {name = "Thijs Janssen", email = "thijs@seecr.nl"},
     {name = "Johan Jonkers", email = "johan@seecr.nl"},
 ]
-description = "Seecr Web Lib makes developing webbased apps easier"
+description = "Interactive web applications in Python, without a JavaScript frontend: Starlette, Jinja and htmx"
 readme = "README.md"
 requires-python = ">=3.11"
-keywords = ["swl"]
+keywords = ["web", "htmx", "starlette", "jinja", "server-side rendering", "forms"]
 license = "MIT"
 license-files = ["LICENSE"]
 classifiers = [
+    "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Environment :: Web Environment",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
     "argon2-cffi >= 25.1.0, < 26",
@@ -26,16 +38,15 @@ dependencies = [
     "seecr-stdlib >= 0.6.5, < 1",
     "seecr-testtools >= 0.4.3, < 1",
     "setuptools-scm >= 10.3.4, < 11",
-    "starlette >= 1.10.0, < 2",
-    "starlette[full]",
-    "uvicorn >= 0.54.0, < 1",
-    "uvicorn[standard]",
+    "starlette[full] >= 1.10.0, < 2",
+    "uvicorn[standard] >= 0.54.0, < 1",
 ]
 dynamic = ["version"]
 
 [project.urls]
 Homepage = "https://github.com/seecr/swl"
 Source = "https://github.com/seecr/swl"
+Issues = "https://github.com/seecr/swl/issues"
 Changelog = "https://github.com/seecr/swl/blob/main/CHANGELOG.md"
 
 [tool.setuptools_scm]
