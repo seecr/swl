@@ -1,7 +1,8 @@
 name: Publish to PyPI
 
 # Publishes when a MAJOR.MINOR.PATCH tag (e.g. 0.6.4) is pushed. The tag
-# becomes the package version via setuptools_scm.
+# becomes the package version via setuptools_scm. After the upload, a GitHub
+# release is made with that version's section of CHANGELOG.md.
 on:
   push:
     tags: ["[0-9]+.[0-9]+.[0-9]+"]
@@ -37,3 +38,24 @@ jobs:
           name: dist
           path: dist/
       - uses: pypa/gh-action-pypi-publish@release/v1
+
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # to create the release
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Release notes from CHANGELOG.md
+        run: |
+          awk -v v="$GITHUB_REF_NAME" '/^## /{p = ($2 == v)} p && !/^## /' CHANGELOG.md > notes.md
+          if ! grep -q . notes.md; then
+            echo "See [CHANGELOG.md](https://github.com/seecr/swl/blob/main/CHANGELOG.md)." > notes.md
+          fi
+      - run: gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --notes-file notes.md
+        env:
+          GH_TOKEN: ${{ github.token }}
