@@ -107,7 +107,12 @@ pytest swl example/swl_tasks
 ```
 
 The JavaScript tests (QUnit) run in a browser: `python -m swl.test.server`, then open
-<http://localhost:8000/>.
+<http://localhost:8000/>. Or headless, as the CI does:
+
+```sh
+pip install playwright && python -m playwright install chromium
+python -m swl.test.run_js_tests
+```
 
 ## License
 

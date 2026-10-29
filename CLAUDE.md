@@ -57,8 +57,10 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
   `pip install -e . -e example/`). pytest runs with `-n5` (xdist) and `asyncio_mode = auto` from
   `pyproject.toml`; for one test use `pytest -n0 swl/responses_test.py::test_name`.
 - JavaScript: QUnit tests in `swl/test/js-test/swl.test.js`, served by `python -m swl.test.server`
-  (open http://localhost:8000/). Headless: run that page in Playwright.
-- Style: flake8 (`.flake8`, max line length 90), isort with the black profile.
+  (open http://localhost:8000/). Headless: `python -m swl.test.run_js_tests` (needs `playwright`
+  and `python -m playwright install chromium`; exits 1 on a failure).
+- Style: flake8 (`.flake8`, max line length 90, wrap by hand, no formatter), isort with the black
+  profile. CI (`.github/workflows/test.yml`) runs pytest on 3.11-3.14, the JS tests and flake8.
 
 ## Working agreements
 

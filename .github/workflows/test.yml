@@ -1,7 +1,9 @@
 name: Tests
 
+# Version tags are tested by the push of the commit itself; publish.yml handles the tag.
 on:
   push:
+    branches: ["**"]
   pull_request:
 
 jobs:
@@ -20,3 +22,26 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e . -e example/
       - run: python -m pytest swl example/swl_tasks
+
+  javascript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: pip install -e . playwright
+      - run: python -m playwright install --with-deps chromium
+      - run: python -m swl.test.run_js_tests
+
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: pip install flake8
+      - run: flake8 swl example
