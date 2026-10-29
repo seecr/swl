@@ -94,11 +94,11 @@ Open <http://127.0.0.1:8000/> and log in as **demo** / **demo-password**.
 
 ## Documentation
 
-- [`example/README.md`](example/README.md): a guided walk through the example, from one click to
-  the updated list. Start here.
-- [`doc/reference.md`](doc/reference.md): everything SWL provides, for looking things up. Also
-  covers debugging and troubleshooting.
-- [`CHANGELOG.md`](CHANGELOG.md): what changed.
+- [`example/README.md`](https://github.com/seecr/swl/blob/main/example/README.md): a guided walk
+  through the example, from one click to the updated list. Start here.
+- [`doc/reference.md`](https://github.com/seecr/swl/blob/main/doc/reference.md): everything SWL
+  provides, for looking things up. Also covers debugging and troubleshooting.
+- [`CHANGELOG.md`](https://github.com/seecr/swl/blob/main/CHANGELOG.md): what changed.
 
 ## Tests
 
@@ -111,6 +111,6 @@ The JavaScript tests (QUnit) run in a browser: `python -m swl.test.server`, then
 
 ## License
 
-SWL is released under the MIT License; see [LICENSE](LICENSE).
+SWL is released under the MIT License; see [LICENSE](https://github.com/seecr/swl/blob/main/LICENSE).
 
 Copyright © Seecr (Seek You Too B.V.), <https://seecr.nl>.
