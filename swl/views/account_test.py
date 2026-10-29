@@ -210,7 +210,9 @@ async def test_change_password_other_only_for_admin(environment):
             "new_password_repeat": "new_secret123",
         },
     )
-    assert_fail(response, "Unauthorized; only admin-users can change other users passwords")
+    assert_fail(
+        response, "Unauthorized; only admin-users can change other users passwords"
+    )
 
 
 async def test_login_next(environment):
@@ -258,7 +260,9 @@ async def test_account_views_render(environment):
 
     # admin: own row locked, other admins cannot be deleted, users can
     userbase.create("bob", "secret123", admin=True)
-    response = client.post(swl.register("users_list"), data={"placeholder": "placeholder-users_list"})
+    response = client.post(
+        swl.register("users_list"), data={"placeholder": "placeholder-users_list"}
+    )
     assert _rows(response.text) == {
         "admin": (True, True),
         "bob": (False, True),
@@ -271,7 +275,9 @@ async def test_account_views_render(environment):
     login_user(client, "user", "user_password")
     response = client.post(swl.register("users_show"))
     assert "Add a user" not in response.text and "Only administrators" in response.text
-    response = client.post(swl.register("users_list"), data={"placeholder": "placeholder-users_list"})
+    response = client.post(
+        swl.register("users_list"), data={"placeholder": "placeholder-users_list"}
+    )
     assert set(_rows(response.text).values()) == {(True, True)}
 
 

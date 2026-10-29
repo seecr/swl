@@ -11,8 +11,8 @@
 #
 ## end license ##
 
-"""Tests for the example. They show how to test SWL actions: post to the action url and check
-the response with the helpers from swl.test_utils."""
+"""Tests for the example. They show how to test SWL actions: post to the action url and
+check the response with the helpers from swl.test_utils."""
 
 import json
 import re
@@ -37,14 +37,23 @@ def action(client, name):
 
 
 def login(client):
-    response = client.post(action(client, "login"), data={"username": DEMO_USER, "password": DEMO_PASSWORD})
+    response = client.post(
+        action(client, "login"),
+        data={"username": DEMO_USER, "password": DEMO_PASSWORD},
+    )
     assert_success(response)
     assert response.headers["HX-Redirect"] == "/"
 
 
 def partials(response):
     """The html per placeholder id in a response."""
-    return dict(re.findall(r'<hx-partial hx-target="#([^"]+)" hx-swap="innerHTML">(.*?)</hx-partial>', response.text, re.S))
+    return dict(
+        re.findall(
+            r'<hx-partial hx-target="#([^"]+)" hx-swap="innerHTML">(.*?)</hx-partial>',
+            response.text,
+            re.S,
+        )
+    )
 
 
 def test_page_requires_login(client):
@@ -58,7 +67,9 @@ def test_page_requires_login(client):
     response = client.post(action(client, "tasks_list"))
     assert response.status_code == 403
 
-    response = client.post(action(client, "login"), data={"username": DEMO_USER, "password": "wrong"})
+    response = client.post(
+        action(client, "login"), data={"username": DEMO_USER, "password": "wrong"}
+    )
     assert_fail(response, "Invalid login credentials")
 
     login(client)
@@ -72,19 +83,27 @@ def test_add_edit_toggle_delete(client):
     store = client.app.state.store
 
     # empty title
-    assert_fail(client.post(action(client, "task_save"), data={"title": "  "}), "A task needs a title")
+    assert_fail(
+        client.post(action(client, "task_save"), data={"title": "  "}),
+        "A task needs a title",
+    )
 
     # new task: form in the modal, then save
     response = client.post(action(client, "task_new"))
     assert assert_success(response)["swl-modal-open"]["calls"] == ["focus_title"]
     assert 'name="title"' in partials(response)["modal-content"]
 
-    response = client.post(action(client, "task_save"), data={"title": "Write example", "notes": "for SWL"})
+    response = client.post(
+        action(client, "task_save"), data={"title": "Write example", "notes": "for SWL"}
+    )
     [task] = store.find()
     assert assert_success(response) == {
         "swl-modal-close": {},
         "swl-rehydrate": {
-            "placeholders": {"tasks-list": {"highlight": task.id}, "task-detail": {"highlight": task.id}}
+            "placeholders": {
+                "tasks-list": {"highlight": task.id},
+                "task-detail": {"highlight": task.id},
+            }
         },
         "swl-toast": {"delay": 500},
     }
@@ -93,7 +112,9 @@ def test_add_edit_toggle_delete(client):
     # the list
     response = client.post(action(client, "tasks_list"), data={"highlight": task.id})
     events = assert_success(response)
-    assert events["swl-call"] == {"calls": [{"method": "show_counts", "kwargs": {"open": 1, "done": 0}}]}
+    assert events["swl-call"] == {
+        "calls": [{"method": "show_counts", "kwargs": {"open": 1, "done": 0}}]
+    }
     html = partials(response)["tasks-list"]
     assert "Write example" in html and "task-highlight" in html
     assert response.headers["HX-Replace-Url"] == "/"
@@ -101,30 +122,47 @@ def test_add_edit_toggle_delete(client):
     # edit
     response = client.post(action(client, "task_edit"), data={"task_id": task.id})
     assert 'value="Write example"' in partials(response)["modal-content"]
-    client.post(action(client, "task_save"), data={"task_id": task.id, "title": "Write the example", "notes": ""})
+    client.post(
+        action(client, "task_save"),
+        data={"task_id": task.id, "title": "Write the example", "notes": ""},
+    )
     assert store.get(task.id).title == "Write the example"
 
     # toggle
     assert_success(client.post(action(client, "task_toggle"), data={"task_id": task.id}))
     assert store.get(task.id).done is True
 
-    assert [entry["what"] for entry in store.get(task.id).history] == ["Created", "Edited", "Marked as done"]
+    assert [entry["what"] for entry in store.get(task.id).history] == [
+        "Created",
+        "Edited",
+        "Marked as done",
+    ]
 
     # filters
-    response = client.post(action(client, "tasks_list"), data={"q": "example", "status": "open"})
+    response = client.post(
+        action(client, "tasks_list"), data={"q": "example", "status": "open"}
+    )
     assert "No tasks match the filter" in partials(response)["tasks-list"]
     assert response.headers["HX-Replace-Url"] == "/?q=example&status=open"
 
     # context menu
-    response = client.post(action(client, "task_menu"), data={"task_id": task.id, "event_x": "10", "event_y": "20.5"})
+    response = client.post(
+        action(client, "task_menu"),
+        data={"task_id": task.id, "event_x": "10", "event_y": "20.5"},
+    )
     assert assert_success(response)["swl-contextmenu"] == {"x": 10, "y": 20}
     assert "Mark as open" in partials(response)["swl-contextmenu"]
 
     # delete
     response = client.post(action(client, "task_delete"), data={"task_id": task.id})
-    assert assert_success(response)["swl-rehydrate"] == {"placeholders": {"tasks-list": {}, "task-detail": {}}}
+    assert assert_success(response)["swl-rehydrate"] == {
+        "placeholders": {"tasks-list": {}, "task-detail": {}}
+    }
     assert store.find() == []
-    assert_fail(client.post(action(client, "task_delete"), data={"task_id": task.id}), "This task no longer exists")
+    assert_fail(
+        client.post(action(client, "task_delete"), data={"task_id": task.id}),
+        "This task no longer exists",
+    )
 
 
 def test_changes_are_signalled_over_the_websocket(client):
@@ -151,10 +189,17 @@ def test_select_a_task_and_switch_tabs(client):
     task = store.add("Write tests", notes="for the tabs")
     other = store.add("Other task")
 
-    # click a title: the task is shown on its first tab, remembered, put in the url, and the
-    # list is reloaded to move the "selected" mark
-    filters = {"q": "", "status": "all", "selected_task": "", "selected_tab": "details"}
-    response = client.post(action(client, "task_detail"), data={**filters, "task": task.id})
+    # click a title: the task is shown on its first tab, remembered, put in the url, and
+    # the list is reloaded to move the "selected" mark
+    filters = {
+        "q": "",
+        "status": "all",
+        "selected_task": "",
+        "selected_tab": "details",
+    }
+    response = client.post(
+        action(client, "task_detail"), data={**filters, "task": task.id}
+    )
     events = assert_success(response)
     html = partials(response)
     assert "for the tabs" in html["task-detail"]
@@ -170,15 +215,23 @@ def test_select_a_task_and_switch_tabs(client):
 
     # another tab of the same task: no list reload; filters stay in the url
     response = client.post(
-        action(client, "task_detail"), data={**selected, "q": "write", "task": task.id, "tab": "history"}
+        action(client, "task_detail"),
+        data={**selected, "q": "write", "task": task.id, "tab": "history"},
     )
     assert assert_success(response) == {}
     assert "Created" in partials(response)["task-detail"]
     assert response.headers["HX-Replace-Url"] == f"/tasks/{task.id}/history?q=write"
 
-    # a rehydrate of the panel (only #filters posted) shows what is selected; unknown tab -> first tab
-    response = client.post(action(client, "task_detail"), data={**selected, "selected_tab": "nonsense"})
-    assert re.search(r'aria-selected="true"[^>]*>Details</button>', partials(response)["task-detail"], re.S)
+    # a rehydrate of the panel (only #filters posted) shows what is selected; unknown tab
+    # -> first tab
+    response = client.post(
+        action(client, "task_detail"), data={**selected, "selected_tab": "nonsense"}
+    )
+    assert re.search(
+        r'aria-selected="true"[^>]*>Details</button>',
+        partials(response)["task-detail"],
+        re.S,
+    )
     assert response.headers["HX-Replace-Url"] == f"/tasks/{task.id}/details"
 
     # the selected task is deleted (here or in another browser tab): say so and forget it
@@ -213,9 +266,12 @@ def test_reload_renders_the_same_screen(client):
 
 @pytest.mark.parametrize(
     "framework, css, primary",
-    [("swl", "swl-base.css", 'class="primary"'), ("bootstrap", "bootstrap.min.css", 'class="btn btn-primary"'),
-     ("tabler", "tabler.min.css", 'class="btn btn-primary"'),
-     ("bulma", "bulma.min.css", 'class="button is-primary"')],
+    [
+        ("swl", "swl-base.css", 'class="primary"'),
+        ("bootstrap", "bootstrap.min.css", 'class="btn btn-primary"'),
+        ("tabler", "tabler.min.css", 'class="btn btn-primary"'),
+        ("bulma", "bulma.min.css", 'class="button is-primary"'),
+    ],
 )
 def test_the_page_works_with_each_framework(tmp_path, framework, css, primary):
     userbase = Userbase.for_testing(tmp_path / "users")

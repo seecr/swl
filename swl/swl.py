@@ -30,8 +30,6 @@ import jinja2
 import pathlib
 from markupsafe import Markup, escape
 
-from seecr_stdlib.config import Config
-
 static_dir = pathlib.Path(__file__).parent / "static"
 templates_dir = pathlib.Path(__file__).parent / "templates"
 
@@ -46,9 +44,9 @@ class SWL:
             key=None if self._config.get("actions.hash", True) is True else lambda x: x,
         )
         self._actions.register_kwarg("swl", self)
-        # "ui.framework": "swl", "bootstrap" (default) or "bulma"; "paths.resources" replaces its
-        # web resources with your own file. FrameworkCookieMiddleware can choose another one per
-        # request (swl/frameworks.py).
+        # "ui.framework": "swl", "bootstrap" (default) or "bulma"; "paths.resources"
+        # replaces its web resources with your own file. FrameworkCookieMiddleware can
+        # choose another one per request (swl/frameworks.py).
         self._framework = framework(self._config.get("ui.framework"))
         self._web_resources_cache = {}
         self._templates = Jinja2Templates(
@@ -89,7 +87,8 @@ class SWL:
 
     @property
     def ui(self):
-        """CSS classes for form elements and buttons in this framework (swl/frameworks.py)."""
+        """CSS classes for form elements and buttons in this framework
+        (swl/frameworks.py)."""
         return self._current_framework().classes
 
     @property

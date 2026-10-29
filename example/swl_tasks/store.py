@@ -31,10 +31,13 @@ class Task:
     title: str
     notes: str = ""
     done: bool = False
-    history: list = field(default_factory=list)  # [{"at": "2026-10-28T16:05:00", "what": "Created"}, ...]
+    # [{"at": "2026-10-28T16:05:00", "what": "Created"}, ...]
+    history: list = field(default_factory=list)
 
     def log(self, what):
-        self.history.append({"at": datetime.now().isoformat(timespec="seconds"), "what": what})
+        self.history.append(
+            {"at": datetime.now().isoformat(timespec="seconds"), "what": what}
+        )
 
 
 class TaskStore:
@@ -51,7 +54,8 @@ class TaskStore:
                 self._tasks[task.id] = task
 
     def find(self, q="", status="all"):
-        """Tasks matching the search text and status ("all", "open" or "done"), open tasks first."""
+        """Tasks matching the search text and status ("all", "open" or "done"), open tasks
+        first."""
         q = q.strip().lower()
         result = [
             task
@@ -97,4 +101,6 @@ class TaskStore:
 
     def _save(self):
         if self._path is not None:
-            self._path.write_text(json.dumps([asdict(t) for t in self._tasks.values()], indent=2))
+            self._path.write_text(
+                json.dumps([asdict(t) for t in self._tasks.values()], indent=2)
+            )

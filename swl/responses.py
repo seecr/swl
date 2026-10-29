@@ -15,9 +15,10 @@
 Responses for SWL actions, interpreted by htmx (4.x) and swl.js.
 
 A response consists of:
-- an HTML body with one <hx-partial> per hydrated placeholder; htmx swaps each into its target;
-- an HX-Trigger header with SWL events (swl-call, swl-rehydrate, swl-modal-open, ...) that swl.js
-  handles after the content has been swapped, in the order the methods were called;
+- an HTML body with one <hx-partial> per hydrated placeholder; htmx swaps each into its
+  target;
+- an HX-Trigger header with SWL events (swl-call, swl-rehydrate, swl-modal-open, ...) that
+  swl.js handles after the content has been swapped, in the order the methods were called;
 - HX-Redirect / HX-Replace-Url headers for redirect() and set_url().
 
 A response without content is sent as "204 No Content", so htmx leaves the page as it is.
@@ -31,7 +32,13 @@ from markupsafe import escape
 from starlette.responses import Response
 from seecr_stdlib.config import Config
 
-__all__ = ["SuccessResponse", "FailResponse", "MODAL_CONTENT", "CONTEXTMENU", "TOAST_BODY"]
+__all__ = [
+    "SuccessResponse",
+    "FailResponse",
+    "MODAL_CONTENT",
+    "CONTEXTMENU",
+    "TOAST_BODY",
+]
 
 MODAL_CONTENT = "modal-content"
 CONTEXTMENU = "swl-contextmenu"
@@ -41,11 +48,16 @@ _SAFE_ID = re.compile(r"^[A-Za-z_][A-Za-z0-9_-]*$")
 
 
 def id_selector(element_id):
-    """CSS selector for an element id, escaping characters that have a meaning in selectors."""
+    """CSS selector for an element id, escaping characters that have a meaning in
+    selectors."""
     if _SAFE_ID.match(element_id):
         return "#" + element_id
     escaped = "".join(
-        ch if re.match(r"[A-Za-z0-9_-]", ch) and not (i == 0 and ch.isdigit()) else f"\\{ord(ch):x} "
+        (
+            ch
+            if re.match(r"[A-Za-z0-9_-]", ch) and not (i == 0 and ch.isdigit())
+            else f"\\{ord(ch):x} "
+        )
         for i, ch in enumerate(element_id)
     )
     return "#" + escaped
@@ -77,7 +89,8 @@ class _SWLResponse(Response):
     def _render(self):
         """Returns (status_code, extra_headers, body)."""
         body = "".join(
-            f'<hx-partial hx-target="{escape(id_selector(placeholder))}" hx-swap="innerHTML">{data}</hx-partial>'
+            f'<hx-partial hx-target="{escape(id_selector(placeholder))}"'
+            f' hx-swap="innerHTML">{data}</hx-partial>'
             for placeholder, data in self._partials.items()
         )
         headers = dict(self._hx_headers)
@@ -91,12 +104,18 @@ class _SWLResponse(Response):
     async def __call__(self, scope, receive, send):
         status_code, headers, body = self._render()
         # keep headers set on the response by the application (e.g. cookies)
-        kept = [(k, v) for k, v in self.raw_headers if k not in (b"content-length", b"content-type")]
+        kept = [
+            (k, v)
+            for k, v in self.raw_headers
+            if k not in (b"content-length", b"content-type")
+        ]
         self.status_code = status_code
         self.body = body.encode(self.charset) if status_code != 204 else b""
         self.init_headers()
         if status_code == 204:
-            self.raw_headers = [(k, v) for k, v in self.raw_headers if k != b"content-type"]
+            self.raw_headers = [
+                (k, v) for k, v in self.raw_headers if k != b"content-type"
+            ]
         self.raw_headers.extend(kept)
         for key, value in headers.items():
             self.headers[key] = value
@@ -122,8 +141,8 @@ class SuccessResponse(_SWLResponse):
     def hydrate(self, placeholder, data, rehydrate=None):
         """Replace the content of the element with id `placeholder` by `data` (HTML).
 
-        With rehydrate=dict(action=..., context=...) the element is (re)configured to reload itself
-        from that action, with that context, whenever it is rehydrated."""
+        With rehydrate=dict(action=..., context=...) the element is (re)configured to
+        reload itself from that action, with that context, whenever it is rehydrated."""
         rehydrate = _check_rehydrate(rehydrate)
         self._partials.pop(placeholder, None)
         self._partials[placeholder] = data
@@ -149,12 +168,16 @@ class SuccessResponse(_SWLResponse):
         return self
 
     def call(self, method, **kwargs):
-        """Call the global javascript function `method` with kwargs as its only argument."""
-        self._event("swl-call", {"calls": []})["calls"].append({"method": method, "kwargs": kwargs})
+        """Call the global javascript function `method` with kwargs as its only
+        argument."""
+        self._event("swl-call", {"calls": []})["calls"].append(
+            {"method": method, "kwargs": kwargs}
+        )
         return self
 
     def trigger(self, event, **detail):
-        """Trigger a javascript event on the element that made the request (bubbles to document)."""
+        """Trigger a javascript event on the element that made the request (bubbles to
+        document)."""
         if event in self._events:
             raise ValueError(f"event {event!r} already triggered in this response")
         self._events[event] = detail
@@ -178,7 +201,11 @@ class SuccessResponse(_SWLResponse):
         if size not in ["sm", "lg", "xl"]:
             size = "lg"
         self.hydrate(MODAL_CONTENT, data, rehydrate=rehydrate)
-        self._events["swl-modal-open"] = {"size": size, "scrollable": scrollable, "calls": call or []}
+        self._events["swl-modal-open"] = {
+            "size": size,
+            "scrollable": scrollable,
+            "calls": call or [],
+        }
         return self
 
     def open_contextmenu(self, data, location):

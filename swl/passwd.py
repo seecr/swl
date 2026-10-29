@@ -12,14 +12,11 @@
 ## end license ##
 
 import json
-import secrets
 import uuid
-import warnings
 from pathlib import Path
 
 import argon2
 import argon2.profiles
-from starlette.authentication import BaseUser
 from collections import namedtuple
 import functools
 
@@ -77,7 +74,7 @@ class Passwd:
     def create_user(self, username, password):
         username = sanitized(username)
         users = self._list_userlines()
-        if username in {l.username for l in users}:
+        if username in {u.username for u in users}:
             raise ValueError(f"User {username} already exists")
         user_id = uuid_gen()
         password_hash = self._hasher.hash(password)
@@ -88,7 +85,7 @@ class Passwd:
     @id_or_username
     def has_user(self, id_or_username):
         userlines = self._list_userlines()
-        ids_and_usernames = {l.id for l in userlines} | {l.username for l in userlines}
+        ids_and_usernames = {u.id for u in userlines} | {u.username for u in userlines}
         return id_or_username in ids_and_usernames
 
     @id_or_username
@@ -112,7 +109,7 @@ class Passwd:
                 return User(username=userline.username, id=userline.id)
         except argon2.exceptions.VerifyMismatchError:
             pass
-        raise ValueError(f"User or password invalid")
+        raise ValueError("User or password invalid")
 
     @id_or_username
     def change_password(self, id_or_username, password):
@@ -134,12 +131,12 @@ class Passwd:
     def _save(self, userline):
         self._save_data(
             self._path,
-            [l for l in self._list_userlines() if l.id != userline.id] + [userline],
+            [u for u in self._list_userlines() if u.id != userline.id] + [userline],
         )
 
     def _remove(self, userline):
         self._save_data(
-            self._path, [l for l in self._list_userlines() if l.id != userline.id]
+            self._path, [u for u in self._list_userlines() if u.id != userline.id]
         )
 
     @classmethod
@@ -156,9 +153,9 @@ class Passwd:
             return []
         data = self._path.read_text()
         return [
-            _UserLine(*l.split(":", 2))
-            for l in data.splitlines()
-            if l.count(":") == 2 and not l.startswith("#")
+            _UserLine(*line.split(":", 2))
+            for line in data.splitlines()
+            if line.count(":") == 2 and not line.startswith("#")
         ]
 
     def _find_userline(self, id_or_username):

@@ -11,7 +11,7 @@
 #
 ## end license ##
 
-from starlette.websockets import WebSocket, WebSocketDisconnect
+from starlette.websockets import WebSocketDisconnect
 
 
 class Dispatcher:
@@ -34,10 +34,11 @@ class Dispatcher:
             await self.handle(websocket, data)
 
     async def signal_change(self, obj):
-        for websocket in list(self._listeners):  # a copy: closed sockets are removed below
+        # a copy: closed sockets are removed below
+        for websocket in list(self._listeners):
             try:
                 await websocket.send_json({"response": "change", "obj": obj.qid})
-            except:
+            except Exception:
                 self._listeners.remove(websocket)
 
     async def handle(self, websocket, data):

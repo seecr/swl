@@ -197,7 +197,7 @@ def test_convert(tmp_path):
             }
         )
     )
-    with pytest.warns(DeprecationWarning) as w:
+    with pytest.warns(DeprecationWarning):
         ubagain = Userbase.for_testing(users_path)
         admin = ubagain.get(username="admin")
         john = ubagain.get(username="john")

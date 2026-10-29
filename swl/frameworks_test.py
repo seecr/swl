@@ -35,8 +35,12 @@ def test_default_is_bootstrap():
 
 @pytest.mark.parametrize(
     "name, css",
-    [("swl", "/static/swl/swl-base.css"), ("bootstrap", "bootstrap.min.css"), ("tabler", "tabler.min.css"),
-     ("bulma", "bulma.min.css")],
+    [
+        ("swl", "/static/swl/swl-base.css"),
+        ("bootstrap", "bootstrap.min.css"),
+        ("tabler", "tabler.min.css"),
+        ("bulma", "bulma.min.css"),
+    ],
 )
 def test_framework_resources(name, css):
     swl = _swl(framework=name)
@@ -65,8 +69,14 @@ def test_unknown_framework():
 
 
 def test_own_resources_replace_the_frameworks(tmp_path):
-    (path := tmp_path / "res.json").write_text(json.dumps({"styles": [{"href": "mine.css"}]}))
-    swl = SWL(config=Config({"ui": {"framework": "bulma"}, "paths": {"resources": str(path)}}))
+    (path := tmp_path / "res.json").write_text(
+        json.dumps({"styles": [{"href": "mine.css"}]})
+    )
+    swl = SWL(
+        config=Config(
+            {"ui": {"framework": "bulma"}, "paths": {"resources": str(path)}}
+        )
+    )
     assert [s["href"] for s in swl.styles] == ["mine.css"]
     assert swl.ui["button"] == "button", "the classes still follow the framework"
 
@@ -97,7 +107,9 @@ def _app(swl, cookie=None):
         return JSONResponse({"framework": swl.framework, "button": swl.ui["button"],
                              "styles": [s["href"] for s in swl.styles]})
 
-    app = Starlette(routes=[Route("/", page)], middleware=[Middleware(FrameworkCookieMiddleware)])
+    app = Starlette(
+        routes=[Route("/", page)], middleware=[Middleware(FrameworkCookieMiddleware)]
+    )
     client = TestClient(app)
     if cookie is not None:
         client.cookies.set("swl_framework", cookie)
@@ -119,4 +131,6 @@ def test_tabler_is_bootstrap_with_its_own_look():
     swl = _swl(framework="tabler")
     assert dict(swl.ui) == dict(_swl(framework="bootstrap").ui)
     assert any("@tabler/core" in s["src"] for s in swl.scripts)
-    assert not any("bootstrap.bundle" in s["src"] for s in swl.scripts), "Tabler's bundle includes Bootstrap's"
+    assert not any(
+        "bootstrap.bundle" in s["src"] for s in swl.scripts
+    ), "Tabler's bundle includes Bootstrap's"

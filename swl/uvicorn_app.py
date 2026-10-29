@@ -27,7 +27,8 @@ async def uvicorn_main(host, port, create_app, **kwargs):
     deproxy_ips = kwargs.get("deproxy_ips", [])
 
     logger.debug(
-        f"uvicorn_main called with host={host}, port={port}, deproxy_ips={deproxy_ips}, kwargs={kwargs}"
+        f"uvicorn_main called with host={host}, port={port}, "
+        f"deproxy_ips={deproxy_ips}, kwargs={kwargs}"
     )
     config = Config(
         await create_app(shutdown=Shutdown(), host=host, port=port, **kwargs),

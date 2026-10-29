@@ -15,9 +15,9 @@
 The actions of the example.
 
 Every function listed in __actions__ is an SWL action. Templates get its url with
-register("<function name>"), e.g. hx-post="{{ register('task_save') }}". SWL calls it with the
-request and the keyword arguments registered with swl.register_action_kwargs(); here: swl, store
-and dispatcher (and userbase, used by the account views).
+register("<function name>"), e.g. hx-post="{{ register('task_save') }}". SWL calls it with
+the request and the keyword arguments registered with swl.register_action_kwargs(); here:
+swl, store and dispatcher (and userbase, used by the account views).
 
 Actions require a logged-in user unless registered with authenticated=False.
 
@@ -27,7 +27,8 @@ An action answers with swl.success() or swl.fail(), see swl/responses.py:
   .open_modal(html)         show html in the modal dialog
   .toast(text)              show a short message
   .call(function, **kw)     call a javascript function with kw
-  .set_url(url, **params)   change the url in the address bar (see "Where you are: the url")
+  .set_url(url, **params)   change the url in the address bar
+                            (see "Where you are: the url")
   swl.fail().message(text)  show an error message
 """
 
@@ -45,16 +46,17 @@ STATUSES = ["all", "open", "done"]
 TABS = ["details", "history"]
 
 
-# --- Where you are: the url -------------------------------------------------------------------
+# --- Where you are: the url -------------------------------------------------------------
 #
-# The screen is described by four things: the search text, the status filter, the selected task
-# and its tab. They live in the #filters form (the last two as hidden fields, see selection.j2),
-# so every request that includes #filters knows the whole screen, and actions put it in the url:
+# The screen is described by four things: the search text, the status filter, the selected
+# task and its tab. They live in the #filters form (the last two as hidden fields, see
+# selection.j2), so every request that includes #filters knows the whole screen, and
+# actions put it in the url:
 #
 #     /tasks/<task id>/<tab>?q=<search>&status=<status>
 #
-# The page route (app.py) reads that url and renders the same screen, so a reload, a bookmark or
-# a link to a colleague shows exactly what you saw.
+# The page route (app.py) reads that url and renders the same screen, so a reload, a
+# bookmark or a link to a colleague shows exactly what you saw.
 
 
 def screen_from(form):
@@ -77,8 +79,9 @@ def page_url(q="", status="all", task_id=None, tab=TABS[0]):
 
 
 def render_detail(swl, store, task_id, tab):
-    """The detail panel (tabs + the content of the active tab), or a hint when nothing is selected.
-    Used by the task_detail action and by the page route, which renders it straight into the page."""
+    """The detail panel (tabs + the content of the active tab), or a hint when nothing is
+    selected. Used by the task_detail action and by the page route, which renders it
+    straight into the page."""
     task = store.get(task_id) if task_id else None
     return swl.template("tasks/detail.j2").render(
         task=task, tab=tab, tabs=TABS, missing=task_id is not None and task is None
@@ -96,8 +99,9 @@ def render_selection(task_id, tab):
 async def tasks_list(request, swl, store, **kwargs):
     """Renders the task list into its placeholder.
 
-    Posted by the placeholder itself: when the page loads, when a filter changes (it includes the
-    #filters form) and when it is rehydrated. A rehydrate can add "highlight" to mark a task."""
+    Posted by the placeholder itself: when the page loads, when a filter changes (it
+    includes the #filters form) and when it is rehydrated. A rehydrate can add "highlight"
+    to mark a task."""
     async with request.form() as form:
         screen = screen_from(form)
         highlight = form.get("highlight")
@@ -120,9 +124,9 @@ async def tasks_list(request, swl, store, **kwargs):
 async def task_detail(request, swl, store, **kwargs):
     """Shows a task in the detail panel, on one of its tabs.
 
-    Posted by a task title and by the tabs (with "task" and/or "tab" in hx-vals, plus the #filters
-    form), and by the detail placeholder itself when it is rehydrated (only the #filters form: it
-    then shows the task and tab that are selected already)."""
+    Posted by a task title and by the tabs (with "task" and/or "tab" in hx-vals, plus the
+    #filters form), and by the detail placeholder itself when it is rehydrated (only the
+    #filters form: it then shows the task and tab that are selected already)."""
     async with request.form() as form:
         screen = screen_from(form)
         previous = screen["task_id"]
@@ -192,7 +196,9 @@ async def task_toggle(request, swl, store, dispatcher, **kwargs):
         return swl.fail().message("This task no longer exists")
     store.toggle(task.id)
     await _signal_change(dispatcher, store)
-    return swl.success().rehydrate(TASKS_LIST, TASK_DETAIL, context={"highlight": task.id})
+    return swl.success().rehydrate(
+        TASKS_LIST, TASK_DETAIL, context={"highlight": task.id}
+    )
 
 
 async def task_delete(request, swl, store, dispatcher, **kwargs):
@@ -201,13 +207,21 @@ async def task_delete(request, swl, store, dispatcher, **kwargs):
         return swl.fail().message("This task no longer exists")
     store.delete(task.id)
     await _signal_change(dispatcher, store)
-    return swl.success().rehydrate(TASKS_LIST, TASK_DETAIL).toast(f"Deleted '{task.title}'")
+    return (
+        swl.success()
+        .rehydrate(TASKS_LIST, TASK_DETAIL)
+        .toast(f"Deleted '{task.title}'")
+    )
 
 
 async def task_menu(request, swl, store, **kwargs):
-    """Context menu (right click on a task). swl.js posts the click position as event_x/event_y."""
+    """Context menu (right click on a task). swl.js posts the click position as
+    event_x/event_y."""
     async with request.form() as form:
-        location = {"x": int(float(form["event_x"])), "y": int(float(form["event_y"]))}
+        location = {
+            "x": int(float(form["event_x"])),
+            "y": int(float(form["event_y"])),
+        }
     task = await _task(request, store)
     if task is None:
         return swl.success()
@@ -222,7 +236,8 @@ async def _task(request, store):
 
 async def _signal_change(dispatcher, store):
     """Tell every open page (websocket.js) that the task list changed; placeholders with
-    data-swl-on-changed="tasks" reload themselves. That includes other users and other tabs."""
+    data-swl-on-changed="tasks" reload themselves. That includes other users and other
+    tabs."""
     await dispatcher.signal_change(SimpleNamespace(qid=TaskStore.qid))
 
 

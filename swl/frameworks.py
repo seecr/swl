@@ -13,17 +13,18 @@
 
 """
 The CSS framework an SWL application uses: "swl" (no framework, SWL's own swl-base.css),
-"bootstrap", "tabler" (an admin design on top of Bootstrap) or "bulma". Choose it with the config key "ui.framework" (default "bootstrap").
+"bootstrap", "tabler" (an admin design on top of Bootstrap) or "bulma". Choose it with the
+config key "ui.framework" (default "bootstrap").
 
 The choice gives
   - the web resources (styles and scripts) that swl/base.j2 loads, and
-  - a few CSS classes for form elements and buttons, as SWL.ui in templates, so that SWL's own
-    templates (account and user screens) and your own can write
+  - a few CSS classes for form elements and buttons, as SWL.ui in templates, so that SWL's
+    own templates (account and user screens) and your own can write
         <button class="{{ SWL.ui.button_primary }}">Save</button>
     and look right with each framework.
 
-SWL's modal, message dialog, toast and context menu do not depend on the framework: they are
-plain HTML styled by swl.css (and pick up the framework's colours).
+SWL's modal, message dialog, toast and context menu do not depend on the framework: they
+are plain HTML styled by swl.css (and pick up the framework's colours).
 """
 
 import contextvars
@@ -34,7 +35,8 @@ from types import MappingProxyType
 
 _resources = importlib.resources.files("swl.resources")
 
-# The class names SWL.ui offers; every framework defines all of them (empty: no class needed).
+# The class names SWL.ui offers; every framework defines all of them (empty: no class
+# needed).
 UI_CLASSES = (
     "input",           # <input> (text, password, search, ...)
     "select",          # <select>
@@ -57,7 +59,9 @@ class Framework:
     def __post_init__(self):
         missing = set(UI_CLASSES).difference(self.classes)
         if missing:
-            raise ValueError(f"Framework {self.name!r} misses ui classes {sorted(missing)}")
+            raise ValueError(
+                f"Framework {self.name!r} misses ui classes {sorted(missing)}"
+            )
         object.__setattr__(self, "classes", MappingProxyType(dict(self.classes)))
 
 
@@ -94,8 +98,8 @@ FRAMEWORKS = {
         resources=_resources / "bootstrap-web-resources.json",
         classes=_BOOTSTRAP_CLASSES,
     ),
-    # Tabler is built on Bootstrap 5: the same classes, its own look (and its own javascript bundle,
-    # which includes Bootstrap's)
+    # Tabler is built on Bootstrap 5: the same classes, its own look (and its own
+    # javascript bundle, which includes Bootstrap's)
     "tabler": Framework(
         name="tabler",
         resources=_resources / "tabler-web-resources.json",
@@ -128,11 +132,13 @@ def framework(name=None):
         return FRAMEWORKS[name]
     except KeyError:
         raise ValueError(
-            f"Unknown ui.framework {name!r}; choose one of {', '.join(sorted(FRAMEWORKS))}"
+            f"Unknown ui.framework {name!r}; "
+            f"choose one of {', '.join(sorted(FRAMEWORKS))}"
         ) from None
 
 
-# The framework chosen for the current request (FrameworkCookieMiddleware); None: the default.
+# The framework chosen for the current request (FrameworkCookieMiddleware); None: the
+# default.
 _requested = contextvars.ContextVar("swl_requested_framework", default=None)
 
 
@@ -143,9 +149,10 @@ def requested_framework():
 
 class FrameworkCookieMiddleware:
     """
-    ASGI middleware that lets a visitor choose the CSS framework with a cookie, e.g. for a demo or a
-    style guide: a cookie `cookie` with a framework name ("swl", "bootstrap", ...) overrides "ui.framework"
-    for that request. Anything else in the cookie is ignored.
+    ASGI middleware that lets a visitor choose the CSS framework with a cookie, e.g. for a
+    demo or a style guide: a cookie `cookie` with a framework name ("swl", "bootstrap",
+    ...) overrides "ui.framework" for that request. Anything else in the cookie is
+    ignored.
 
         app = Starlette(..., middleware=[Middleware(FrameworkCookieMiddleware)])
 

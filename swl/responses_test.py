@@ -30,10 +30,15 @@ def render(response):
     status_code, headers, body = response._render()
     events = json.loads(headers.pop("HX-Trigger", "{}"))
     partials = dict(
-        re.findall(r'<hx-partial hx-target="#([^"]+)" hx-swap="innerHTML">(.*?)</hx-partial>', body, re.S)
+        re.findall(
+            r'<hx-partial hx-target="#([^"]+)" hx-swap="innerHTML">(.*?)</hx-partial>',
+            body,
+            re.S,
+        )
     )
     assert body == "".join(
-        f'<hx-partial hx-target="#{k}" hx-swap="innerHTML">{v}</hx-partial>' for k, v in partials.items()
+        f'<hx-partial hx-target="#{k}" hx-swap="innerHTML">{v}</hx-partial>'
+        for k, v in partials.items()
     )
     return status_code, events, partials, headers
 
@@ -46,7 +51,12 @@ def test_hydrate():
     r = SuccessResponse().hydrate("placeholder", data="content for <b>placeholder</b>")
     assert render(r) == (200, {}, {"placeholder": "content for <b>placeholder</b>"}, {})
 
-    r = SuccessResponse().hydrate("one", data="1").hydrate("two", data="2").hydrate("one", data="1b")
+    r = (
+        SuccessResponse()
+        .hydrate("one", data="1")
+        .hydrate("two", data="2")
+        .hydrate("one", data="1b")
+    )
     assert render(r)[2] == {"two": "2", "one": "1b"}
 
 
@@ -66,7 +76,11 @@ def test_hydrate_with_rehydrate():
     )
     assert render(r) == (
         200,
-        {"swl-recipe": {"recipes": {"placeholder": {"action": "/the_action", "context": {}}}}},
+        {
+            "swl-recipe": {
+                "recipes": {"placeholder": {"action": "/the_action", "context": {}}}
+            }
+        },
         {"placeholder": "content for placeholder"},
         {},
     )
@@ -82,15 +96,24 @@ def test_hydrate_target_is_escaped():
 
 def test_rehydrate():
     r = SuccessResponse().rehydrate("placeholder")
-    assert render(r) == (204, {"swl-rehydrate": {"placeholders": {"placeholder": {}}}}, {}, {})
+    assert render(r) == (
+        204,
+        {"swl-rehydrate": {"placeholders": {"placeholder": {}}}},
+        {},
+        {},
+    )
 
     r = SuccessResponse().rehydrate("placeholder", context={"the": "value"})
-    assert render(r)[1] == {"swl-rehydrate": {"placeholders": {"placeholder": {"the": "value"}}}}
+    assert render(r)[1] == {
+        "swl-rehydrate": {"placeholders": {"placeholder": {"the": "value"}}}
+    }
 
     r = SuccessResponse().rehydrate("placeholder").rehydrate("placeholder2")
     r2 = SuccessResponse().rehydrate("placeholder", "placeholder2")
     assert render(r) == render(r2)
-    assert render(r)[1] == {"swl-rehydrate": {"placeholders": {"placeholder": {}, "placeholder2": {}}}}
+    assert render(r)[1] == {
+        "swl-rehydrate": {"placeholders": {"placeholder": {}, "placeholder2": {}}}
+    }
 
     with pytest.raises(ValueError):
         SuccessResponse().rehydrate("placeholder", {"con": "text"})
@@ -98,7 +121,9 @@ def test_rehydrate():
 
 def test_call():
     r = SuccessResponse().call("some_function")
-    assert render(r)[1] == {"swl-call": {"calls": [{"method": "some_function", "kwargs": {}}]}}
+    assert render(r)[1] == {
+        "swl-call": {"calls": [{"method": "some_function", "kwargs": {}}]}
+    }
 
     r = SuccessResponse().call("call_1").call("call_2", a=1, b="two")
     assert render(r)[1] == {
@@ -123,12 +148,19 @@ def test_trigger():
 
 def test_events_keep_their_order():
     r = SuccessResponse().close_modal().reset_form().call("f").rehydrate("p")
-    assert list(render(r)[1]) == ["swl-modal-close", "swl-reset-form", "swl-call", "swl-rehydrate"]
+    assert list(render(r)[1]) == [
+        "swl-modal-close",
+        "swl-reset-form",
+        "swl-call",
+        "swl-rehydrate",
+    ]
 
 
 def test_session_store():
     r = SuccessResponse().session_store("key1", "value1").session_store("key2", {"a": 2})
-    assert render(r)[1] == {"swl-session-store": {"values": {"key1": "value1", "key2": {"a": 2}}}}
+    assert render(r)[1] == {
+        "swl-session-store": {"values": {"key1": "value1", "key2": {"a": 2}}}
+    }
 
 
 def test_reset_form():
@@ -144,16 +176,28 @@ def test_open_modal():
         {},
     )
 
-    r = SuccessResponse().open_modal(data="blah", call="method", size="xl", scrollable=True)
-    assert render(r)[1] == {"swl-modal-open": {"size": "xl", "scrollable": True, "calls": ["method"]}}
-
-    r = SuccessResponse().open_modal(data="blah", call=["method1", "method2"], size="huge")
+    r = SuccessResponse().open_modal(
+        data="blah", call="method", size="xl", scrollable=True
+    )
     assert render(r)[1] == {
-        "swl-modal-open": {"size": "lg", "scrollable": False, "calls": ["method1", "method2"]}
+        "swl-modal-open": {"size": "xl", "scrollable": True, "calls": ["method"]}
+    }
+
+    r = SuccessResponse().open_modal(
+        data="blah", call=["method1", "method2"], size="huge"
+    )
+    assert render(r)[1] == {
+        "swl-modal-open": {
+            "size": "lg",
+            "scrollable": False,
+            "calls": ["method1", "method2"],
+        }
     }
 
     r = SuccessResponse().open_modal(data="blah", rehydrate=dict(action="/a"))
-    assert render(r)[1]["swl-recipe"] == {"recipes": {MODAL_CONTENT: {"action": "/a", "context": {}}}}
+    assert render(r)[1]["swl-recipe"] == {
+        "recipes": {MODAL_CONTENT: {"action": "/a", "context": {}}}
+    }
 
     with pytest.raises(ValueError):
         SuccessResponse().open_modal(data="blah", rehydrate=dict(context={}))
@@ -171,12 +215,22 @@ def test_hydrate_modal():
 
 
 def test_close_modal():
-    assert render(SuccessResponse().close_modal()) == (204, {"swl-modal-close": {}}, {}, {})
+    assert render(SuccessResponse().close_modal()) == (
+        204,
+        {"swl-modal-close": {}},
+        {},
+        {},
+    )
 
 
 def test_open_contextmenu():
     r = SuccessResponse().open_contextmenu("<ul></ul>", location={"x": 10, "y": 20})
-    assert render(r) == (200, {"swl-contextmenu": {"x": 10, "y": 20}}, {"swl-contextmenu": "<ul></ul>"}, {})
+    assert render(r) == (
+        200,
+        {"swl-contextmenu": {"x": 10, "y": 20}},
+        {"swl-contextmenu": "<ul></ul>"},
+        {},
+    )
 
 
 def test_redirect():
@@ -194,14 +248,21 @@ def test_fail_response():
 
 
 def test_set_url():
-    assert render(SuccessResponse().set_url("/go_here"))[3] == {"HX-Replace-Url": "/go_here"}
+    assert render(SuccessResponse().set_url("/go_here"))[3] == {
+        "HX-Replace-Url": "/go_here"
+    }
     r = SuccessResponse().set_url("/go_here", qid="Object:ID")
     assert render(r)[3] == {"HX-Replace-Url": "/go_here?qid=Object%3AID"}
 
 
 def test_toast():
     r = SuccessResponse().toast("Changes saved.")
-    assert render(r) == (200, {"swl-toast": {"delay": 500}}, {"toast-body": "Changes saved."}, {})
+    assert render(r) == (
+        200,
+        {"swl-toast": {"delay": 500}},
+        {"toast-body": "Changes saved."},
+        {},
+    )
 
     r = SuccessResponse().toast("Changes saved.", delay=1500)
     assert render(r)[1] == {"swl-toast": {"delay": 1500}}
@@ -212,9 +273,13 @@ def test_toast():
 
 def test_toast_defaults():
     swl = SWL(config=Config({}))
-    assert render(swl.success().toast("Changes saved."))[1] == {"swl-toast": {"delay": 500}}
+    assert render(swl.success().toast("Changes saved."))[1] == {
+        "swl-toast": {"delay": 500}
+    }
 
-    swl = SWL(config=Config({"response": {"toast": {"delay": 2000, "background": "green"}}}))
+    swl = SWL(
+        config=Config({"response": {"toast": {"delay": 2000, "background": "green"}}})
+    )
     assert render(swl.success().toast("Changes saved."))[1] == {
         "swl-toast": {"delay": 2000, "background": "green"}
     }
@@ -239,7 +304,9 @@ def test_http_response():
     response = client.get("/a")
     assert response.status_code == 200
     assert response.headers["content-type"] == "text/html; charset=utf-8"
-    assert response.text == '<hx-partial hx-target="#p" hx-swap="innerHTML"><i>ü</i></hx-partial>'
+    assert response.text == (
+        '<hx-partial hx-target="#p" hx-swap="innerHTML"><i>ü</i></hx-partial>'
+    )
     assert response.headers["HX-Trigger"].isascii()
     assert json.loads(response.headers["HX-Trigger"]) == {
         "swl-call": {"calls": [{"method": "f", "kwargs": {"name": "Müller"}}]}

@@ -79,15 +79,19 @@ async def swl_counted(request, **kwargs):
         return SuccessResponse().hydrate(
             placeholder,
             data=f"count={next(_counter)} extra={form.get('extra', '')}",
-            rehydrate=dict(action="/action/swl_counted", context={"placeholder": placeholder}),
+            rehydrate=dict(
+                action="/action/swl_counted", context={"placeholder": placeholder}
+            ),
         )
 
 
 async def swl_slow_outer(request, **kwargs):
-    """A placeholder that loads slowly and contains another slow placeholder (for kickstart)."""
+    """A placeholder that loads slowly and contains another slow placeholder (for
+    kickstart)."""
     await asyncio.sleep(0.3)
     return SuccessResponse().hydrate(
-        "outer", data='<div id="inner" hx-post="/action/swl_slow_inner" hx-trigger="load"></div>'
+        "outer",
+        data='<div id="inner" hx-post="/action/swl_slow_inner" hx-trigger="load"></div>',
     )
 
 

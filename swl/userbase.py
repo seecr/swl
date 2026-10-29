@@ -13,7 +13,6 @@
 
 import json
 import secrets
-import uuid
 import warnings
 from pathlib import Path
 
@@ -43,7 +42,8 @@ class Userbase:
         if self._path.joinpath("users").is_dir():
             warnings.warn(
                 DeprecationWarning(
-                    "Userbase path should not be the parent of the 'users' directory, but the 'users' directory itself."
+                    "Userbase path should not be the parent of the 'users' directory, "
+                    "but the 'users' directory itself."
                 )
             )
             self._path = self._path.joinpath("users")

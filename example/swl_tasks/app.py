@@ -49,10 +49,10 @@ DEMO_PASSWORD = "demo-password"
 async def page(request, swl, store, **kwargs):
     """The task list page, for "/" and for "/tasks/<task id>/<tab>" (see views.page_url).
 
-    The page is rendered as it was when the url was set: filters from the query parameters, the
-    selected task and tab from the path. The detail panel is rendered right here, so a reload
-    shows it without an extra request; the list loads itself (its placeholder) with the filters
-    and the selection from the #filters form."""
+    The page is rendered as it was when the url was set: filters from the query
+    parameters, the selected task and tab from the path. The detail panel is rendered
+    right here, so a reload shows it without an extra request; the list loads itself (its
+    placeholder) with the filters and the selection from the #filters form."""
     tab = request.path_params.get("tab", views.TABS[0])
     screen = views.screen_from(
         {
@@ -62,7 +62,9 @@ async def page(request, swl, store, **kwargs):
             "selected_tab": tab,
         }
     )
-    detail_html = Markup(views.render_detail(swl, store, screen["task_id"], screen["tab"]))
+    detail_html = Markup(
+        views.render_detail(swl, store, screen["task_id"], screen["tab"])
+    )
     if screen["task_id"] and store.get(screen["task_id"]) is None:
         screen["task_id"] = None  # an old link: show that, but don't keep it selected
     return swl.template_response(
@@ -107,9 +109,12 @@ def create_app(data_dir, userbase=None, framework="swl"):
     dispatcher = Dispatcher()
 
     # SWL: our templates first, then SWL's own (swl/base.j2, swl/modal.j2, ...).
-    # "ui.framework" chooses the CSS framework: "swl" (SWL's own swl-base.css, no framework),
-    # "bootstrap", "tabler" or "bulma". The templates use SWL.ui for their classes, so they work with each.
-    swl = SWL(config=Config({"ui": {"framework": framework}}), templates=[here / "templates"])
+    # "ui.framework" chooses the CSS framework: "swl" (SWL's own swl-base.css, no
+    # framework), "bootstrap", "tabler" or "bulma". The templates use SWL.ui for their
+    # classes, so they work with each.
+    swl = SWL(
+        config=Config({"ui": {"framework": framework}}), templates=[here / "templates"]
+    )
     swl.register_modules(account, views)  # account: login, users and password dialogs
     swl.register_action_kwargs(userbase=userbase, store=store, dispatcher=dispatcher)
     swl.add_template_globals(VERSION=swl.SWL_VERSION)
@@ -123,14 +128,20 @@ def create_app(data_dir, userbase=None, framework="swl"):
             Route("/login", swl.endpoint(login_page, authenticated=False)),
             Route("/logout", swl.endpoint(account.logout, authenticated=False)),
             WebSocketRoute("/ws", dispatcher.endpoint),  # change notifications
-            Mount("/static", StaticFiles(directory=static_dir), name="static"),  # swl.js etc.
+            # swl.js etc.
+            Mount("/static", StaticFiles(directory=static_dir), name="static"),
             Mount("/example", StaticFiles(directory=here / "static"), name="example"),
         ],
         middleware=[
             # the framework switch in the page (style_switch.j2) sets this cookie
             Middleware(FrameworkCookieMiddleware, cookie="swl_framework"),
-            Middleware(SessionMiddleware, secret_key=SessionSecretKey(data_dir / "session.key").key),
-            Middleware(AuthenticationMiddleware, backend=SessionAuthBackend(userbase=userbase)),
+            Middleware(
+                SessionMiddleware,
+                secret_key=SessionSecretKey(data_dir / "session.key").key,
+            ),
+            Middleware(
+                AuthenticationMiddleware, backend=SessionAuthBackend(userbase=userbase)
+            ),
         ],
     )
     app.state.swl = swl

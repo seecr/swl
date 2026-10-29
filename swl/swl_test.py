@@ -88,13 +88,22 @@ def test_kickstart_template():
     template = swl.template("swl/kickstart.j2")
     assert template.render().strip() == ""
 
-    html = template.render(kickstart={"action": "/action/abc", "kwargs": {"qid": "Order:1"}})
+    html = template.render(
+        kickstart={"action": "/action/abc", "kwargs": {"qid": "Order:1"}}
+    )
     assert 'swl.kickstart("/action/abc", {"qid": "Order:1"})' in html
 
     # values from a url end up here: they must not be able to break out of the script
-    html = template.render(kickstart={"action": "/action/abc", "kwargs": {"q": "</script><script>alert(1)"}})
+    html = template.render(
+        kickstart={
+            "action": "/action/abc",
+            "kwargs": {"q": "</script><script>alert(1)"},
+        }
+    )
     assert "</script><script>" not in html
     assert "\\u003c/script\\u003e" in html
 
-    html = template.render(kickstart={"action": "/action/abc", "kwargs": '{"qid": "Order:1"}'})
+    html = template.render(
+        kickstart={"action": "/action/abc", "kwargs": '{"qid": "Order:1"}'}
+    )
     assert 'swl.kickstart("/action/abc", "{\\"qid\\": \\"Order:1\\"}")' in html
