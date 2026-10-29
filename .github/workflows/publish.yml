@@ -1,0 +1,61 @@
+# Publishes SWL to PyPI when a GitHub release is published.
+#
+# The version comes from the release's tag (setuptools-scm), e.g. tag 5.0.1 gives swl 5.0.1.
+# Uploading uses PyPI trusted publishing: no token, but PyPI must trust this workflow
+# (owner seecr, repository swl, workflow publish.yml, environment pypi).
+
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e . -e example/
+      - run: pytest swl example/swl_tasks
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # setuptools-scm needs the tags
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install build
+      - run: python -m build
+      - name: Check that the version is the release tag
+        run: |
+          ls dist
+          test -f "dist/swl-${GITHUB_REF_NAME}.tar.gz"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/swl/
+    permissions:
+      id-token: write  # for trusted publishing
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
