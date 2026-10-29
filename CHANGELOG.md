@@ -4,7 +4,7 @@
 
 SWL moves its browser side to [htmx 4](https://four.htmx.org). The Python API (actions,
 `register()`, `swl.success()` / `swl.fail()`) stays the same, but templates and JavaScript have
-to be converted: `doc/htmx-migration.md` lists every change.
+to be converted.
 
 SWL is now released under the MIT License (it was GPL v2 or later), and is published on
 [GitHub](https://github.com/seecr/swl) and [PyPI](https://pypi.org/project/swl/).
@@ -13,7 +13,7 @@ SWL is now released under the MIT License (it was GPL v2 or later), and is publi
 
 - **htmx instead of SWL's own jQuery code.**
   - The `data-swl-*` attributes are replaced by `hx-*` attributes; `data-swl-validate` and
-    `data-swl-on-changed` stay. See the table in `doc/htmx-migration.md`.
+    `data-swl-on-changed` stay.
   - jQuery is no longer loaded.
   - `rehydrate.js` is gone, and `swl.js` no longer exports `hydrate`, `start_hydrating`,
     `rehydrate_placeholder`, `arguments_from_elem` and `swl_arguments_from_elem`.
@@ -74,8 +74,7 @@ SWL is now released under the MIT License (it was GPL v2 or later), and is publi
   - `doc/reference.md` explains deep links: `set_url` plus a page route.
 - **An example application** (`example/`, a task list) with a guided walkthrough. Run it with
   `--framework swl | bootstrap | tabler | bulma`.
-- **Documentation**: `README.md`, `doc/reference.md` (with debugging and troubleshooting) and
-  `doc/htmx-migration.md`.
+- **Documentation**: `README.md` and `doc/reference.md` (with debugging and troubleshooting).
 
 ### Fixed
 

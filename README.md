@@ -98,8 +98,6 @@ Open <http://127.0.0.1:8000/> and log in as **demo** / **demo-password**.
   the updated list. Start here.
 - [`doc/reference.md`](doc/reference.md): everything SWL provides, for looking things up. Also
   covers debugging and troubleshooting.
-- [`doc/htmx-migration.md`](doc/htmx-migration.md): upgrading an application from SWL 4 (jQuery,
-  `data-swl-*` attributes) to the htmx version.
 - [`CHANGELOG.md`](CHANGELOG.md): what changed.
 
 ## Tests

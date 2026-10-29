@@ -302,8 +302,6 @@ and the websocket.
 
 - `doc/reference.md` in the swl repository lists everything SWL provides, what each kind of
   element posts, how to debug, and answers to common problems.
-- `doc/htmx-migration.md` in the swl repository lists every `data-swl-*` attribute of older SWL
-  versions and its htmx equivalent.
 - `swl/responses.py` documents all response methods; `swl/templates/swl/placeholder.j2` the
   placeholder options.
 - The [htmx 4 documentation](https://four.htmx.org) covers the `hx-*` attributes.

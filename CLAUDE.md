@@ -10,7 +10,7 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
 ## State of the project
 
 - The browser side is htmx 4 (it was jQuery with `data-swl-*` attributes up to 4.3.0; a breaking
-  change). `doc/htmx-migration.md` describes converting an application.
+  change).
 - SWL's modal/dialog are native `<dialog>`, toast and context menu are popovers, styled by
   `swl.css` with `--swl-*` variables; SWL needs no framework JavaScript. `"ui.framework"`:
   "bootstrap" (default), "tabler" (Bootstrap-based), "bulma" or "swl" (SWL's own `swl-base.css`,
@@ -35,7 +35,7 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
 - `swl/resources/<framework>-web-resources.json`: CDN scripts/styles per framework, all from
   cdn.jsdelivr.net with SRI hashes (htmx is `htmx.org@4.0.0`); `web_resources.py` loads them.
 - `swl/test_utils.py`: `assert_success(response)` (returns the events), `assert_fail(response, msg)`.
-- `doc/reference.md`: full reference (deep links, tabs, debugging); `doc/htmx-migration.md`.
+- `doc/reference.md`: full reference (deep links, tabs, debugging).
 - `example/`: task-list example app (`swl_tasks`), README walks one click end to end.
   Run: `pip install -e example && python -m swl_tasks`, login demo / demo-password.
 
