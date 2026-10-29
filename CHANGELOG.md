@@ -1,5 +1,26 @@
 # Changelog
 
+## 5.0.1 (2026-10-29)
+
+Packaging, documentation and CI; no changes in behaviour.
+
+### Changed
+
+- The PyPI page has a clearer description, keywords and classifiers, and the README's links
+  work there too.
+- The htmx migration guide is removed.
+- `swl/static/swl/seecr-logo-zonder.png` is removed; SWL didn't use it.
+- Unused imports are removed from `swl.dispatcher`, `swl.passwd`, `swl.swl` and
+  `swl.userbase`. Import names like `BaseUser`, `WebSocket` or `Config` from where they are
+  defined (Starlette, `seecr_stdlib.config`), not through these modules.
+
+### Added
+
+- `SECURITY.md`: how to report a security problem.
+- `python -m swl.test.run_js_tests` runs the JavaScript (QUnit) tests in headless Chromium.
+- CI runs the JavaScript tests and flake8, besides the Python tests on Python 3.11 to 3.14.
+- Each release also gets a GitHub release with its section of this changelog.
+
 ## 5.0.0 (2026-10-29)
 
 SWL moves its browser side to [htmx 4](https://four.htmx.org). The Python API (actions,
