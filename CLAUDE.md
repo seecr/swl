@@ -37,7 +37,8 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
 - `swl/test_utils.py`: `assert_success(response)` (returns the events), `assert_fail(response, msg)`.
 - `doc/reference.md`: full reference (deep links, tabs, debugging).
 - `site/`: the website (Hugo), published to GitHub Pages by `.github/workflows/pages.yml` after
-  each release; `make` in `site/` builds it and the reference PDF. Not part of the package.
+  each release; `make` in `site/` builds it and the reference PDF (pandoc + Typst,
+  template `site/pdf/reference.typ`). Not part of the package.
 - `example/`: task-list example app (`swl_tasks`), README walks one click end to end.
   Run: `pip install -e example && python -m swl_tasks`, login demo / demo-password.
 

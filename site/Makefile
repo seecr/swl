@@ -30,16 +30,19 @@ content/reference.md: $(REFERENCE_MD)
 	{ printf -- '---\ntitle: "SWL reference"\nversion: "%s"\n---\n\n' "$(SWL_VERSION)"; \
 	  cat $(REFERENCE_MD); } > $@
 
-static/swl-reference.pdf: $(REFERENCE_MD) pdf/metadata.yaml pdf/header.tex pdf/seecr-logo.png
+# The PDF: pandoc turns the reference into Typst with pdf/reference.typ as template (title
+# page, contents, styles), then typst makes the PDF. The title and the hand-made table of
+# contents of reference.md are left out; the template makes both.
+static/swl-reference.pdf: $(REFERENCE_MD) pdf/reference.typ pdf/seecr-logo.png
 	awk 'NR == 1 && /^# / { next } /^- \[[^]]*\]\(#[^)]*\)$$/ { next } { print }' \
 	    $(REFERENCE_MD) | \
-	TEXINPUTS=$(CURDIR)/pdf: pandoc --from markdown+gfm_auto_identifiers-raw_html-raw_tex-tex_math_dollars-smart \
-	    --shift-heading-level-by=-1 --pdf-engine=xelatex \
-	    --metadata-file=pdf/metadata.yaml \
-	    --metadata date="Version $(SWL_VERSION)" \
-	    --include-in-header=pdf/header.tex \
-	    --highlight-style=tango \
-	    -o $@
+	pandoc --from markdown+gfm_auto_identifiers-raw_html-raw_tex-tex_math_dollars-smart \
+	    --shift-heading-level-by=-1 \
+	    --to typst --template pdf/reference.typ --syntax-highlighting=idiomatic \
+	    --variable version="$(SWL_VERSION)" \
+	    --output pdf/reference.out.typ
+	typst compile --ignore-system-fonts pdf/reference.out.typ $@
 
 clean:
-	rm -rf public resources content/reference.md static/swl-reference.pdf .hugo_build.lock
+	rm -rf public resources content/reference.md static/swl-reference.pdf pdf/reference.out.typ \
+	    .hugo_build.lock

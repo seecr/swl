@@ -4,3 +4,4 @@ resources/
 # generated from SWL's doc/reference.md by `make`
 content/reference.md
 static/swl-reference.pdf
+pdf/reference.out.typ

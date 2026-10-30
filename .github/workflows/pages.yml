@@ -4,9 +4,6 @@ name: Publish website
 # Pages at https://seecr.github.io/swl/. Runs after "Publish to PyPI" has succeeded for a
 # version tag, building from that tag, so the site shows the released reference. It can also
 # be run by hand (Actions > Publish website > Run workflow) from any branch.
-#
-# The runner is pinned to Ubuntu 24.04: its pandoc and TeX Live build the PDF; the newer
-# image behind ubuntu-latest failed. Test locally before moving it.
 on:
   workflow_run:
     workflows: ["Publish to PyPI"]
@@ -25,7 +22,7 @@ concurrency:
 jobs:
   build:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-24.04  # tested; see the comment at the top
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: site
@@ -34,11 +31,17 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.ref }}
           fetch-depth: 0  # the version on the site comes from the tags
-      - name: Install pandoc and LaTeX
+      - name: Install pandoc and Typst
+        working-directory: ${{ runner.temp }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends pandoc texlive-xetex \
-              texlive-latex-recommended texlive-latex-extra lmodern fonts-dejavu
+          curl -sSfLo pandoc.deb \
+              https://github.com/jgm/pandoc/releases/download/3.9.0.2/pandoc-3.9.0.2-1-amd64.deb
+          sudo dpkg -i pandoc.deb
+          curl -sSfL https://github.com/typst/typst/releases/download/v0.15.1/typst-x86_64-unknown-linux-musl.tar.xz \
+              | tar xJ
+          sudo mv typst-x86_64-unknown-linux-musl/typst /usr/local/bin/
+          pandoc --version | head -1
+          typst --version
       - uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: "0.152.2"
@@ -53,7 +56,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-24.04  # tested; see the comment at the top
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

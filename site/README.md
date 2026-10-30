@@ -10,8 +10,9 @@ not in git.
 
 ## Building
 
-You need `hugo` (extended, 0.120 or newer), `pandoc` and `xelatex` with the DejaVu fonts. On
-macOS: `brew install hugo pandoc` and MacTeX or BasicTeX.
+You need `hugo` (extended, 0.120 or newer), `pandoc` (3.8 or newer) and `typst` (0.15 or
+newer). On macOS: `brew install hugo pandoc typst`. The PDF's layout is the Typst template
+`pdf/reference.typ`; it uses the fonts built into typst, so it looks the same everywhere.
 
 ```sh
 cd site
