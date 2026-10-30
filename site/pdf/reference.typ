@@ -44,12 +44,12 @@
 // Tables
 #set table(stroke: (x, y) => (top: if y == 0 { 0.5pt + border }, bottom: 0.5pt + border),
            inset: (x: 5pt, y: 4pt))
-// Only a real header row is bold; a table without one starts with plain content.
-#show table: it => {
-  if it.children.len() > 0 and it.children.first().func() == table.header {
-    show table.cell.where(y: 0): set text(weight: "bold")
-    it
-  } else { it }
+// A table's header row is bold on a grey background, as on the site; reference.lua puts
+// those rules around each table that has a header row (an empty one leaves pandoc out).
+#let header-row(body) = {
+  show table.cell.where(y: 0): set text(weight: "bold")
+  set table(fill: (x, y) => if y == 0 { code-bg })
+  body
 }
 #show table: set text(size: 0.92em)
 #show figure.where(kind: table): set block(breakable: true)

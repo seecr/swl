@@ -1,3 +1,5 @@
+-- Pandoc filter for the reference PDF (Typst).
+
 -- Keeps an example on one page: a code block can't be split over two pages, and the
 -- paragraph right before it (usually "... like this:") stays on the same page as the code.
 local function wrap(blocks)
@@ -27,4 +29,16 @@ end
 -- Every list of blocks: the document, but also list items, block quotes and so on.
 function Blocks(blocks)
   return wrap(blocks)
+end
+
+-- A table with a header row gets header-row() from the template around it: bold and grey.
+-- Tables without one (an empty header row in markdown) start with plain content.
+function Table(t)
+  if #t.head.rows > 0 then
+    return {
+      pandoc.RawBlock("typst", "#header-row["),
+      t,
+      pandoc.RawBlock("typst", "]"),
+    }
+  end
 end
