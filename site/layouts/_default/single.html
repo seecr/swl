@@ -1,0 +1,10 @@
+{{ define "main" }}
+<article class="doc">
+  <p class="doc-meta">
+    {{ with .Params.version }}SWL {{ . }} · {{ end }}
+    <a href="{{ site.Params.pdf | relURL }}" download>download as pdf</a> ·
+    <a href="{{ site.Params.github }}/blob/main/doc/reference.md">source on github</a>
+  </p>
+  {{ .Content }}
+</article>
+{{ end }}

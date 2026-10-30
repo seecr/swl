@@ -1,0 +1,6 @@
+public/
+resources/
+.hugo_build.lock
+# generated from SWL's doc/reference.md by `make`
+content/reference.md
+static/swl-reference.pdf

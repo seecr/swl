@@ -4,7 +4,9 @@ name: Tests
 on:
   push:
     branches: ["**"]
+    paths-ignore: ["site/**", ".github/workflows/pages.yml"]
   pull_request:
+    paths-ignore: ["site/**", ".github/workflows/pages.yml"]
 
 jobs:
   test:

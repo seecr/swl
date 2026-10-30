@@ -1,0 +1,6 @@
+{{ define "main" }}
+{{ with .Params.news }}<aside class="news">{{ . | markdownify }}</aside>{{ end }}
+<article class="home">
+  {{ .Content }}
+</article>
+{{ end }}

@@ -94,6 +94,8 @@ Open <http://127.0.0.1:8000/> and log in as **demo** / **demo-password**.
 
 ## Documentation
 
+- [seecr.github.io/swl](https://seecr.github.io/swl/): the website, with the reference online
+  and as a PDF.
 - [`example/README.md`](https://github.com/seecr/swl/blob/main/example/README.md): a guided walk
   through the example, from one click to the updated list. Start here.
 - [`doc/reference.md`](https://github.com/seecr/swl/blob/main/doc/reference.md): everything SWL

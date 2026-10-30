@@ -1,0 +1,12 @@
+<footer class="site-footer">
+  <nav>
+    {{ range site.Menus.main }}
+      <a href="{{ .URL | relURL }}">{{ .Name }}</a>
+    {{ end }}
+    <a href="{{ site.Params.pypi }}">pypi</a>
+  </nav>
+  <a class="seecr" href="{{ site.Params.seecr }}" title="Seecr">
+    <img src="{{ "img/seecr-logo.png" | relURL }}" alt="Seecr" width="100" height="20">
+  </a>
+  <p>SWL is MIT licensed · made by <a href="{{ site.Params.seecr }}">Seecr</a> · this site is made with <a href="https://gohugo.io">Hugo</a>, not with SWL, and that is fine</p>
+</footer>

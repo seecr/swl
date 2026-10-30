@@ -1,0 +1,10 @@
+<header class="site-header">
+  <a class="logo" href="{{ site.Home.RelPermalink }}"><span class="brace">{{ "{{" }}</span> swl <span class="brace">{{ "}}" }}</span></a>
+  <span class="tagline">{{ site.Params.tagline }}</span>
+  <nav>
+    {{ range site.Menus.main }}
+      <a href="{{ .URL | relURL }}">{{ .Name }}</a>
+    {{ end }}
+    <a class="pdf-link" href="{{ site.Params.pdf | relURL }}" download>reference.pdf</a>
+  </nav>
+</header>

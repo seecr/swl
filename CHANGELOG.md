@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- A website, <https://seecr.github.io/swl/>, with the reference online and as a PDF. It lives
+  in `site/` (Hugo) and is published to GitHub Pages after each release.
+
 ## 5.0.1 (2026-10-29)
 
 Packaging, documentation and CI; no changes in behaviour.

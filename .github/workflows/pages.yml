@@ -1,0 +1,59 @@
+name: Publish website
+
+# Builds site/ (Hugo, with the reference as a page and as a PDF) and publishes it to GitHub
+# Pages at https://seecr.github.io/swl/. Runs after "Publish to PyPI" has succeeded for a
+# version tag, building from that tag, so the site shows the released reference. It can also
+# be run by hand (Actions > Publish website > Run workflow) from any branch.
+on:
+  workflow_run:
+    workflows: ["Publish to PyPI"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
+          fetch-depth: 0  # the version on the site comes from the tags
+      - name: Install pandoc and LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends pandoc texlive-xetex \
+              texlive-latex-recommended texlive-latex-extra lmodern fonts-dejavu
+      - uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.152.2"
+          extended: true
+      - id: pages
+        uses: actions/configure-pages@v5
+      - name: Build
+        run: make build HUGO_FLAGS="--baseURL ${{ steps.pages.outputs.base_url }}/"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

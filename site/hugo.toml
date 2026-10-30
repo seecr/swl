@@ -1,0 +1,44 @@
+baseURL = "https://seecr.github.io/swl/"
+languageCode = "en"
+title = "SWL"
+disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
+
+[params]
+tagline = "interactive web apps in python, without a javascript frontend"
+github = "https://github.com/seecr/swl"
+pypi = "https://pypi.org/project/swl/"
+changelog = "https://github.com/seecr/swl/blob/main/CHANGELOG.md"
+example = "https://github.com/seecr/swl/blob/main/example/README.md"
+seecr = "https://seecr.nl"
+pdf = "swl-reference.pdf"
+
+[menus]
+[[menus.main]]
+name = "docs"
+url = "/#docs"
+weight = 10
+[[menus.main]]
+name = "reference"
+pageRef = "/reference"
+weight = 20
+[[menus.main]]
+name = "example"
+url = "https://github.com/seecr/swl/blob/main/example/README.md"
+weight = 30
+[[menus.main]]
+name = "changelog"
+url = "https://github.com/seecr/swl/blob/main/CHANGELOG.md"
+weight = 40
+[[menus.main]]
+name = "github"
+url = "https://github.com/seecr/swl"
+weight = 50
+
+[markup]
+[markup.highlight]
+noClasses = false
+[markup.goldmark.renderer]
+unsafe = true
+[markup.tableOfContents]
+startLevel = 2
+endLevel = 2

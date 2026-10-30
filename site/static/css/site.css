@@ -1,0 +1,249 @@
+:root {
+  --bg: #fdfdfc;
+  --fg: #1f2328;
+  --muted: #5f6670;
+  --accent: #2d5bd3;
+  --accent-soft: #e8eefc;
+  --brand: #b5690a;        /* Seecr orange, darkened to read on white */
+  --brand-logo: #faa21b;   /* Seecr orange as in the logo */
+  --brand-soft: #fdf3e4;
+  --border: #dde1e6;
+  --code-bg: #f4f5f7;
+  --news-bg: #fff6d9;
+  --news-border: #e9cf73;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15171a;
+    --fg: #e4e6e9;
+    --muted: #9aa1aa;
+    --accent: #7ea2ff;
+    --accent-soft: #1e2840;
+    --brand: #faa21b;
+    --brand-soft: #2a2114;
+    --border: #2c3036;
+    --code-bg: #1d2024;
+    --news-bg: #2b2614;
+    --news-border: #6b5a22;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { font-size: 17px; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  line-height: 1.6;
+}
+
+main, .site-header, .site-footer {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+a { color: var(--accent); text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+
+/* header */
+.site-header {
+  text-align: center;
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
+}
+.logo {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--fg);
+  text-decoration: none;
+  line-height: 1.1;
+}
+.logo .brace { color: var(--brand-logo); font-weight: 400; }
+.tagline {
+  display: block;
+  font-style: italic;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+.site-header nav {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.95rem;
+}
+.site-header nav a { text-decoration: none; }
+.site-header nav a:hover { text-decoration: underline; }
+.pdf-link {
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 0 0.5rem;
+}
+
+/* news banner */
+.news {
+  background: var(--news-bg);
+  border: 1px solid var(--news-border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0 1.5rem;
+  font-size: 0.95rem;
+}
+.news p { margin: 0; }
+
+/* content */
+h1, h2, h3 { line-height: 1.25; color: var(--brand); }
+h2 {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 1.35rem;
+  margin: 2.75rem 0 0.75rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--border);
+}
+h3 { font-size: 1.1rem; margin: 2rem 0 0.5rem; }
+
+code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--code-bg);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+pre code { background: none; padding: 0; font-size: inherit; }
+.highlight pre { background: var(--code-bg) !important; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+  display: block;
+  overflow-x: auto;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--code-bg); }
+
+/* features */
+.features dt {
+  font-family: var(--mono);
+  font-weight: 600;
+  margin-top: 1rem;
+  color: var(--brand);
+}
+.features dd { margin: 0.15rem 0 0 0; }
+
+/* doc cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.9rem;
+  margin: 1rem 0;
+}
+.card {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  text-decoration: none;
+  color: var(--fg);
+  transition: border-color 0.15s, background 0.15s;
+}
+.card:hover { border-color: var(--brand); background: var(--brand-soft); }
+.card strong { display: block; font-family: var(--mono); color: var(--brand); margin-bottom: 0.25rem; }
+.card span { font-size: 0.92rem; color: var(--muted); }
+.card-pdf strong::after { content: " ↓"; }
+
+/* closing quote */
+.quote {
+  margin: 4rem 0 0;
+  text-align: center;
+}
+.quote blockquote {
+  margin: 0;
+  font-size: 1.35rem;
+  font-style: italic;
+  line-height: 1.4;
+}
+.quote blockquote::before { content: "\201C"; color: var(--accent); }
+.quote blockquote::after { content: "\201D"; color: var(--accent); }
+.quote figcaption {
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* reference page */
+.doc-meta {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+.doc h1 { font-family: var(--mono); font-size: 2rem; }
+
+/* footer */
+.site-footer {
+  margin-top: 4rem;
+  padding-top: 1.25rem;
+  padding-bottom: 3rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem 1rem;
+  font-family: var(--mono);
+}
+
+/* Seecr logo in the footer: grey and quiet, in colour on hover */
+.site-footer .seecr {
+  display: inline-block;
+  margin-top: 1.5rem;
+}
+.site-footer .seecr img {
+  display: block;
+  height: 20px;
+  width: auto;
+  filter: grayscale(1);
+  opacity: 0.55;
+  transition: filter 0.2s, opacity 0.2s;
+}
+.site-footer .seecr:hover img { filter: none; opacity: 1; }
+@media (prefers-color-scheme: dark) {
+  .site-footer .seecr img { filter: grayscale(1) invert(1); opacity: 0.6; }
+  .site-footer .seecr:hover img { filter: none; opacity: 1; }
+}
