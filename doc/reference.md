@@ -381,12 +381,14 @@ Load SWL itself in `body_extra`:
 swl = SWL(config=Config({"ui": {"framework": "bulma"}}))
 ```
 
-| `ui.framework` | Loads (from cdn.jsdelivr.net, with integrity hashes) | Use it for |
+| `ui.framework` | Loads[^cdn] | Use it for |
 |---|---|---|
 | `"bootstrap"` (default) | Bootstrap 5.3 CSS and JS, Bootstrap Icons, htmx | existing applications built on Bootstrap |
 | `"tabler"` | Tabler 1.6 (an admin design on top of Bootstrap 5, with its own javascript bundle that includes Bootstrap's), Bootstrap Icons, htmx | admin screens and dashboards; a Bootstrap application gets Tabler's look without changing its templates |
 | `"bulma"` | Bulma 1.0 (CSS only), Bootstrap Icons, htmx | applications that like Bulma |
 | `"swl"` | SWL's own `swl-base.css`, Bootstrap Icons, htmx | no CSS framework at all |
+
+[^cdn]: All from cdn.jsdelivr.net, with integrity hashes.
 
 The choice does two things:
 
