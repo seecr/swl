@@ -61,6 +61,7 @@ with users, sessions and the websocket.
 | `template_response(request, name, context)` | a full page response |
 | `add_template_globals(**kwargs)`, `add_template_filters(**kwargs)` | extend Jinja |
 | `styles`, `scripts` | the web resources, used by `swl/base.j2` |
+| `routes_route` | the `/.routes` endpoint, see [Listing the routes](#listing-the-routes) |
 | `SWL_VERSION` | version of SWL |
 
 ## Actions
@@ -511,6 +512,7 @@ Everything else is plain htmx 4. Translations of SWL's own messages: `swl/static
 | `urls.cdn` | `https://cdn.jsdelivr.net` | `{BASE_URL}` in resource urls; `base.j2` preconnects to it |
 | `response.toast.delay` | `500` | toast duration in ms |
 | `response.toast.background` | none | toast background color |
+| `routes.allowlist` | `ROUTES_ALLOWLIST` | who may read `/.routes`: IPs/CIDRs, a list or a comma-separated string; see [Listing the routes](#listing-the-routes) |
 
 ## Testing
 
@@ -542,6 +544,22 @@ rest. `example/swl_tasks/app_test.py` has complete examples, including login and
   function names in urls.
 - **Test the action alone.** Most problems are easier to see in a `TestClient` test than in the
   browser.
+
+### Listing the routes
+
+`GET /.routes` answers with JSON listing every route of the app (path, an anchored regex,
+methods, ...), e.g. for a proxy that only forwards known paths. Add it to the app's routes:
+
+```python
+swl = SWL(config=Config({"routes": {"allowlist": ["127.0.0.1", "10.0.0.0/8"]}}))
+app = Starlette(routes=[..., swl.routes_route])
+```
+
+Only clients in the allow list get an answer, all others a 404. The allow list holds IPs and
+CIDRs, as a list or a comma-separated string. `swl.routes_route` takes it from the config key
+`routes.allowlist`; without that key from the environment variable `ROUTES_ALLOWLIST` (default
+`127.0.0.1,::1`). Behind a proxy the client is the proxy, unless the ASGI server trusts its
+`X-Forwarded-For` (uvicorn `--proxy-headers --forwarded-allow-ips=<proxy-ip>`).
 
 ## Troubleshooting
 

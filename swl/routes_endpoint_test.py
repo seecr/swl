@@ -21,7 +21,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.testclient import TestClient
 
 from . import routes_endpoint
-from .routes_endpoint import _parse_networks, routes_route
+from .routes_endpoint import _parse_networks, make_routes_route, routes_route
 
 
 async def ok(request):
@@ -121,3 +121,30 @@ def test_routes_endpoint_lists_itself(routes):
 def test_ip_allowlist(app, ip, status):
     client = TestClient(app, client=(ip, 50000))
     assert client.get("/.routes").status_code == status
+
+
+@pytest.mark.parametrize(
+    "allowlist", ["192.168.0.0/16, 2001:db8::1", ["192.168.0.0/16", "2001:db8::1"]]
+)
+@pytest.mark.parametrize(
+    "ip, status",
+    [
+        ("192.168.1.2", 200),
+        ("2001:db8::1", 200),
+        ("127.0.0.1", 404),  # in ALLOWED_NETWORKS, but not in this allow list
+        ("10.1.2.3", 404),
+    ],
+)
+def test_own_allowlist(allowlist, ip, status):
+    app = Starlette(routes=[Route("/", ok), make_routes_route(allowlist)])
+    client = TestClient(app, client=(ip, 50000))
+    response = client.get("/.routes")
+    assert response.status_code == status
+    if status == 200:
+        assert [r["path"] for r in response.json()["routes"]] == ["/", "/.routes"]
+
+
+def test_empty_allowlist_allows_nobody():
+    app = Starlette(routes=[make_routes_route([])])
+    client = TestClient(app, client=("127.0.0.1", 50000))
+    assert client.get("/.routes").status_code == 404

@@ -13,6 +13,10 @@
 
 import json
 
+import pytest
+from starlette.applications import Starlette
+from starlette.testclient import TestClient
+
 from .swl import SWL
 
 from seecr_stdlib.config import Config
@@ -107,3 +111,19 @@ def test_kickstart_template():
         kickstart={"action": "/action/abc", "kwargs": '{"qid": "Order:1"}'}
     )
     assert 'swl.kickstart("/action/abc", "{\\"qid\\": \\"Order:1\\"}")' in html
+
+
+@pytest.mark.parametrize(
+    "config, ip, status",
+    [
+        ({"routes": {"allowlist": "10.0.0.0/8"}}, "10.1.2.3", 200),
+        ({"routes": {"allowlist": ["10.0.0.0/8"]}}, "10.1.2.3", 200),
+        ({"routes": {"allowlist": "10.0.0.0/8"}}, "127.0.0.1", 404),
+        ({}, "127.0.0.1", 200),  # no config: ROUTES_ALLOWLIST or its default
+        ({}, "10.1.2.3", 404),
+    ],
+)
+def test_routes_route_allowlist_from_config(config, ip, status):
+    swl = SWL(config=Config(config))
+    client = TestClient(Starlette(routes=[swl.routes_route]), client=(ip, 50000))
+    assert client.get("/.routes").status_code == status

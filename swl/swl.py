@@ -24,7 +24,7 @@ from swl.frameworks import framework, requested_framework
 from swl.resources import WebResources
 from swl.responses import SuccessResponse, FailResponse
 
-from swl.routes_endpoint import routes_route
+from swl.routes_endpoint import make_routes_route
 
 import jinja2
 import pathlib
@@ -62,7 +62,7 @@ class SWL:
         self._templates.env.globals["SWL"] = self
         self._templates.env.globals["register"] = self._actions.register
 
-        self.routes_route = routes_route
+        self.routes_route = make_routes_route(self._config.get("routes.allowlist"))
 
     @property
     def cdn_url(self):

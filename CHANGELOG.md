@@ -6,6 +6,9 @@
 
 - A website, <https://seecr.github.io/swl/>, with the reference online and as a PDF. It lives
   in `site/` (Hugo) and is published to GitHub Pages after each release.
+- Config option `routes.allowlist`: who may read `/.routes` (`swl.routes_route`), a list or a
+  comma-separated string of IPs/CIDRs. Without it the `ROUTES_ALLOWLIST` environment variable
+  is used, as before.
 
 ## 5.0.1 (2026-10-29)
 
