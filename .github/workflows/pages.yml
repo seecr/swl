@@ -4,6 +4,9 @@ name: Publish website
 # Pages at https://seecr.github.io/swl/. Runs after "Publish to PyPI" has succeeded for a
 # version tag, building from that tag, so the site shows the released reference. It can also
 # be run by hand (Actions > Publish website > Run workflow) from any branch.
+#
+# The runner is pinned to Ubuntu 24.04: its pandoc and TeX Live build the PDF; the newer
+# image behind ubuntu-latest failed. Test locally before moving it.
 on:
   workflow_run:
     workflows: ["Publish to PyPI"]
@@ -22,7 +25,7 @@ concurrency:
 jobs:
   build:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # tested; see the comment at the top
     defaults:
       run:
         working-directory: site
@@ -50,7 +53,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # tested; see the comment at the top
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
