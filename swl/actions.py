@@ -11,6 +11,7 @@
 #
 ## end license ##
 
+import inspect
 import logging
 from hashlib import md5
 
@@ -118,7 +119,13 @@ def is_authorized_fn(authenticated, is_authorized):
 
 class ActionMethodWrap:
     def __init__(
-        self, actions, method, authenticated=True, is_authorized=None, redirect=None
+        self,
+        actions,
+        method,
+        authenticated=True,
+        is_authorized=None,
+        redirect=None,
+        paths=None,
     ):
         self._actions = actions
         self._method = method
@@ -128,6 +135,14 @@ class ActionMethodWrap:
             raise ValueError("is_authorized can only be set when authenticated is True")
         self.is_allowed = is_authorized_fn(authenticated, is_authorized)
         self._redirect = redirect
+        self._paths = paths
+
+    async def routes_paths(self, request):
+        """The concrete paths to list in /.routes instead of the route's pattern."""
+        if self._paths is None:
+            return None
+        paths = self._paths(request, **self._actions._extra_kwargs)
+        return list(await paths if inspect.isawaitable(paths) else paths)
 
     async def __call__(self, scope, receive, send):
         request = Request(scope, receive, send)

@@ -148,3 +148,59 @@ def test_empty_allowlist_allows_nobody():
     app = Starlette(routes=[make_routes_route([])])
     client = TestClient(app, client=("127.0.0.1", 50000))
     assert client.get("/.routes").status_code == 404
+
+
+def make_swl():
+    from seecr_stdlib.config import Config
+
+    from .swl import SWL
+
+    swl = SWL(config=Config({}))
+    swl.register_action_kwargs(slugs=["first-project", "second.project"])
+    return swl
+
+
+async def page(request, **kwargs):
+    return PlainTextResponse(request.path_params["slug"])
+
+
+def slug_paths(request, slugs, **kwargs):
+    return ["/" + slug for slug in slugs]
+
+
+async def async_slug_paths(request, slugs, **kwargs):
+    return slug_paths(request, slugs)
+
+
+@pytest.mark.parametrize("paths", [slug_paths, async_slug_paths])
+def test_route_with_own_paths(paths):
+    swl = make_swl()
+    app = Starlette(
+        routes=[
+            routes_route,
+            Mount(
+                "/p",
+                routes=[
+                    Route(
+                        "/{slug}",
+                        swl.endpoint(page, authenticated=False, paths=paths),
+                        name="project",
+                    )
+                ],
+            ),
+            Route("/{other}", swl.endpoint(page, authenticated=False)),
+        ]
+    )
+    client = TestClient(app, client=("127.0.0.1", 50000))
+    routes = client.get("/.routes").json()["routes"]
+    project = [r for r in routes if r["name"] == "project"]
+    assert [r["path"] for r in project] == ["/p/first-project", "/p/second.project"]
+    for r in project:
+        assert r["type"] == "http"
+        assert r["static"] is True
+        assert r["methods"] is None  # an ASGI app (swl.endpoint): any method
+    assert matches(project[1], "/p/second.project")
+    assert not matches(project[1], "/p/secondxproject")  # the dot is not a wildcard
+    assert not matches(project[0], "/p/other")
+    assert "/{other}" in [r["path"] for r in routes]  # without paths: the pattern
+    assert client.get("/p/first-project").text == "first-project"

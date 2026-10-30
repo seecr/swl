@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- `swl.endpoint(..., paths=fn)`: `/.routes` lists the paths `fn` returns (each as a static
+  route) instead of the route's pattern, e.g. only the existing projects for `/{slug}`. `fn`
+  gets the same arguments as the page function, may be async and is called on every request
+  to `/.routes`.
+
+### Changed
+
+- `swl.routes_endpoint.collect_routes` is async and takes the request as its second argument.
+
 ## 5.1.0 (2026-10-30)
 
 ### Added

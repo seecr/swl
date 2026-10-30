@@ -55,7 +55,7 @@ with users, sessions and the websocket.
 | `register_action_kwargs(**kwargs)` | keyword arguments passed to every action (`swl` is always passed) |
 | `action_route` | the Starlette route for all actions |
 | `register(name)` | url of the action with that function name; raises if it does not exist |
-| `endpoint(fn, authenticated=True, is_authorized=None, redirect=None)` | wrap a page function: same arguments as an action, with a login check. `redirect`: where to send users who are not allowed (the requested path is kept in `session["next"]`); without it they get 403 |
+| `endpoint(fn, authenticated=True, is_authorized=None, redirect=None, paths=None)` | wrap a page function: same arguments as an action, with a login check. `redirect`: where to send users who are not allowed (the requested path is kept in `session["next"]`); without it they get 403. `paths`: see [Listing the routes](#listing-the-routes) |
 | `success()`, `fail()` | start a response, see [Responses](#responses) |
 | `template(name)` | a Jinja template, to `.render(...)` into a string |
 | `template_response(request, name, context)` | a full page response |
@@ -560,6 +560,19 @@ CIDRs, as a list or a comma-separated string. `swl.routes_route` takes it from t
 `routes.allowlist`; without that key from the environment variable `ROUTES_ALLOWLIST` (default
 `127.0.0.1,::1`). Behind a proxy the client is the proxy, unless the ASGI server trusts its
 `X-Forwarded-For` (uvicorn `--proxy-headers --forwarded-allow-ips=<proxy-ip>`).
+
+A route with a parameter, like `/{slug}`, is listed as a pattern that matches every path of
+that shape. To list only the paths that exist, give its endpoint a `paths` function. It gets
+the same arguments as the page function (sync or async) and returns the paths, relative to
+the route's `Mount` like the route's own path. It is called on every request to `/.routes`;
+each path becomes a static entry with an exact regex, and the pattern itself is left out:
+
+```python
+def project_paths(request, store, **kwargs):
+    return [f"/{project.slug}" for project in Project.all(store) if project.active]
+
+Route("/{slug}", swl.endpoint(project_page, authenticated=False, paths=project_paths))
+```
 
 ## Troubleshooting
 

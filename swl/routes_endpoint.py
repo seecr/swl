@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import ipaddress
 import os
+import re
 from typing import Iterable
 
 from starlette.requests import Request
@@ -71,10 +72,16 @@ def client_allowed(request: Request, networks=None) -> bool:
     return any(ip in net for net in networks)
 
 
-def collect_routes(
-    routes: Iterable[BaseRoute], prefix: str = "", host: str | None = None
+async def collect_routes(
+    routes: Iterable[BaseRoute],
+    request: Request,
+    prefix: str = "",
+    host: str | None = None,
 ) -> list[dict]:
     """Flatten (possibly nested) Starlette routes into a list of dicts.
+
+    A route whose endpoint has `routes_paths(request)` (`swl.endpoint(..., paths=fn)`)
+    gives one static entry per path it returns, instead of its pattern.
 
     Each entry has:
       path    - the path format, e.g. "/users/{user_id}"
@@ -93,7 +100,7 @@ def collect_routes(
                 route.routes
             )  # [] when the mounted app is not a router (e.g. StaticFiles)
             if children:
-                found.extend(collect_routes(children, mount_path, host))
+                found.extend(await collect_routes(children, request, mount_path, host))
             else:
                 regex, fmt, _ = compile_path(mount_path + "/{path:path}")
                 found.append(
@@ -108,24 +115,32 @@ def collect_routes(
                     }
                 )
         elif isinstance(route, Host):
-            found.extend(collect_routes(route.routes, prefix, route.host))
+            found.extend(await collect_routes(route.routes, request, prefix, route.host))
         elif isinstance(route, (Route, WebSocketRoute)):
-            full = prefix + route.path
-            regex, fmt, convertors = compile_path(full)
             methods = sorted(getattr(route, "methods", None) or []) or None
-            found.append(
-                {
-                    "type": (
-                        "websocket" if isinstance(route, WebSocketRoute) else "http"
-                    ),
-                    "path": fmt,
-                    "regex": regex.pattern,
-                    "static": not convertors,
-                    "methods": methods,
-                    "host": host,
-                    "name": route.name,
-                }
-            )
+            route_type = "websocket" if isinstance(route, WebSocketRoute) else "http"
+            if (routes_paths := getattr(route.endpoint, "routes_paths", None)) and (
+                paths := await routes_paths(request)
+            ) is not None:
+                entries = [
+                    (prefix + path, "^" + re.escape(prefix + path) + "$", True)
+                    for path in paths
+                ]
+            else:
+                regex, fmt, convertors = compile_path(prefix + route.path)
+                entries = [(fmt, regex.pattern, not convertors)]
+            for path, regex, static in entries:
+                found.append(
+                    {
+                        "type": route_type,
+                        "path": path,
+                        "regex": regex,
+                        "static": static,
+                        "methods": methods,
+                        "host": host,
+                        "name": route.name,
+                    }
+                )
     return found
 
 
@@ -140,7 +155,7 @@ def make_routes_route(allowlist: str | Iterable[str] | None = None) -> Route:
     async def list_routes(request: Request):
         if not client_allowed(request, networks):
             return PlainTextResponse("Not Found", status_code=404)
-        return JSONResponse({"routes": collect_routes(request.app.routes)})
+        return JSONResponse({"routes": await collect_routes(request.app.routes, request)})
 
     return Route("/.routes", list_routes, methods=["GET"], name=".routes")
 
