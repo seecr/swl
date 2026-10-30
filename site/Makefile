@@ -32,13 +32,15 @@ content/reference.md: $(REFERENCE_MD)
 
 # The PDF: pandoc turns the reference into Typst with pdf/reference.typ as template (title
 # page, contents, styles), then typst makes the PDF. The title and the hand-made table of
-# contents of reference.md are left out; the template makes both.
-static/swl-reference.pdf: $(REFERENCE_MD) pdf/reference.typ pdf/seecr-logo.png
+# contents of reference.md are left out; the template makes both. keep-with-code.lua keeps
+# each example on one page, together with the sentence that introduces it.
+static/swl-reference.pdf: $(REFERENCE_MD) pdf/reference.typ pdf/keep-with-code.lua pdf/seecr-logo.png
 	awk 'NR == 1 && /^# / { next } /^- \[[^]]*\]\(#[^)]*\)$$/ { next } { print }' \
 	    $(REFERENCE_MD) | \
 	pandoc --from markdown+gfm_auto_identifiers-raw_html-raw_tex-tex_math_dollars-smart \
 	    --shift-heading-level-by=-1 \
 	    --to typst --template pdf/reference.typ --syntax-highlighting=idiomatic \
+	    --lua-filter pdf/keep-with-code.lua \
 	    --variable version="$(SWL_VERSION)" \
 	    --output pdf/reference.out.typ
 	typst compile --ignore-system-fonts pdf/reference.out.typ $@

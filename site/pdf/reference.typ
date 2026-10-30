@@ -42,9 +42,15 @@
 #show heading.where(level: 2): it => block(above: 1.3em, below: 0.6em, text(size: 1.1em, it.body))
 
 // Tables
-#set table(stroke: (x, y) => (top: if y <= 1 { 0.5pt + border }, bottom: 0.5pt + border),
+#set table(stroke: (x, y) => (top: if y == 0 { 0.5pt + border }, bottom: 0.5pt + border),
            inset: (x: 5pt, y: 4pt))
-#show table.cell.where(y: 0): set text(weight: "bold")
+// Only a real header row is bold; a table without one starts with plain content.
+#show table: it => {
+  if it.children.len() > 0 and it.children.first().func() == table.header {
+    show table.cell.where(y: 0): set text(weight: "bold")
+    it
+  } else { it }
+}
 #show table: set text(size: 0.92em)
 #show figure.where(kind: table): set block(breakable: true)
 #show figure.where(kind: table): set align(left)
