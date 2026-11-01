@@ -147,17 +147,36 @@ dialog.swl-modal::backdrop, dialog.swl-dialog::backdrop { background: transparen
     to { opacity: 1; transform: none; }
 }
 
+/* icon | title | close, and the subtitle below the title (also under the close button) */
 .swl-modal-header {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "icon title close";
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
     padding: 1rem 1.25rem;
     border-bottom: 1px solid var(--swl-border);
 }
-.swl-modal-heading { display: flex; align-items: center; gap: .9rem; min-width: 0; }
-.swl-modal-title { margin: 0; font-size: 1.15rem; font-weight: 600; line-height: 1.3; }
-.swl-modal-subtitle { margin: .1rem 0 0; color: var(--swl-muted); font-size: .875rem; }
+.swl-modal-header-subtitle {
+    grid-template-areas:
+        "icon title    close"
+        "icon subtitle subtitle";
+}
+.swl-modal-icon { grid-area: icon; margin-right: .9rem; }
+.swl-modal-title {
+    grid-area: title;
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+.swl-modal-close { grid-area: close; margin-left: 1rem; flex-shrink: 0; }
+.swl-modal-subtitle {
+    grid-area: subtitle;
+    margin: .1rem 0 0;
+    color: var(--swl-muted);
+    font-size: .875rem;
+}
 .swl-modal-body, .swl-modal .modal-body { padding: 1.25rem; }
 .swl-modal-footer, .swl-modal .modal-footer {
     display: flex;

@@ -19,19 +19,20 @@
  #   modal_footer    optional, buttons at the bottom
  # A button with data-swl-close (or data-bs-dismiss="modal") closes the modal.
  #}
-<div class="swl-modal-header">
-    <div class="swl-modal-heading">
-        {% if self.modal_icon()|trim %}{% block modal_icon %}{% endblock %}{% endif %}
-        <div>
-            <h5 id="swl-modal-label" class="swl-modal-title">{% block modal_title %}{% endblock %}</h5>
-            {% if self.modal_subtitle()|trim %}
-            <p class="swl-modal-subtitle">{% block modal_subtitle %}{% endblock %}</p>
-            {% endif %}
-        </div>
-    </div>
-    <button type="button" class="swl-icon-button" data-swl-close aria-label="Close">
+{#
+ # The header is a grid (swl.css): the icon, the title and the close button on one row, the
+ # subtitle below the title. A long subtitle uses the width under the close button too, so
+ # it never pushes the button aside.
+ #}
+<div class="swl-modal-header{{ ' swl-modal-header-subtitle' if self.modal_subtitle()|trim }}">
+    {% if self.modal_icon()|trim %}<div class="swl-modal-icon">{% block modal_icon %}{% endblock %}</div>{% endif %}
+    <h5 id="swl-modal-label" class="swl-modal-title">{% block modal_title %}{% endblock %}</h5>
+    <button type="button" class="swl-icon-button swl-modal-close" data-swl-close aria-label="Close">
         <i class="bi bi-x-lg" title="Close"></i>
     </button>
+    {% if self.modal_subtitle()|trim %}
+    <p class="swl-modal-subtitle">{% block modal_subtitle %}{% endblock %}</p>
+    {% endif %}
 </div>
 <div class="swl-modal-body">{% block modal_content %}{% endblock %}</div>
 {% if self.modal_footer()|trim %}

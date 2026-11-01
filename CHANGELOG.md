@@ -20,6 +20,11 @@
 
 - The example only accepts websockets of logged-in users.
 - `Dispatcher._listeners` is a dict (websocket to identity) instead of a list.
+- The modal header (`swl/modal-content.j2`) is a grid: icon, title and close button on one
+  row, the subtitle below the title, also using the width under the close button. A long
+  subtitle no longer squeezes the close button. The header's children changed: the
+  `swl-modal-heading` wrapper is gone; the icon is in `.swl-modal-icon`, the close button
+  has `.swl-modal-close`.
 
 ## 5.2.0 (2026-10-30)
 
