@@ -1,0 +1,246 @@
+# Dutch translations for swl.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the swl project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: swl VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-11-01 18:15+0100\n"
+"PO-Revision-Date: 2026-11-01 18:16+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: nl\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: swl/i18n.py:285 swl/templates/swl/dialog.j2:20
+msgid "Confirm"
+msgstr "Bevestigen"
+
+#: swl/i18n.py:286 swl/templates/swl/dialog.j2:25
+msgid "Yes"
+msgstr "Ja"
+
+#: swl/i18n.py:287 swl/templates/swl/dialog.j2:24
+msgid "No"
+msgstr "Nee"
+
+#: swl/i18n.py:288 swl/templates/swl/dialog.j2:26
+msgid "Ok"
+msgstr "Ok"
+
+#: swl/i18n.py:289
+msgid "Error"
+msgstr "Fout"
+
+#: swl/i18n.py:290
+msgid "Info"
+msgstr "Informatie"
+
+#: swl/i18n.py:291
+msgid "The server could not process the request"
+msgstr "De server kon het verzoek niet verwerken"
+
+#: swl/i18n.py:292
+msgid "The server could not be reached"
+msgstr "De server is niet bereikbaar"
+
+#: swl/i18n.py:293
+msgid "You are not allowed to do this, or your session has expired"
+msgstr "U heeft hiervoor geen rechten, of uw sessie is verlopen"
+
+#: swl/i18n.py:294
+msgid "The requested action does not exist"
+msgstr "De gevraagde actie bestaat niet"
+
+#: swl/i18n.py:295
+msgid "The server sent an unexpected response"
+msgstr "De server gaf een onverwacht antwoord"
+
+#: swl/i18n.py:296
+msgid "Unknown function"
+msgstr "Onbekende functie"
+
+#: swl/i18n.py:297
+msgid "Error in function"
+msgstr "Fout in functie"
+
+#: swl/templates/swl/account.j2:17
+msgid "My account"
+msgstr "Mijn account"
+
+#: swl/templates/swl/account.j2:18 swl/templates/swl/users.j2:41
+#: swl/templates/swl/users_list.j2:34 swl/templates/swl/users_list.j2:36
+msgid "Administrator"
+msgstr "Beheerder"
+
+#: swl/templates/swl/account.j2:18 swl/templates/swl/users_list.j2:34
+msgid "User"
+msgstr "Gebruiker"
+
+#: swl/templates/swl/account_password.j2:15
+#: swl/templates/swl/account_password.j2:39
+msgid "Change password"
+msgstr "Wachtwoord wijzigen"
+
+#: swl/templates/swl/account_password.j2:16
+msgid ""
+"Enter your current password, then the new one twice. A password has at "
+"least 8 characters."
+msgstr ""
+"Vul uw huidige wachtwoord in en daarna twee keer het nieuwe. Een "
+"wachtwoord heeft minstens 8 tekens."
+
+#: swl/templates/swl/account_password.j2:22
+msgid "Current password"
+msgstr "Huidig wachtwoord"
+
+#: swl/templates/swl/account_password.j2:28
+msgid "New password"
+msgstr "Nieuw wachtwoord"
+
+#: swl/templates/swl/account_password.j2:33
+msgid "Repeat new password"
+msgstr "Herhaal nieuw wachtwoord"
+
+#: swl/templates/swl/alert.j2:15 swl/templates/swl/modal-content.j2:30
+#: swl/templates/swl/modal-content.j2:31
+msgid "Close"
+msgstr "Sluiten"
+
+#: swl/templates/swl/users.j2:18
+msgid "Users"
+msgstr "Gebruikers"
+
+#: swl/templates/swl/users.j2:19
+msgid "Who can log in, and who is an administrator"
+msgstr "Wie kan inloggen, en wie is beheerder"
+
+#: swl/templates/swl/users.j2:25
+msgid "Add a user"
+msgstr "Gebruiker toevoegen"
+
+#: swl/templates/swl/users.j2:29
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: swl/templates/swl/users.j2:31
+msgid "At least 3 characters, no spaces"
+msgstr "Minstens 3 tekens, geen spaties"
+
+#: swl/templates/swl/users.j2:35
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: swl/templates/swl/users.j2:44
+msgid "Add user"
+msgstr "Gebruiker toevoegen"
+
+#: swl/templates/swl/users.j2:49
+msgid "Only administrators can add, change or delete users."
+msgstr "Alleen beheerders kunnen gebruikers toevoegen, wijzigen of verwijderen."
+
+#: swl/templates/swl/users_list.j2:21
+#, python-format
+msgid "%(count)s user"
+msgid_plural "%(count)s users"
+msgstr[0] "%(count)s gebruiker"
+msgstr[1] "%(count)s gebruikers"
+
+#: swl/templates/swl/users_list.j2:32
+msgid "You"
+msgstr "U"
+
+#: swl/templates/swl/users_list.j2:36
+msgid "You cannot change your own administrator status"
+msgstr "U kunt uw eigen beheerdersrechten niet wijzigen"
+
+#: swl/templates/swl/users_list.j2:38
+#, python-format
+msgid "Administrator: %(username)s"
+msgstr "Beheerder: %(username)s"
+
+#: swl/templates/swl/users_list.j2:43
+msgid "You cannot delete yourself"
+msgstr "U kunt uzelf niet verwijderen"
+
+#: swl/templates/swl/users_list.j2:45
+msgid "Switch administrator off before deleting this user"
+msgstr "Zet beheerder uit voordat u deze gebruiker verwijdert"
+
+#: swl/templates/swl/users_list.j2:47
+#, python-format
+msgid "Delete %(username)s"
+msgstr "%(username)s verwijderen"
+
+#: swl/templates/swl/users_list.j2:51
+#, python-format
+msgid "Delete user '%(username)s'?"
+msgstr "Gebruiker '%(username)s' verwijderen?"
+
+#: swl/views/account.py:38
+msgid "Unauthorized; only admin-users can change other users passwords"
+msgstr "Geen toegang; alleen beheerders kunnen wachtwoorden van anderen wijzigen"
+
+#: swl/views/account.py:42
+msgid "Password incorrect"
+msgstr "Wachtwoord onjuist"
+
+#: swl/views/account.py:45
+msgid "Passwords do not match"
+msgstr "De wachtwoorden zijn niet gelijk"
+
+#: swl/views/account.py:49
+msgid "New password should be at least 8 characters long"
+msgstr "Het nieuwe wachtwoord moet minstens 8 tekens hebben"
+
+#: swl/views/account.py:53
+msgid "Password changed"
+msgstr "Wachtwoord gewijzigd"
+
+#: swl/views/account.py:86
+msgid "Username invalid; longer than 3 character and no spaces"
+msgstr "Ongeldige gebruikersnaam; minstens 3 tekens en geen spaties"
+
+#: swl/views/account.py:91
+msgid "Unauthorized; only admin-users can create users"
+msgstr "Geen toegang; alleen beheerders kunnen gebruikers aanmaken"
+
+#: swl/views/account.py:95
+msgid "Username already in use"
+msgstr "Gebruikersnaam is al in gebruik"
+
+#: swl/views/account.py:103
+#, python-format
+msgid "User '%(username)s' added"
+msgstr "Gebruiker '%(username)s' toegevoegd"
+
+#: swl/views/account.py:109
+msgid "Unauthorized; only admin-users can delete users"
+msgstr "Geen toegang; alleen beheerders kunnen gebruikers verwijderen"
+
+#: swl/views/account.py:114
+msgid "No such user"
+msgstr "Deze gebruiker bestaat niet"
+
+#: swl/views/account.py:118
+msgid "Deleting own user not allowed"
+msgstr "U kunt uw eigen gebruiker niet verwijderen"
+
+#: swl/views/account.py:133
+msgid "Unauthorized; only admin-users can set admin on users"
+msgstr "Geen toegang; alleen beheerders kunnen beheerdersrechten geven"
+
+#: swl/views/account.py:142
+msgid "Cannot change admin status of own user"
+msgstr "U kunt uw eigen beheerdersrechten niet wijzigen"
+
+#: swl/views/account.py:165
+msgid "Invalid login credentials"
+msgstr "Onjuiste gebruikersnaam of wachtwoord"
+

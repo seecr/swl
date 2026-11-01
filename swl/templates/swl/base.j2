@@ -11,7 +11,7 @@
 #
 ## end license #}
 
-{%- if lang is not defined -%}{% set lang="en" %}{%- endif -%}
+{%- if lang is not defined -%}{% set lang=SWL.lang %}{%- endif -%}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{lang}}" lang="{{lang}}" class="h-100" data-swl-framework="{{ SWL.framework }}">
     <head>
@@ -35,6 +35,8 @@
 {% endfor %}
 
         <link rel="stylesheet" href="/static/swl/swl.css?version={{ VERSION }}">
+        {# SWL's texts for swl.js, in the language of the page (lang.js) #}
+        <script type="application/json" id="swl-lang">{{ SWL.js_messages|tojson }}</script>
 {% block head_extra %}{% endblock %}
         <title>{{ title }}</title>
 {% endblock %}

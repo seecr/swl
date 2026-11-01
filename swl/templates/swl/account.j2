@@ -14,8 +14,8 @@
 {% extends "swl/modal-content.j2" %}
 
 {% block modal_icon %}<span class="swl-avatar swl-avatar-lg {{ 'swl-avatar-admin' if user['admin'] }}" aria-hidden="true"><i class="bi bi-person-fill"></i></span>{% endblock %}
-{% block modal_title %}My account{% endblock %}
-{% block modal_subtitle %}{{ user['username'] }} · {{ "Administrator" if user['admin'] else "User" }}{% endblock %}
+{% block modal_title %}{{ _("My account") }}{% endblock %}
+{% block modal_subtitle %}{{ user['username'] }} · {{ _("Administrator") if user['admin'] else _("User") }}{% endblock %}
 
 {% block modal_content %}
 {% include "swl/account_password.j2" %}

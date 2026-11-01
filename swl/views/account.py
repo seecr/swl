@@ -15,6 +15,8 @@ from starlette.responses import RedirectResponse
 
 import logging
 
+from swl.i18n import _
+
 logger = logging.getLogger(__name__)
 
 
@@ -33,22 +35,22 @@ async def change_password(request, swl, userbase, **kwargs):
 
         if username != request.user.username and not request.user.admin:
             return swl.fail().message(
-                "Unauthorized; only admin-users can change other users passwords"
+                _("Unauthorized; only admin-users can change other users passwords")
             )
 
         if not userbase.valid_password(username=username, password=current_password):
-            return swl.fail().message("Password incorrect")
+            return swl.fail().message(_("Password incorrect"))
 
         if new_password != new_password_repeat:
-            return swl.fail().message("Passwords do not match")
+            return swl.fail().message(_("Passwords do not match"))
 
         if len(new_password) < 8:
             return swl.fail().message(
-                "New password should be at least 8 characters long"
+                _("New password should be at least 8 characters long")
             )
 
         userbase.change_password(username=username, password=new_password)
-        return swl.success().reset_form().toast("Password changed")
+        return swl.success().reset_form().toast(_("Password changed"))
 
 
 async def users_show(request, swl, **kwargs):
@@ -81,14 +83,16 @@ async def user_create(request, userbase, swl, **kwargs):
 
         if len(username) < 3 or " " in username:
             return swl.fail().message(
-                "Username invalid; longer than 3 character and no spaces"
+                _("Username invalid; longer than 3 character and no spaces")
             )
 
         if not request.user.is_authenticated or not request.user.admin:
-            return swl.fail().message("Unauthorized; only admin-users can create users")
+            return swl.fail().message(
+                _("Unauthorized; only admin-users can create users")
+            )
 
         if userbase.exists(username):
-            return swl.fail().message("Username already in use")
+            return swl.fail().message(_("Username already in use"))
 
         userbase.create(username=username, password=password, admin=admin)
 
@@ -96,22 +100,22 @@ async def user_create(request, userbase, swl, **kwargs):
             swl.success()
             .reset_form()
             .rehydrate("placeholder-users_list")
-            .toast(f"User {username!r} added")
+            .toast(_("User '%(username)s' added", username=username))
         )
 
 
 async def user_delete(request, swl, userbase, **kwargs):
     if not request.user.is_authenticated or not request.user.admin:
-        return swl.fail().message("Unauthorized; only admin-users can delete users")
+        return swl.fail().message(_("Unauthorized; only admin-users can delete users"))
 
     async with request.form() as form:
         username = form.get("username", "").strip()
         if not userbase.exists(username=username):
-            return swl.fail().message("No such user")
+            return swl.fail().message(_("No such user"))
 
         user = userbase.get(username=username)
         if request.user.username == user.username:
-            return swl.fail().message("Deleting own user not allowed")
+            return swl.fail().message(_("Deleting own user not allowed"))
 
         rehydrate_needed = userbase.delete(username=username)
 
@@ -126,7 +130,7 @@ async def user_delete(request, swl, userbase, **kwargs):
 async def user_set_admin(request, swl, userbase, **kwargs):
     if not request.user.admin:
         return swl.fail().message(
-            "Unauthorized; only admin-users can set admin on users"
+            _("Unauthorized; only admin-users can set admin on users")
         )
 
     async with request.form() as form:
@@ -135,7 +139,7 @@ async def user_set_admin(request, swl, userbase, **kwargs):
 
         user = userbase.get(username=username)
         if request.user.username == user.username:
-            return swl.fail().message("Cannot change admin status of own user")
+            return swl.fail().message(_("Cannot change admin status of own user"))
 
         user.set_admin(admin)
         userbase.put(user)
@@ -158,7 +162,7 @@ async def login(request, swl, userbase, **kwargs):
             request.session["username"] = username
             return swl.success().redirect(next_url)
 
-        return swl.fail().message("Invalid login credentials")
+        return swl.fail().message(_("Invalid login credentials"))
 
 
 async def logout(request, **kwargs):

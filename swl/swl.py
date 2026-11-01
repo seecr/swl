@@ -16,11 +16,14 @@ __all__ = ["SWL"]
 
 from ._version import __version__
 
+from starlette.middleware import Middleware
 from starlette.routing import Route
 from starlette.templating import Jinja2Templates
 
 from swl.actions import Actions
 from swl.frameworks import framework, requested_framework
+from swl.i18n import COOKIE, I18n, I18nMiddleware, js_messages
+from swl.i18n import install as install_i18n
 from swl.resources import WebResources
 from swl.responses import SuccessResponse, FailResponse
 
@@ -59,6 +62,14 @@ class SWL:
             )
         )
 
+        # translations: "i18n.locales" (default ["en"]); swl.i18n_middleware chooses
+        # the language per request (swl/i18n.py)
+        self.i18n = I18n(
+            locales=self._config.get("i18n.locales"),
+            cookie=self._config.get("i18n.cookie", COOKIE),
+        )
+        install_i18n(self._templates.env, self.i18n)
+
         self._templates.env.globals["SWL"] = self
         self._templates.env.globals["register"] = self._actions.register
 
@@ -90,6 +101,21 @@ class SWL:
         """CSS classes for form elements and buttons in this framework
         (swl/frameworks.py)."""
         return self._current_framework().classes
+
+    @property
+    def i18n_middleware(self):
+        """Middleware(I18nMiddleware): put it after the AuthenticationMiddleware."""
+        return Middleware(I18nMiddleware, i18n=self.i18n)
+
+    @property
+    def lang(self):
+        """The language of the current request, for <html lang="...">."""
+        return self.i18n.lang
+
+    @property
+    def js_messages(self):
+        """SWL's texts for swl.js, in the language of the current request."""
+        return js_messages()
 
     @property
     def actions(self):

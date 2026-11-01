@@ -21,9 +21,25 @@
   by a ping without an answer (5 s), and pings at once when the page becomes visible again or
   the browser comes back online.
 
+- Translations (`swl.i18n`): texts marked with `_()` / `ngettext` / `N_` in Python and
+  `{{ _("...") }}` / `{% trans %}` in templates, translated with gettext (Babel) into the
+  language of each request. `swl.i18n_middleware` chooses it: the application's selector, the
+  cookie `swl_lang`, `Accept-Language`, the first of `i18n.locales`. Applications add
+  their catalogs with `swl.i18n.add_translations(path)`; `python -m swl.i18n_tool` extracts
+  and compiles them. Filters `format_date`, `format_time`, `format_datetime`,
+  `format_skeleton`, `format_number`, `format_timedelta` in the request's language.
+- SWL's own texts (dialog, account and user screens, `swl.views.account` messages) in Dutch,
+  German and French (`swl/locale`).
+- `SWL.lang`: the language of the request; `base.j2` uses it for `<html lang>` unless the
+  template sets `lang`.
+
 ### Changed
 
 - The example only accepts websockets of logged-in users.
+- `base.j2` puts the texts for `swl.js` in the page (`<script id="swl-lang">`), in the
+  page's language; the `lang` attribute of `swl-run.js` and the JSON files in
+  `static/swl/lang/` are only used by pages without it (deprecated).
+- New dependency: `babel`.
 - `Dispatcher._listeners` is a dict (websocket to identity) instead of a list.
 - The modal header (`swl/modal-content.j2`) is a grid: icon, title and close button on one
   row, the subtitle below the title, also using the width under the close button. A long

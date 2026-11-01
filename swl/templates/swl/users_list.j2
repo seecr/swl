@@ -18,7 +18,7 @@
  #   - only administrators can change anything.
  #}
 {% set me = request.user %}
-<h6 class="swl-section-title"><i class="bi bi-person-lines-fill"></i> {{ users|length }} {{ "user" if users|length == 1 else "users" }}</h6>
+<h6 class="swl-section-title"><i class="bi bi-person-lines-fill"></i> {% trans count=users|length %}{{ count }} user{% pluralize %}{{ count }} users{% endtrans %}</h6>
 <ul class="swl-list">
     {% for user in users|sort(attribute="username") %}
     {% set is_me = user['username'] == me.username %}
@@ -29,26 +29,26 @@
             <div class="swl-grow">
                 <div>
                     <strong>{{ user['username'] }}</strong>
-                    {% if is_me %}<span class="swl-badge">You</span>{% endif %}
+                    {% if is_me %}<span class="swl-badge">{{ _("You") }}</span>{% endif %}
                 </div>
-                <div class="swl-muted swl-small">{{ "Administrator" if user['admin'] else "User" }}</div>
+                <div class="swl-muted swl-small">{{ _("Administrator") if user['admin'] else _("User") }}</div>
             </div>
-            <span title="{{ 'You cannot change your own administrator status' if is_me else 'Administrator' }}">
+            <span title="{{ _('You cannot change your own administrator status') if is_me else _('Administrator') }}">
                 <input class="swl-switch" type="checkbox" role="switch" name="admin"
-                       aria-label="Administrator: {{ user['username'] }}"
+                       aria-label="{{ _('Administrator: %(username)s', username=user['username']) }}"
                        hx-post="{{ register('user_set_admin') }}"
                        {{ "checked" if user['admin'] }} {{ "disabled" if is_me or not me.admin }}>
             </span>
             {% if is_me %}
-                {% set delete_title = "You cannot delete yourself" %}
+                {% set delete_title = _("You cannot delete yourself") %}
             {% elif user['admin'] %}
-                {% set delete_title = "Switch administrator off before deleting this user" %}
+                {% set delete_title = _("Switch administrator off before deleting this user") %}
             {% else %}
-                {% set delete_title = "Delete " ~ user['username'] %}
+                {% set delete_title = _("Delete %(username)s", username=user['username']) %}
             {% endif %}
             <span title="{{ delete_title }}">
                 <button type="button" class="swl-icon-button swl-icon-danger" aria-label="{{ delete_title }}"
-                        hx-post="{{ register('user_delete') }}" hx-confirm="Delete user '{{ user['username'] }}'?"
+                        hx-post="{{ register('user_delete') }}" hx-confirm="{{ _("Delete user '%(username)s'?", username=user['username']) }}"
                         {{ "disabled" if is_me or user['admin'] or not me.admin }}>
                     <i class="bi bi-trash"></i>
                 </button>

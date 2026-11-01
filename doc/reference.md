@@ -16,6 +16,7 @@ guided introduction, read `example/README.md` first; this page is for looking th
 - [Tabs](#tabs)
 - [Templates](#templates)
 - [Javascript](#javascript)
+- [Translations](#translations)
 - [Configuration](#configuration)
 - [Testing](#testing)
 - [Debugging](#debugging)
@@ -380,7 +381,8 @@ This replaces `data-swl-tab` from SWL before htmx.
 The page skeleton: the web resources (see [Styling](#styling)), htmx, SWL's styles, the message
 dialog and the toast.
 
-- Variables: `title`, `body_class`, `VERSION` (required); `lang` (default `en`); `kickstart`
+- Variables: `title`, `body_class`, `VERSION` (required); `lang` (default: the language of
+  the request, see [Translations](#translations)); `kickstart`
   (optional: `{"action": url, "kwargs": {...}}` posts that action once the page and its
   placeholders have loaded, see [Deep links](#deep-links); `kwargs` may also be a JSON string).
 - Blocks: `head` (all of it), `head_extra`, `body`, `body_extra` (after the scripts).
@@ -390,7 +392,7 @@ dialog and the toast.
 Load SWL itself in `body_extra`:
 
 ```html
-<script type="module" id="swl-run" src="/static/swl/swl-run.js" lang="nl_NL"></script>
+<script type="module" id="swl-run" src="/static/swl/swl-run.js"></script>
 <script type="module" src="/static/swl/websocket.js"></script>  <!-- only for live updates -->
 ```
 
@@ -528,8 +530,71 @@ Attributes SWL adds to htmx:
 | `data-swl-on-changed="qid ..."` | see [live updates](#live-updates) |
 | `data-swl-close` | on a button inside a `<dialog>` (the modal): closes it; `data-bs-dismiss="modal"` works too |
 
-Everything else is plain htmx 4. Translations of SWL's own messages: `swl/static/swl/lang/`
-(`en_US`, `nl_NL`, `de_DE`, `fr_FR`), chosen with the `lang` attribute of the `swl-run` script.
+Everything else is plain htmx 4. The texts `swl.js` shows (dialog buttons, error messages) are
+put in the page by `base.j2`, in the page's language (see [Translations](#translations)).
+
+## Translations
+
+Texts are written in English and marked with `_()`; SWL picks the language per request and
+translates them with gettext ([Babel](https://babel.pocoo.org)). SWL's own texts (dialogs,
+account and user screens, messages of `swl.views.account`) come in Dutch, German and French.
+
+**Marking texts.** In Python:
+
+```python
+from swl.i18n import _, ngettext, N_
+
+swl.fail().message(_("Passwords do not match"))
+_("Delete %(name)s?", name=user.name)
+ngettext("%(num)d user", "%(num)d users", len(users))
+STATUSES = {"open": N_("Open")}       # marked, translated later: _(STATUSES[s])
+```
+
+`_()` translates when it is called, in the language of the request it is called for; texts in
+module constants are marked with `N_` and translated where they are used. In templates:
+
+```jinja
+{{ _("Users") }}  {{ _("Delete %(name)s?", name=user.name) }}
+{% trans count=users|length %}{{ count }} user{% pluralize %}{{ count }} users{% endtrans %}
+```
+
+**Choosing the language.** Add the middleware after the `AuthenticationMiddleware` and list
+the languages:
+
+```python
+swl = SWL(config=Config({"i18n": {"locales": ["en", "nl"]}, ...}))
+app = Starlette(..., middleware=[..., Middleware(AuthenticationMiddleware, ...),
+                                 swl.i18n_middleware])
+```
+
+For every request and websocket it takes the first of: the application's selector
+(`swl.i18n.locale_selector(fn)`, `fn(conn)` returns a language or `None`; `conn.user` is
+there, e.g. for a language in the user's profile), the cookie `swl_lang`, the browser's
+`Accept-Language`, the first of `i18n.locales`. Only listed languages are used, `nl-BE`
+matches `nl`. Without the middleware everything is English, as written.
+
+**Catalogs.** An application keeps its translations in `<package>/locale`:
+
+```sh
+python -m swl.i18n_tool extract enigma        # texts -> enigma/locale/messages.pot
+python -m swl.i18n_tool init enigma nl        # once per language: .../nl/LC_MESSAGES/messages.po
+python -m swl.i18n_tool update enigma         # after extract: new texts into every .po
+python -m swl.i18n_tool compile enigma        # .po -> .mo, which is what is used
+```
+
+and adds them with `swl.i18n.add_translations(path / "locale")`; they win over SWL's. Commit
+the `.po` and the `.mo` files.
+
+**Dates and numbers.** Template filters (and functions in `swl.i18n`) in the language of the
+request: `format_date(d, "medium")`, `format_time`, `format_datetime(dt, tzinfo=...)`,
+`format_skeleton(d, "MMMEd")` (`Mon, Nov 3` / `ma 3 nov`), `format_number`,
+`format_timedelta`.
+
+| | |
+|---|---|
+| `SWL.lang` | the language of the request for `<html lang>` (`nl`, `pt-BR`) |
+| `swl.i18n.activate(locale)` / `deactivate(token)` | a language outside a request (tests, jobs) |
+| `swl.i18n.current_locale()` | `"nl"`, or `None` outside a request |
 
 ## Configuration
 
@@ -544,6 +609,8 @@ Everything else is plain htmx 4. Translations of SWL's own messages: `swl/static
 | `urls.cdn` | `https://cdn.jsdelivr.net` | `{BASE_URL}` in resource urls; `base.j2` preconnects to it |
 | `response.toast.delay` | `500` | toast duration in ms |
 | `response.toast.background` | none | toast background color |
+| `i18n.locales` | `["en"]` | the languages to use, the first is the default; see [Translations](#translations) |
+| `i18n.cookie` | `swl_lang` | the cookie that chooses a language |
 | `routes.allowlist` | `ROUTES_ALLOWLIST` | who may read `/.routes`: IPs/CIDRs, a list or a comma-separated string; see [Listing the routes](#listing-the-routes) |
 
 ## Testing
