@@ -13,14 +13,14 @@
 {# Context menu for a task (task_menu). Clicking an item closes the menu (swl.js). #}
 <div class="swl-menu" hx-vals:inherited='{{ {"task_id": task.id}|tojson }}'>
     <button type="button" hx-post="{{ register('task_edit') }}">
-        <i class="bi bi-pencil"></i> Edit
+        <i class="bi bi-pencil"></i> {{ _("Edit") }}
     </button>
     <button type="button" hx-post="{{ register('task_toggle') }}">
-        <i class="bi bi-check2-square"></i> {{ "Mark as open" if task.done else "Mark as done" }}
+        <i class="bi bi-check2-square"></i> {{ _("Mark as open") if task.done else _("Mark as done") }}
     </button>
     <hr>
     <button type="button" class="swl-danger"
-            hx-post="{{ register('task_delete') }}" hx-confirm="Delete '{{ task.title }}'?">
-        <i class="bi bi-trash"></i> Delete
+            hx-post="{{ register('task_delete') }}" hx-confirm="{{ _("Delete '%(title)s'?", title=task.title) }}">
+        <i class="bi bi-trash"></i> {{ _("Delete") }}
     </button>
 </div>

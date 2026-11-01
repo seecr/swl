@@ -16,11 +16,12 @@
  * swl.success().call("name", **kwargs): SWL calls window[name](kwargs).
  */
 
-/* Called by the tasks_list action with the number of open and done tasks. */
-function show_counts({open, done}) {
+/* Called by the tasks_list action with the number of open tasks and the counts as text,
+ * in the page's language. */
+function show_counts({open, text}) {
     let badge = document.getElementById("task-counts");
     if (badge) {
-        badge.textContent = `${open} open / ${done} done`;
+        badge.textContent = text;
     }
     document.title = open > 0 ? `(${open}) SWL Tasks` : "SWL Tasks";
 }
@@ -35,20 +36,19 @@ function focus_title() {
 }
 
 /*
- * The look switches in the top bar (templates/tasks/style_switch.j2).
+ * The switches in the top bar (templates/tasks/style_switch.j2). The language is the cookie
+ * "swl_lang" that swl.i18n_middleware reads (app.py), so the page reloads.
  * The CSS framework is a cookie that the server reads (FrameworkCookieMiddleware in app.py), so
  * the page reloads; light/dark/auto is swl/static/swl/theme.js and changes the page right away.
  */
-const THEME_LOOK = {
-    auto: ["bi-circle-half", "Colours: automatic"],
-    light: ["bi-sun", "Colours: light"],
-    dark: ["bi-moon-stars", "Colours: dark"],
-};
+const THEME_ICON = {auto: "bi-circle-half", light: "bi-sun", dark: "bi-moon-stars"};
 
 function show_theme_mode(mode) {
     let button = document.getElementById("theme-switch");
     if (button) {
-        let [icon, title] = THEME_LOOK[mode];
+        let icon = THEME_ICON[mode];
+        // the titles in the page's language: data-title-auto, -light, -dark (style_switch.j2)
+        let title = button.dataset["title" + mode[0].toUpperCase() + mode.slice(1)];
         button.querySelector("i").className = "bi " + icon;
         button.title = title;
         button.setAttribute("aria-label", title);
@@ -56,6 +56,10 @@ function show_theme_mode(mode) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("language-switch")?.addEventListener("change", (e) => {
+        document.cookie = `swl_lang=${e.target.value}; path=/; max-age=31536000; samesite=lax`;
+        window.location.reload();
+    });
     document.getElementById("framework-switch")?.addEventListener("change", (e) => {
         document.cookie = `swl_framework=${e.target.value}; path=/; max-age=31536000; samesite=lax`;
         window.location.reload();

@@ -37,13 +37,13 @@
             {% include "tasks/style_switch.j2" %}
             {% if user.admin %}
             <button type="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" hx-post="{{ register('users_show') }}">
-                <i class="bi bi-people"></i> Users
+                <i class="bi bi-people"></i> {{ _("Users") }}
             </button>
             {% endif %}
             <button type="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" hx-post="{{ register('show_account') }}">
                 <i class="bi bi-person"></i> {{ user.username }}
             </button>
-            <a role="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" href="/logout">Log out</a>
+            <a role="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" href="/logout">{{ _("Log out") }}</a>
         </div>
     </div>
 </nav>
@@ -56,14 +56,14 @@
      #}
     <form id="filters" class="task-filters">
         <span id="selection" class="swl-hidden">{{ selection_html }}</span>
-        <input type="search" name="q" value="{{ q }}" class="{{ SWL.ui.input }}" placeholder="Search tasks..." aria-label="Search tasks">
-        <select name="status" class="{{ SWL.ui.select }}" aria-label="Show">
+        <input type="search" name="q" value="{{ q }}" class="{{ SWL.ui.input }}" placeholder="{{ _('Search tasks...') }}" aria-label="{{ _('Search tasks') }}">
+        <select name="status" class="{{ SWL.ui.select }}" aria-label="{{ _('Show') }}">
             {% for value in statuses %}
-            <option value="{{ value }}" {{ "selected" if value == status }}>{{ value|capitalize }}</option>
+            <option value="{{ value }}" {{ "selected" if value == status }}>{{ _(labels[value]) }}</option>
             {% endfor %}
         </select>
         <button type="button" class="{{ SWL.ui.button_primary }}" hx-post="{{ register('task_new') }}">
-            <i class="bi bi-plus-lg"></i> New task
+            <i class="bi bi-plus-lg"></i> {{ _("New task") }}
         </button>
     </form>
 
@@ -96,7 +96,7 @@
 {% endblock %}
 
 {% block body_extra %}
-<script type="module" id="swl-run" src="/static/swl/swl-run.js" lang="en_US"></script>
+<script type="module" id="swl-run" src="/static/swl/swl-run.js"></script>
 <script type="module" src="/static/swl/websocket.js"></script>
 <script src="/example/tasks.js"></script>
 {% endblock %}

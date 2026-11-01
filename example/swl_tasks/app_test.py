@@ -96,7 +96,7 @@ def test_add_edit_toggle_delete(client):
     response = client.post(
         action(client, "task_save"), data={"title": "Write example", "notes": "for SWL"}
     )
-    [task] = store.find()
+    [task] = store.find("demo")
     assert assert_success(response) == {
         "swl-modal-close": {},
         "swl-rehydrate": {
@@ -113,7 +113,9 @@ def test_add_edit_toggle_delete(client):
     response = client.post(action(client, "tasks_list"), data={"highlight": task.id})
     events = assert_success(response)
     assert events["swl-call"] == {
-        "calls": [{"method": "show_counts", "kwargs": {"open": 1, "done": 0}}]
+        "calls": [
+            {"method": "show_counts", "kwargs": {"open": 1, "text": "1 open / 0 done"}}
+        ]
     }
     html = partials(response)["tasks-list"]
     assert "Write example" in html and "task-highlight" in html
@@ -126,13 +128,13 @@ def test_add_edit_toggle_delete(client):
         action(client, "task_save"),
         data={"task_id": task.id, "title": "Write the example", "notes": ""},
     )
-    assert store.get(task.id).title == "Write the example"
+    assert store.get(task.id, "demo").title == "Write the example"
 
     # toggle
     assert_success(client.post(action(client, "task_toggle"), data={"task_id": task.id}))
-    assert store.get(task.id).done is True
+    assert store.get(task.id, "demo").done is True
 
-    assert [entry["what"] for entry in store.get(task.id).history] == [
+    assert [entry["what"] for entry in store.get(task.id, "demo").history] == [
         "Created",
         "Edited",
         "Marked as done",
@@ -158,7 +160,7 @@ def test_add_edit_toggle_delete(client):
     assert assert_success(response)["swl-rehydrate"] == {
         "placeholders": {"tasks-list": {}, "task-detail": {}}
     }
-    assert store.find() == []
+    assert store.find("demo") == []
     assert_fail(
         client.post(action(client, "task_delete"), data={"task_id": task.id}),
         "This task no longer exists",
@@ -177,17 +179,17 @@ def test_tasks_are_saved(tmp_path):
     from swl_tasks.store import TaskStore
 
     store = TaskStore(tmp_path / "tasks.json")
-    task = store.add("Persist me", notes="please")
+    task = store.add("Persist me", "demo", notes="please")
     store.toggle(task.id)
     assert json.loads((tmp_path / "tasks.json").read_text())[0]["done"] is True
-    assert TaskStore(tmp_path / "tasks.json").get(task.id) == task
+    assert TaskStore(tmp_path / "tasks.json").get(task.id, "demo") == task
 
 
 def test_select_a_task_and_switch_tabs(client):
     login(client)
     store = client.app.state.store
-    task = store.add("Write tests", notes="for the tabs")
-    other = store.add("Other task")
+    task = store.add("Write tests", "demo", notes="for the tabs")
+    other = store.add("Other task", "demo")
 
     # click a title: the task is shown on its first tab, remembered, put in the url, and
     # the list is reloaded to move the "selected" mark
@@ -240,12 +242,12 @@ def test_select_a_task_and_switch_tabs(client):
     assert "This task no longer exists" in partials(response)["task-detail"]
     assert 'name="selected_task" value=""' in partials(response)["selection"]
     assert response.headers["HX-Replace-Url"] == "/"
-    assert other.id in str(store.find())
+    assert other.id in str(store.find("demo"))
 
 
 def test_reload_renders_the_same_screen(client):
     login(client)
-    task = client.app.state.store.add("Deep link me")
+    task = client.app.state.store.add("Deep link me", "demo")
 
     response = client.get(f"/tasks/{task.id}/history?q=deep&status=open")
     assert response.status_code == 200
@@ -294,3 +296,142 @@ def test_the_framework_switch_is_a_cookie(client):
     assert 'class="input"' in response.text
     client.cookies.set("swl_framework", "nonsense")
     assert '<option value="swl" selected>' in client.get("/").text
+
+
+def second_user(client, userbase, username="alex", password="alex-password"):
+    """Another user, logged in with a client of their own (same app, same event loop)."""
+    userbase.create(username, password)
+    other = TestClient(client.app)
+    other.portal = client.portal
+    response = other.post(
+        action(other, "login"), data={"username": username, "password": password}
+    )
+    assert_success(response)
+    return other
+
+
+@pytest.fixture
+def two_users(tmp_path):
+    userbase = Userbase.for_testing(tmp_path / "users")
+    with TestClient(create_app(tmp_path, userbase=userbase)) as client:
+        login(client)
+        yield client, second_user(client, userbase)
+
+
+def test_private_tasks(two_users):
+    demo, alex = two_users
+    store = demo.app.state.store
+
+    assert_success(demo.post(action(demo, "task_save"), data={"title": "Shared"}))
+    assert_success(
+        demo.post(action(demo, "task_save"), data={"title": "Secret", "private": "on"})
+    )
+    [secret] = [task for task in store.find("demo") if task.title == "Secret"]
+    assert secret.private and secret.owner == "demo"
+
+    def titles(client):
+        return partials(client.post(action(client, "tasks_list")))["tasks-list"]
+
+    assert "Secret" in titles(demo) and "Shared" in titles(demo)
+    assert "Secret" not in titles(alex) and "Shared" in titles(alex)
+    assert_fail(
+        alex.post(action(alex, "task_toggle"), data={"task_id": secret.id}),
+        "This task no longer exists",
+    )
+    page = alex.get(f"/tasks/{secret.id}").text  # a link to it
+    assert "This task no longer exists" in page and "Secret" not in page
+
+
+def test_private_changes_reach_only_the_owner(two_users):
+    demo, alex = two_users
+    assert_success(demo.post(action(demo, "task_save"), data={"title": "Shared"}))
+    assert_success(
+        demo.post(action(demo, "task_save"), data={"title": "Secret", "private": "on"})
+    )
+    store = demo.app.state.store
+    [shared] = [task for task in store.find("demo") if task.title == "Shared"]
+    [secret] = [task for task in store.find("demo") if task.title == "Secret"]
+
+    with (
+        demo.websocket_connect("/ws") as demo_ws,
+        alex.websocket_connect("/ws") as alex_ws,
+    ):
+        assert demo_ws.receive_json() == alex_ws.receive_json() == {"response": "pong"}
+
+        # a private task: only demo's pages hear about it
+        assert_success(
+            demo.post(action(demo, "task_toggle"), data={"task_id": secret.id})
+        )
+        assert demo_ws.receive_json() == {"response": "change", "obj": "tasks"}
+
+        # a shared one: everyone. alex's first message is this one, not the private one
+        assert_success(
+            demo.post(action(demo, "task_toggle"), data={"task_id": shared.id})
+        )
+        assert demo_ws.receive_json() == {"response": "change", "obj": "tasks"}
+        assert alex_ws.receive_json() == {"response": "change", "obj": "tasks"}
+
+        # sharing a private task (or making a shared one private) concerns everyone
+        assert_success(
+            demo.post(
+                action(demo, "task_save"),
+                data={"task_id": secret.id, "title": "Secret"},
+            )
+        )
+        assert alex_ws.receive_json() == {"response": "change", "obj": "tasks"}
+
+
+def test_only_the_owner_makes_a_task_private(two_users):
+    demo, alex = two_users
+    assert_success(demo.post(action(demo, "task_save"), data={"title": "Shared"}))
+    [shared] = demo.app.state.store.find("demo")
+    assert_fail(
+        alex.post(
+            action(alex, "task_save"),
+            data={"task_id": shared.id, "title": "Mine now", "private": "on"},
+        ),
+        "Only its owner can make a task private",
+    )
+
+
+def test_languages(client):
+    login(client)
+    dutch = {"accept-language": "nl-NL,nl;q=0.9,en;q=0.5"}
+    page = client.get("/", headers=dutch).text
+    assert 'lang="nl"' in page
+    assert "Nieuwe taak" in page  # the example's own text
+    assert '"confirm": "Bevestigen"' in page  # SWL's texts for swl.js
+
+    assert_fail(
+        client.post(action(client, "task_save"), data={"title": ""}, headers=dutch),
+        "Een taak heeft een titel nodig",
+    )
+    client.cookies["swl_lang"] = "es"  # the language switch wins over the browser
+    page = client.get("/", headers=dutch).text
+    assert 'lang="es"' in page and "Nueva tarea" in page
+    client.cookies["swl_lang"] = "de"
+    response = client.post(action(client, "tasks_list"))
+    assert partials(response)  # renders
+    events = assert_success(response)
+    assert events["swl-call"]["calls"][0]["kwargs"]["text"] == "0 offen / 0 erledigt"
+
+
+@pytest.mark.parametrize("language", ["nl", "de", "es"])
+def test_translations_are_complete_and_compiled(language):
+    """After changing texts: python -m swl.i18n_tool extract|update|compile swl_tasks."""
+    from pathlib import Path
+
+    from babel.messages.pofile import read_po
+    from babel.support import Translations
+
+    locale = Path(__file__).parent / "locale"
+    with open(locale / "messages.pot", "rb") as f:
+        template = read_po(f)
+    with open(locale / language / "LC_MESSAGES" / "messages.po", "rb") as f:
+        catalog = read_po(f, locale=language)
+    compiled = Translations.load(locale, [language], "messages")
+    for message in template:
+        if message.id:
+            translated = catalog.get(message.id)
+            assert translated is not None and translated.string, message.id
+            assert compiled.gettext(message.id) == translated.string, message.id

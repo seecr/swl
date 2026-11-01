@@ -12,7 +12,10 @@ What you can do in it:
 - reload the page (or bookmark it, or send the link) and get back exactly where you were: the same
   task, on the same tab, with the same filter;
 - tick tasks off, delete them after a confirmation, or right-click for a context menu;
-- see changes appear in every other open tab straight away.
+- see changes appear in every other open tab straight away;
+- make a task private: only you see it, and only your pages hear about its changes;
+- use it in English, Dutch, German or Spanish (the switch in the top bar, or your browser's
+  language).
 
 ## Running it
 
@@ -51,10 +54,11 @@ example/
     │   ├── tab_history.j2   the content of the "History" tab
     │   ├── form.j2          the new/edit form (shown in the modal)
     │   ├── menu.j2          the context menu
-    │   ├── style_switch.j2  the CSS framework and light/dark switches in the top bar
+    │   ├── style_switch.j2  the language, CSS framework and light/dark switches in the top bar
     │   └── login.j2         the login page
+    ├── locale/              the translations: messages.pot, and nl, de, es (.po and .mo)
     └── static/
-        ├── tasks.js         two small functions the server calls, and the look switches
+        ├── tasks.js         two small functions the server calls, and the switches
         └── tasks.css        a few styles
 ```
 
@@ -184,7 +188,7 @@ filters with it. That is the point of rehydrate: an action can refresh any part 
 without knowing how that part is rendered. Adding a "recent tasks" panel later would not change
 `task_save` at all, apart from naming one more placeholder.
 
-### 6. Live updates in other tabs
+### 6. Live updates in other tabs, for everyone or for one user
 
 After a change, the actions call:
 
@@ -198,6 +202,25 @@ which `on_changed=["tasks"]` added to the task list. So a task ticked off in one
 in every other tab and for every other user, with no extra code. In a real application the qid
 would name the object that changed, e.g. a project, so only the pages showing that project
 reload.
+
+**Only for some users.** A private task concerns only its owner, so `_signal_change` in
+`views.py` sends its changes to the owner's pages only:
+
+```python
+await dispatcher.signal_change(SimpleNamespace(qid="tasks"), users=[task.owner])
+```
+
+A page belongs to the user who was logged in when it opened its websocket
+(`websocket.user.identity`; for SWL's `Userbase` users that is the username), on every device
+and tab they have open. Other users are not told anything: they cannot even tell that something
+changed. `users=None` (the default) means everyone; that is what a shared task, or a task that
+becomes shared or private, uses. The list itself only shows a private task to its owner
+(`TaskStore.find`), and every action checks it (`TaskStore.get(task_id, username)`): the live
+update only says *reload*, the reload decides what someone may see.
+
+`app.py` creates the dispatcher with `Dispatcher(authenticated=True)`: pages that are not logged
+in cannot open the websocket at all. If the connection drops, `websocket.js` reconnects and
+reloads every `on_changed` placeholder, so changes made in the meantime are not missed.
 
 ### 7. Tabs, and where you are: `set_url`
 
@@ -278,7 +301,46 @@ Ticking off a task:
    task, so the panel shows its new status (and the History tab its new entry).
 6. Meanwhile every other open tab got the websocket message and reloaded its own list and panel.
 
-### 9. Testing
+### 9. Translations
+
+Every text is written in English and marked for translation. In templates:
+
+```jinja
+<button ...><i class="bi bi-plus-lg"></i> {{ _("New task") }}</button>
+hx-confirm="{{ _("Delete '%(title)s'?", title=task.title) }}"
+```
+
+in Python (`views.py`):
+
+```python
+from swl.i18n import N_, _
+
+return swl.fail().message(_("A task needs a title"))
+LABELS = {"open": N_("Open"), ...}   # marked here, translated where shown: _(labels[value])
+```
+
+`app.py` lists the languages (`"i18n": {"locales": ["en", "nl", "de", "es"]}`), adds the
+example's translations (`swl.i18n.add_translations(here / "locale")`) and puts
+`swl.i18n_middleware` after the authentication. For every request (and websocket) it picks the
+language: the cookie `swl_lang`, which the switch in the top bar sets (`tasks.js`), or else the
+browser's `Accept-Language`, or else English. The page, the actions' messages and SWL's own
+dialogs and user screens are then all in that language, and the history shows its dates with
+`format_datetime`. A live update makes each page reload in its own visitor's language, as the
+reload is just a request.
+
+The translations are in `locale/`. After changing texts:
+
+```sh
+python -m swl.i18n_tool extract swl_tasks     # all texts -> locale/messages.pot
+python -m swl.i18n_tool update swl_tasks      # new texts into nl, de and es (.po)
+# translate the new texts in locale/*/LC_MESSAGES/messages.po (e.g. with Poedit)
+python -m swl.i18n_tool compile swl_tasks     # .po -> .mo, which is what is used
+```
+
+`test_translations_are_complete_and_compiled` in `app_test.py` fails when a text has no
+translation, or the `.mo` files are not compiled.
+
+### 10. Testing
 
 Actions are tested like any Starlette endpoint, by posting to their url. `swl.test_utils` has
 helpers for SWL responses:
@@ -295,8 +357,9 @@ assert_fail(client.post(action(client, "task_save"), data={"title": ""}), "A tas
 ```
 
 `assert_success` returns the events of the response, so the test reads like the action. See
-`app_test.py` for the rest, including the tabs, a reload of a deep link (`client.get("/tasks/...")`)
-and the websocket.
+`app_test.py` for the rest, including the tabs, a reload of a deep link (`client.get("/tasks/...")`),
+the websocket, private tasks with two users (`test_private_changes_reach_only_the_owner`) and
+the languages (`test_languages`).
 
 ## Where to go from here
 

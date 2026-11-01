@@ -16,22 +16,29 @@
  #}
 {% extends "swl/modal-content.j2" %}
 
-{% block modal_title %}{{ "Edit task" if task else "New task" }}{% endblock %}
+{% block modal_title %}{{ _("Edit task") if task else _("New task") }}{% endblock %}
 
 {% block modal_content %}
 <form class="swl-stack" hx-post="{{ register('task_save') }}">
     {% if task %}<input type="hidden" name="task_id" value="{{ task.id }}">{% endif %}
     <div class="swl-field">
-        <label for="task-title">Title</label>
+        <label for="task-title">{{ _("Title") }}</label>
         <input id="task-title" type="text" name="title" class="{{ SWL.ui.input }}" value="{{ task.title if task else '' }}">
     </div>
     <div class="swl-field">
-        <label for="task-notes">Notes <span class="swl-muted">(optional)</span></label>
+        <label for="task-notes">{{ _("Notes") }} <span class="swl-muted">{{ _("(optional)") }}</span></label>
         <textarea id="task-notes" name="notes" class="{{ SWL.ui.textarea }}" rows="3">{{ task.notes if task else '' }}</textarea>
     </div>
+    {# only the owner decides who sees a task (views.task_save) #}
+    {% if not task or task.owner == username %}
+    <label class="swl-check" for="task-private">
+        <input id="task-private" type="checkbox" name="private" class="{{ SWL.ui.checkbox }}" {{ "checked" if task and task.private }}>
+        {{ _("Private: only I see this task") }}
+    </label>
+    {% endif %}
     <div class="swl-end">
-        <button type="button" class="{{ SWL.ui.button }}" data-swl-close>Cancel</button>
-        <button type="submit" class="{{ SWL.ui.button_primary }}">Save</button>
+        <button type="button" class="{{ SWL.ui.button }}" data-swl-close>{{ _("Cancel") }}</button>
+        <button type="submit" class="{{ SWL.ui.button_primary }}">{{ _("Save") }}</button>
     </div>
 </form>
 {% endblock %}

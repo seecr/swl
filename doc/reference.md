@@ -211,6 +211,8 @@ private conversation, `"Chat:alice:bob"`), send it to the users concerned only:
 await dispatcher.signal_change(conversation, users=["alice", "bob"])
 ```
 
+The example's private tasks do this (`_signal_change` in `example/swl_tasks/views.py`).
+
 A page belongs to the user that was logged in when it connected: `websocket.user.identity`,
 Starlette's `BaseUser.identity`, so the `AuthenticationMiddleware` must run for the websocket
 too (it does when it is app middleware). For SWL's `Userbase` users the identity is the
@@ -537,7 +539,9 @@ put in the page by `base.j2`, in the page's language (see [Translations](#transl
 
 Texts are written in English and marked with `_()`; SWL picks the language per request and
 translates them with gettext ([Babel](https://babel.pocoo.org)). SWL's own texts (dialogs,
-account and user screens, messages of `swl.views.account`) come in Dutch, German and French.
+account and user screens, messages of `swl.views.account`) come in Dutch, German, French
+and Spanish. The example (`example/README.md`, "Translations") is translated into Dutch,
+German and Spanish.
 
 **Marking texts.** In Python:
 

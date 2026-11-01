@@ -18,7 +18,7 @@ where = ["."]
 include = ["swl_tasks*"]
 
 [tool.setuptools.package-data]
-swl_tasks = ["templates/tasks/*.j2", "static/*"]
+swl_tasks = ["templates/tasks/*.j2", "static/*", "locale/*.pot", "locale/*/LC_MESSAGES/*"]
 
 [tool.pytest]
 asyncio_mode = "auto"

@@ -60,7 +60,12 @@ without a browser.
 - **Placeholders and rehydrate**: parts of the page that load themselves and can be reloaded by
   name from any action.
 - **Live updates**: a placeholder can reload when the data it shows changes, also in other
-  browser tabs and for other users (over a websocket).
+  browser tabs and for other users (over a websocket). A change can go to everyone or to
+  specific users only, so a private conversation or a private task stays private. The page
+  catches up after a lost connection, and you can see who is online.
+- **Translations**: texts marked with `_()`, translated with gettext into the visitor's
+  language (their choice, or the browser's), dates and numbers too. SWL's own screens come in
+  English, Dutch, German, French and Spanish.
 - **Screens you can reload and link to**: actions keep the url up to date, and a page route
   renders the same screen from it.
 - **Ready-made parts**: a modal, confirm and error dialogs, toasts and context menus, all
@@ -81,8 +86,9 @@ Or from a checkout: `pip install -e .`. SWL needs Python 3.11 or newer. Its depe
 ## Try the example
 
 The example application is a small task list. It uses nearly everything: dialogs, search as you
-type, tabs, a context menu, live updates between browser tabs, screens that survive a reload,
-and switches for the CSS framework and dark mode.
+type, tabs, a context menu, live updates between browser tabs, private tasks that only their
+owner hears about, screens that survive a reload, and switches for the language (English,
+Dutch, German, Spanish), the CSS framework and dark mode.
 
 ```sh
 pip install -e .

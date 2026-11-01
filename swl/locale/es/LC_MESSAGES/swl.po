@@ -1,0 +1,250 @@
+# Spanish translations for swl.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the swl project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: swl VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-11-01 18:15+0100\n"
+"PO-Revision-Date: 2026-11-01 18:22+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: swl/i18n.py:285 swl/templates/swl/dialog.j2:20
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: swl/i18n.py:286 swl/templates/swl/dialog.j2:25
+msgid "Yes"
+msgstr "Sí"
+
+#: swl/i18n.py:287 swl/templates/swl/dialog.j2:24
+msgid "No"
+msgstr "No"
+
+#: swl/i18n.py:288 swl/templates/swl/dialog.j2:26
+msgid "Ok"
+msgstr "Aceptar"
+
+#: swl/i18n.py:289
+msgid "Error"
+msgstr "Error"
+
+#: swl/i18n.py:290
+msgid "Info"
+msgstr "Información"
+
+#: swl/i18n.py:291
+msgid "The server could not process the request"
+msgstr "El servidor no pudo procesar la solicitud"
+
+#: swl/i18n.py:292
+msgid "The server could not be reached"
+msgstr "No se puede conectar con el servidor"
+
+#: swl/i18n.py:293
+msgid "You are not allowed to do this, or your session has expired"
+msgstr "No tiene permiso para hacer esto, o su sesión ha caducado"
+
+#: swl/i18n.py:294
+msgid "The requested action does not exist"
+msgstr "La acción solicitada no existe"
+
+#: swl/i18n.py:295
+msgid "The server sent an unexpected response"
+msgstr "El servidor envió una respuesta inesperada"
+
+#: swl/i18n.py:296
+msgid "Unknown function"
+msgstr "Función desconocida"
+
+#: swl/i18n.py:297
+msgid "Error in function"
+msgstr "Error en la función"
+
+#: swl/templates/swl/account.j2:17
+msgid "My account"
+msgstr "Mi cuenta"
+
+#: swl/templates/swl/account.j2:18 swl/templates/swl/users.j2:41
+#: swl/templates/swl/users_list.j2:34 swl/templates/swl/users_list.j2:36
+msgid "Administrator"
+msgstr "Administrador"
+
+#: swl/templates/swl/account.j2:18 swl/templates/swl/users_list.j2:34
+msgid "User"
+msgstr "Usuario"
+
+#: swl/templates/swl/account_password.j2:15
+#: swl/templates/swl/account_password.j2:39
+msgid "Change password"
+msgstr "Cambiar contraseña"
+
+#: swl/templates/swl/account_password.j2:16
+msgid ""
+"Enter your current password, then the new one twice. A password has at "
+"least 8 characters."
+msgstr ""
+"Introduzca su contraseña actual y después dos veces la nueva. Una "
+"contraseña tiene al menos 8 caracteres."
+
+#: swl/templates/swl/account_password.j2:22
+msgid "Current password"
+msgstr "Contraseña actual"
+
+#: swl/templates/swl/account_password.j2:28
+msgid "New password"
+msgstr "Contraseña nueva"
+
+#: swl/templates/swl/account_password.j2:33
+msgid "Repeat new password"
+msgstr "Repita la contraseña nueva"
+
+#: swl/templates/swl/alert.j2:15 swl/templates/swl/modal-content.j2:30
+#: swl/templates/swl/modal-content.j2:31
+msgid "Close"
+msgstr "Cerrar"
+
+#: swl/templates/swl/users.j2:18
+msgid "Users"
+msgstr "Usuarios"
+
+#: swl/templates/swl/users.j2:19
+msgid "Who can log in, and who is an administrator"
+msgstr "Quién puede iniciar sesión y quién es administrador"
+
+#: swl/templates/swl/users.j2:25
+msgid "Add a user"
+msgstr "Añadir un usuario"
+
+#: swl/templates/swl/users.j2:29
+msgid "Username"
+msgstr "Nombre de usuario"
+
+#: swl/templates/swl/users.j2:31
+msgid "At least 3 characters, no spaces"
+msgstr "Al menos 3 caracteres, sin espacios"
+
+#: swl/templates/swl/users.j2:35
+msgid "Password"
+msgstr "Contraseña"
+
+#: swl/templates/swl/users.j2:44
+msgid "Add user"
+msgstr "Añadir usuario"
+
+#: swl/templates/swl/users.j2:49
+msgid "Only administrators can add, change or delete users."
+msgstr "Solo los administradores pueden añadir, cambiar o eliminar usuarios."
+
+#: swl/templates/swl/users_list.j2:21
+#, python-format
+msgid "%(count)s user"
+msgid_plural "%(count)s users"
+msgstr[0] "%(count)s usuario"
+msgstr[1] "%(count)s usuarios"
+
+#: swl/templates/swl/users_list.j2:32
+msgid "You"
+msgstr "Usted"
+
+#: swl/templates/swl/users_list.j2:36
+msgid "You cannot change your own administrator status"
+msgstr "No puede cambiar su propio estado de administrador"
+
+#: swl/templates/swl/users_list.j2:38
+#, python-format
+msgid "Administrator: %(username)s"
+msgstr "Administrador: %(username)s"
+
+#: swl/templates/swl/users_list.j2:43
+msgid "You cannot delete yourself"
+msgstr "No puede eliminarse a sí mismo"
+
+#: swl/templates/swl/users_list.j2:45
+msgid "Switch administrator off before deleting this user"
+msgstr "Desactive administrador antes de eliminar a este usuario"
+
+#: swl/templates/swl/users_list.j2:47
+#, python-format
+msgid "Delete %(username)s"
+msgstr "Eliminar %(username)s"
+
+#: swl/templates/swl/users_list.j2:51
+#, python-format
+msgid "Delete user '%(username)s'?"
+msgstr "¿Eliminar al usuario '%(username)s'?"
+
+#: swl/views/account.py:38
+msgid "Unauthorized; only admin-users can change other users passwords"
+msgstr ""
+"No autorizado; solo los administradores pueden cambiar la contraseña de "
+"otros usuarios"
+
+#: swl/views/account.py:42
+msgid "Password incorrect"
+msgstr "Contraseña incorrecta"
+
+#: swl/views/account.py:45
+msgid "Passwords do not match"
+msgstr "Las contraseñas no coinciden"
+
+#: swl/views/account.py:49
+msgid "New password should be at least 8 characters long"
+msgstr "La contraseña nueva debe tener al menos 8 caracteres"
+
+#: swl/views/account.py:53
+msgid "Password changed"
+msgstr "Contraseña cambiada"
+
+#: swl/views/account.py:86
+msgid "Username invalid; longer than 3 character and no spaces"
+msgstr "Nombre de usuario no válido; al menos 3 caracteres y sin espacios"
+
+#: swl/views/account.py:91
+msgid "Unauthorized; only admin-users can create users"
+msgstr "No autorizado; solo los administradores pueden crear usuarios"
+
+#: swl/views/account.py:95
+msgid "Username already in use"
+msgstr "El nombre de usuario ya está en uso"
+
+#: swl/views/account.py:103
+#, python-format
+msgid "User '%(username)s' added"
+msgstr "Usuario '%(username)s' añadido"
+
+#: swl/views/account.py:109
+msgid "Unauthorized; only admin-users can delete users"
+msgstr "No autorizado; solo los administradores pueden eliminar usuarios"
+
+#: swl/views/account.py:114
+msgid "No such user"
+msgstr "Este usuario no existe"
+
+#: swl/views/account.py:118
+msgid "Deleting own user not allowed"
+msgstr "No puede eliminar su propio usuario"
+
+#: swl/views/account.py:133
+msgid "Unauthorized; only admin-users can set admin on users"
+msgstr ""
+"No autorizado; solo los administradores pueden conceder derechos de "
+"administrador"
+
+#: swl/views/account.py:142
+msgid "Cannot change admin status of own user"
+msgstr "No puede cambiar su propio estado de administrador"
+
+#: swl/views/account.py:165
+msgid "Invalid login credentials"
+msgstr "Nombre de usuario o contraseña incorrectos"
+

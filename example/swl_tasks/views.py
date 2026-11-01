@@ -30,12 +30,17 @@ An action answers with swl.success() or swl.fail(), see swl/responses.py:
   .set_url(url, **params)   change the url in the address bar
                             (see "Where you are: the url")
   swl.fail().message(text)  show an error message
+
+Texts are written in English and marked with _() (or N_ for constants), so they show in
+the visitor's language (see "Translations" in the README).
 """
 
 from types import SimpleNamespace
 from urllib.parse import urlencode
 
 from markupsafe import Markup, escape
+
+from swl.i18n import N_, _
 
 from .store import TaskStore
 
@@ -44,6 +49,14 @@ TASK_DETAIL = "task-detail"  # id of the placeholder with the selected task (pag
 SELECTION = "selection"  # id of the hidden fields that remember the selected task and tab
 STATUSES = ["all", "open", "done"]
 TABS = ["details", "history"]
+# what the select and the tabs show; translated where they are shown
+LABELS = {
+    "all": N_("All"),
+    "open": N_("Open"),
+    "done": N_("Done"),
+    "details": N_("Details"),
+    "history": N_("History"),
+}
 
 
 # --- Where you are: the url -------------------------------------------------------------
@@ -78,13 +91,17 @@ def page_url(q="", status="all", task_id=None, tab=TABS[0]):
     return path + ("?" + urlencode(params) if params else "")
 
 
-def render_detail(swl, store, task_id, tab):
+def render_detail(swl, store, username, task_id, tab):
     """The detail panel (tabs + the content of the active tab), or a hint when nothing is
     selected. Used by the task_detail action and by the page route, which renders it
     straight into the page."""
-    task = store.get(task_id) if task_id else None
+    task = store.get(task_id, username) if task_id else None
     return swl.template("tasks/detail.j2").render(
-        task=task, tab=tab, tabs=TABS, missing=task_id is not None and task is None
+        task=task,
+        tab=tab,
+        tabs=TABS,
+        labels=LABELS,
+        missing=task_id is not None and task is None,
     )
 
 
@@ -106,7 +123,8 @@ async def tasks_list(request, swl, store, **kwargs):
         screen = screen_from(form)
         highlight = form.get("highlight")
 
-    tasks = store.find(q=screen["q"], status=screen["status"])
+    username = request.user.username
+    tasks = store.find(username, q=screen["q"], status=screen["status"])
     html = swl.template("tasks/list.j2").render(
         tasks=tasks,
         highlight=highlight,
@@ -117,8 +135,15 @@ async def tasks_list(request, swl, store, **kwargs):
         swl.success()
         .hydrate(TASKS_LIST, html)
         .set_url(page_url(**screen))  # the filters changed: put them in the address bar
-        .call("show_counts", **store.counts())  # see static/tasks.js
+        .call("show_counts", **counts_text(store.counts(username)))  # static/tasks.js
     )
+
+
+def counts_text(counts):
+    return {
+        "open": counts["open"],
+        "text": _("%(open)d open / %(done)d done", **counts),
+    }
 
 
 async def task_detail(request, swl, store, **kwargs):
@@ -134,12 +159,13 @@ async def task_detail(request, swl, store, **kwargs):
         if form.get("tab") in TABS:
             screen["tab"] = form["tab"]
 
-    if screen["task_id"] and store.get(screen["task_id"]) is None:
+    username = request.user.username
+    if screen["task_id"] and store.get(screen["task_id"], username) is None:
         # deleted (maybe in another tab): show that once, then forget the selection
-        html = render_detail(swl, store, screen["task_id"], screen["tab"])
+        html = render_detail(swl, store, username, screen["task_id"], screen["tab"])
         screen["task_id"] = None
     else:
-        html = render_detail(swl, store, screen["task_id"], screen["tab"])
+        html = render_detail(swl, store, username, screen["task_id"], screen["tab"])
 
     response = (
         swl.success()
@@ -153,15 +179,19 @@ async def task_detail(request, swl, store, **kwargs):
 
 
 async def task_new(request, swl, **kwargs):
-    html = swl.template("tasks/form.j2").render(task=None)
+    html = swl.template("tasks/form.j2").render(
+        task=None, username=request.user.username
+    )
     return swl.success().open_modal(html, call="focus_title")
 
 
 async def task_edit(request, swl, store, **kwargs):
     task = await _task(request, store)
     if task is None:
-        return swl.fail().message("This task no longer exists")
-    html = swl.template("tasks/form.j2").render(task=task)
+        return swl.fail().message(_("This task no longer exists"))
+    html = swl.template("tasks/form.j2").render(
+        task=task, username=request.user.username
+    )
     return swl.success().open_modal(html, call="focus_title")
 
 
@@ -170,32 +200,38 @@ async def task_save(request, swl, store, dispatcher, **kwargs):
         task_id = form.get("task_id")
         title = form.get("title", "").strip()
         notes = form.get("notes", "").strip()
+        private = form.get("private") is not None
 
     if not title:
-        return swl.fail().message("A task needs a title")
+        return swl.fail().message(_("A task needs a title"))
 
+    username = request.user.username
     if task_id:
-        if store.get(task_id) is None:
-            return swl.fail().message("This task no longer exists")
-        task = store.update(task_id, title=title, notes=notes)
+        if (task := store.get(task_id, username)) is None:
+            return swl.fail().message(_("This task no longer exists"))
+        if task.owner != username and private:
+            return swl.fail().message(_("Only its owner can make a task private"))
+        was_private = task.private
+        task = store.update(task_id, title=title, notes=notes, private=private)
     else:
-        task = store.add(title=title, notes=notes)
+        task = store.add(title=title, owner=username, notes=notes, private=private)
+        was_private = private
 
-    await _signal_change(dispatcher, store)
+    await _signal_change(dispatcher, task, was_private)
     return (
         swl.success()
         .close_modal()
         .rehydrate(TASKS_LIST, TASK_DETAIL, context={"highlight": task.id})
-        .toast("Task saved")
+        .toast(_("Task saved"))
     )
 
 
 async def task_toggle(request, swl, store, dispatcher, **kwargs):
     task = await _task(request, store)
     if task is None:
-        return swl.fail().message("This task no longer exists")
+        return swl.fail().message(_("This task no longer exists"))
     store.toggle(task.id)
-    await _signal_change(dispatcher, store)
+    await _signal_change(dispatcher, task)
     return swl.success().rehydrate(
         TASKS_LIST, TASK_DETAIL, context={"highlight": task.id}
     )
@@ -204,13 +240,13 @@ async def task_toggle(request, swl, store, dispatcher, **kwargs):
 async def task_delete(request, swl, store, dispatcher, **kwargs):
     task = await _task(request, store)
     if task is None:
-        return swl.fail().message("This task no longer exists")
+        return swl.fail().message(_("This task no longer exists"))
     store.delete(task.id)
-    await _signal_change(dispatcher, store)
+    await _signal_change(dispatcher, task)
     return (
         swl.success()
         .rehydrate(TASKS_LIST, TASK_DETAIL)
-        .toast(f"Deleted '{task.title}'")
+        .toast(_("Deleted '%(title)s'", title=task.title))
     )
 
 
@@ -230,15 +266,21 @@ async def task_menu(request, swl, store, **kwargs):
 
 
 async def _task(request, store):
+    """The task posted as task_id, if this user may see it."""
     async with request.form() as form:
-        return store.get(form.get("task_id", ""))
+        return store.get(form.get("task_id", ""), request.user.username)
 
 
-async def _signal_change(dispatcher, store):
-    """Tell every open page (websocket.js) that the task list changed; placeholders with
-    data-swl-on-changed="tasks" reload themselves. That includes other users and other
-    tabs."""
-    await dispatcher.signal_change(SimpleNamespace(qid=TaskStore.qid))
+async def _signal_change(dispatcher, task, was_private=None):
+    """Tell the open pages (websocket.js) that the task list changed; placeholders with
+    data-swl-on-changed="tasks" reload themselves. That includes other tabs.
+
+    A shared task concerns everyone. A private task (before and after the change) concerns
+    only its owner: then only the owner's pages hear about it. Other users do not even
+    learn that something changed (Dispatcher.signal_change(..., users=[...]))."""
+    private = task.private and (was_private is None or was_private)
+    users = [task.owner] if private else None  # None: everyone
+    await dispatcher.signal_change(SimpleNamespace(qid=TaskStore.qid), users=users)
 
 
 __actions__ = [

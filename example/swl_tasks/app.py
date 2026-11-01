@@ -15,6 +15,7 @@
 Wires the example together: SWL, the actions, the pages, sessions and the websocket.
 """
 
+from datetime import datetime
 from pathlib import Path
 
 from starlette.applications import Starlette
@@ -30,6 +31,7 @@ from seecr_stdlib.config import Config
 
 from swl import SWL, static_dir
 from swl.dispatcher import Dispatcher
+from swl.i18n import _
 from swl.frameworks import FrameworkCookieMiddleware
 from swl.session import SessionAuthBackend, SessionSecretKey
 from swl.userbase import Userbase
@@ -44,6 +46,15 @@ here = Path(__file__).parent
 
 DEMO_USER = "demo"
 DEMO_PASSWORD = "demo-password"
+
+# The languages of the example; each in its own language, for the switch in the top bar.
+# SWL's own texts (dialogs, the user screens) come in these too.
+LANGUAGES = [
+    ("en", "English"),
+    ("nl", "Nederlands"),
+    ("de", "Deutsch"),
+    ("es", "Español"),
+]
 
 
 async def page(request, swl, store, **kwargs):
@@ -62,10 +73,11 @@ async def page(request, swl, store, **kwargs):
             "selected_tab": tab,
         }
     )
+    username = request.user.username
     detail_html = Markup(
-        views.render_detail(swl, store, screen["task_id"], screen["tab"])
+        views.render_detail(swl, store, username, screen["task_id"], screen["tab"])
     )
-    if screen["task_id"] and store.get(screen["task_id"]) is None:
+    if screen["task_id"] and store.get(screen["task_id"], username) is None:
         screen["task_id"] = None  # an old link: show that, but don't keep it selected
     return swl.template_response(
         request,
@@ -75,6 +87,8 @@ async def page(request, swl, store, **kwargs):
             "body_class": "",
             "user": request.user,
             "statuses": views.STATUSES,
+            "labels": views.LABELS,
+            "languages": LANGUAGES,
             **screen,
             "selection_html": views.render_selection(screen["task_id"], screen["tab"]),
             "detail_html": detail_html,
@@ -87,9 +101,10 @@ async def login_page(request, swl, **kwargs):
         request,
         "tasks/login.j2",
         {
-            "title": "Log in - SWL Tasks",
+            "title": _("Log in") + " - SWL Tasks",
             "body_class": "",
             "next": request.session.get("next", "/"),
+            "languages": LANGUAGES,
             "demo_user": DEMO_USER,
             "demo_password": DEMO_PASSWORD,
         },
@@ -112,9 +127,20 @@ def create_app(data_dir, userbase=None, framework="swl"):
     # "ui.framework" chooses the CSS framework: "swl" (SWL's own swl-base.css, no
     # framework), "bootstrap", "tabler" or "bulma". The templates use SWL.ui for their
     # classes, so they work with each.
+    # "i18n.locales": the languages; the first is used when the browser asks for none of
+    # them. swl.i18n_middleware (below) picks one per request; the example's own
+    # translations are in locale/ (see "Translations" in the README).
     swl = SWL(
-        config=Config({"ui": {"framework": framework}}), templates=[here / "templates"]
+        config=Config(
+            {
+                "ui": {"framework": framework},
+                "i18n": {"locales": [code for code, _name in LANGUAGES]},
+            }
+        ),
+        templates=[here / "templates"],
     )
+    swl.i18n.add_translations(here / "locale")
+    swl.add_template_filters(fromisoformat=datetime.fromisoformat)
     swl.register_modules(account, views)  # account: login, users and password dialogs
     swl.register_action_kwargs(userbase=userbase, store=store, dispatcher=dispatcher)
     swl.add_template_globals(VERSION=swl.SWL_VERSION)
@@ -142,8 +168,12 @@ def create_app(data_dir, userbase=None, framework="swl"):
             Middleware(
                 AuthenticationMiddleware, backend=SessionAuthBackend(userbase=userbase)
             ),
+            # the language: the cookie "swl_lang" (the switch in the top bar), else the
+            # browser's; after the authentication, so a selector could use the user
+            swl.i18n_middleware,
         ],
     )
     app.state.swl = swl
     app.state.store = store
+    app.state.dispatcher = dispatcher
     return app

@@ -12,21 +12,22 @@
 ## end license #}
 {# The "Details" tab of the detail panel. The buttons post task_id (hx-vals:inherited in detail.j2). #}
 <h2 class="task-title {{ 'task-done' if task.done }}">{{ task.title }}</h2>
-<p><span class="task-status {{ 'task-status-done' if task.done }}">{{ "Done" if task.done else "Open" }}</span></p>
+<p><span class="task-status {{ 'task-status-done' if task.done }}">{{ _("Done") if task.done else _("Open") }}</span>
+{% if task.private %}<span class="swl-badge"><i class="bi bi-lock"></i> {{ _("Private") }}</span>{% endif %}</p>
 {% if task.notes %}
 <p class="task-notes">{{ task.notes }}</p>
 {% else %}
-<p class="swl-muted">No notes.</p>
+<p class="swl-muted">{{ _("No notes.") }}</p>
 {% endif %}
 <div class="task-toolbar">
     <button type="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" hx-post="{{ register('task_edit') }}">
-        <i class="bi bi-pencil"></i> Edit
+        <i class="bi bi-pencil"></i> {{ _("Edit") }}
     </button>
     <button type="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" hx-post="{{ register('task_toggle') }}">
-        <i class="bi bi-check2-square"></i> {{ "Mark as open" if task.done else "Mark as done" }}
+        <i class="bi bi-check2-square"></i> {{ _("Mark as open") if task.done else _("Mark as done") }}
     </button>
     <button type="button" class="{{ SWL.ui.button_danger }} {{ SWL.ui.small }}" hx-post="{{ register('task_delete') }}"
-            hx-confirm="Delete '{{ task.title }}'?">
-        <i class="bi bi-trash"></i> Delete
+            hx-confirm="{{ _("Delete '%(title)s'?", title=task.title) }}">
+        <i class="bi bi-trash"></i> {{ _("Delete") }}
     </button>
 </div>

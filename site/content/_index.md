@@ -1,6 +1,6 @@
 ---
 title: "SWL"
-news: "**SWL 5.0 is out.** The browser side is now [htmx 4](https://four.htmx.org), SWL is MIT licensed, and you can `pip install swl` from [PyPI](https://pypi.org/project/swl/). See the [changelog](https://github.com/seecr/swl/blob/main/CHANGELOG.md) for what to convert."
+news: "**SWL 5.3 is out.** Translations: SWL apps speak the visitor's language, and SWL's own screens come in five. Live updates can go to specific users only, catch up after a lost connection, and show who is online. See the [changelog](https://github.com/seecr/swl/blob/main/CHANGELOG.md)."
 ---
 
 ## introduction
@@ -92,7 +92,13 @@ template gets an action's url with <code>register("name")</code>.</dd>
 
 <dt>live updates</dt>
 <dd>A placeholder can reload when the data it shows changes, also in other browser tabs and for
-other users, over a websocket.</dd>
+other users, over a websocket. A change goes to everyone or only to the users it concerns, so
+private things stay private. Pages catch up after a lost connection.</dd>
+
+<dt>translations</dt>
+<dd>Mark texts with <code>_()</code> and SWL shows them in the visitor's language: their own
+choice or their browser's. Dates and numbers follow. SWL's own screens come in English, Dutch,
+German, French and Spanish.</dd>
 
 <dt>deep links</dt>
 <dd>Actions keep the url up to date, and a page route renders the same screen from it. Screens
@@ -110,8 +116,9 @@ all. Light and dark work with each of them.</dd>
 ## try the example
 
 The example application is a small task list. It uses nearly everything: dialogs, search as you
-type, tabs, a context menu, live updates between browser tabs, screens that survive a reload,
-and switches for the CSS framework and dark mode.
+type, tabs, a context menu, live updates between browser tabs, private tasks that only their
+owner hears about, screens that survive a reload, and switches for the language, the CSS
+framework and dark mode.
 
 ```sh
 git clone https://github.com/seecr/swl.git

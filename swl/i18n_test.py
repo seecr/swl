@@ -127,7 +127,7 @@ def test_application_catalogs_win(tmp_path):
         i18n.deactivate(token)
 
 
-@pytest.mark.parametrize("language", ["nl", "de", "fr"])
+@pytest.mark.parametrize("language", ["nl", "de", "fr", "es"])
 def test_swl_catalogs_are_complete_and_compiled(language):
     with open(locale_dir / "swl.pot", "rb") as f:
         template = read_po(f)

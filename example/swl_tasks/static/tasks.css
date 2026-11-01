@@ -44,3 +44,5 @@
 .task-style-switch > select:not([multiple]) { width: auto; height: auto; padding-top: .25rem; padding-bottom: .25rem; font-size: .875rem; }
 .task-login-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
 .task-login-header > h1 { margin: 0; }
+
+.task-private { margin-left: .35rem; color: var(--swl-muted); font-size: .85em; }

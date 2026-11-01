@@ -24,7 +24,7 @@
             {% for name in tabs %}
             <button type="button" role="tab" aria-selected="{{ 'true' if name == tab else 'false' }}"
                     hx-post="{{ register('task_detail') }}" hx-include="#filters"
-                    hx-vals='{{ {"task": task.id, "tab": name}|tojson }}'>{{ name|capitalize }}</button>
+                    hx-vals='{{ {"task": task.id, "tab": name}|tojson }}'>{{ _(labels[name]) }}</button>
             {% endfor %}
         </nav>
     </header>
@@ -33,7 +33,7 @@
     </div>
 </div>
 {% elif missing %}
-<p class="swl-muted">This task no longer exists.</p>
+<p class="swl-muted">{{ _("This task no longer exists.") }}</p>
 {% else %}
-<p class="swl-muted">Select a task to see its details here.</p>
+<p class="swl-muted">{{ _("Select a task to see its details here.") }}</p>
 {% endif %}

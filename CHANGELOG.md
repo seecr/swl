@@ -29,7 +29,10 @@
   and compiles them. Filters `format_date`, `format_time`, `format_datetime`,
   `format_skeleton`, `format_number`, `format_timedelta` in the request's language.
 - SWL's own texts (dialog, account and user screens, `swl.views.account` messages) in Dutch,
-  German and French (`swl/locale`).
+  German, French and Spanish (`swl/locale`).
+- The example speaks English, Dutch, German and Spanish (a language switch in the top bar),
+  and has private tasks: only their owner sees them, and their changes go to the owner's
+  pages only (`signal_change(..., users=[owner])`).
 - `SWL.lang`: the language of the request; `base.j2` uses it for `<html lang>` unless the
   template sets `lang`.
 

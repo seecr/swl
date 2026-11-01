@@ -14,13 +14,18 @@
 """
 Storage for the example: tasks kept in memory and saved to a JSON file.
 
-Nothing SWL-specific happens here; a real application would use its own database.
+Nothing SWL-specific happens here (apart from marking texts for translation with N_);
+a real application would use its own database.
+
+A task is shared (everyone sees it) or private: only its owner sees it.
 """
 
 import json
 import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
+
+from swl.i18n import N_
 
 __all__ = ["Task", "TaskStore"]
 
@@ -31,8 +36,14 @@ class Task:
     title: str
     notes: str = ""
     done: bool = False
-    # [{"at": "2026-10-28T16:05:00", "what": "Created"}, ...]
+    owner: str = ""  # username of who made it
+    private: bool = False  # only the owner sees it
+    # [{"at": "2026-10-28T16:05:00", "what": "Created"}, ...]; "what" is English, shown
+    # translated (tab_history.j2)
     history: list = field(default_factory=list)
+
+    def visible_to(self, username):
+        return not self.private or self.owner == username
 
     def log(self, what):
         self.history.append(
@@ -53,40 +64,52 @@ class TaskStore:
                 task = Task(**data)
                 self._tasks[task.id] = task
 
-    def find(self, q="", status="all"):
-        """Tasks matching the search text and status ("all", "open" or "done"), open tasks
-        first."""
+    def find(self, username, q="", status="all"):
+        """The tasks this user may see, matching the search text and status ("all",
+        "open" or "done"), open tasks first."""
         q = q.strip().lower()
         result = [
             task
             for task in self._tasks.values()
-            if (not q or q in task.title.lower() or q in task.notes.lower())
+            if task.visible_to(username)
+            and (not q or q in task.title.lower() or q in task.notes.lower())
             and (status == "all" or task.done == (status == "done"))
         ]
         return sorted(result, key=lambda task: task.done)
 
-    def get(self, task_id):
-        return self._tasks.get(task_id)
+    def get(self, task_id, username):
+        """The task, if this user may see it."""
+        task = self._tasks.get(task_id)
+        return task if task is not None and task.visible_to(username) else None
 
-    def add(self, title, notes=""):
-        task = Task(id=uuid.uuid4().hex[:8], title=title, notes=notes)
-        task.log("Created")
+    def add(self, title, owner, notes="", private=False):
+        task = Task(
+            id=uuid.uuid4().hex[:8],
+            title=title,
+            notes=notes,
+            owner=owner,
+            private=private,
+        )
+        task.log(N_("Created"))
         self._tasks[task.id] = task
         self._save()
         return task
 
-    def update(self, task_id, title, notes):
+    def update(self, task_id, title, notes, private):
         task = self._tasks[task_id]
         if (title, notes) != (task.title, task.notes):
             task.title, task.notes = title, notes
-            task.log("Edited")
+            task.log(N_("Edited"))
+        if private != task.private:
+            task.private = private
+            task.log(N_("Made private") if private else N_("Shared"))
         self._save()
         return task
 
     def toggle(self, task_id):
         task = self._tasks[task_id]
         task.done = not task.done
-        task.log("Marked as done" if task.done else "Marked as open")
+        task.log(N_("Marked as done") if task.done else N_("Marked as open"))
         self._save()
         return task
 
@@ -95,9 +118,10 @@ class TaskStore:
         self._save()
         return task
 
-    def counts(self):
-        done = sum(1 for task in self._tasks.values() if task.done)
-        return {"open": len(self._tasks) - done, "done": done}
+    def counts(self, username):
+        tasks = [task for task in self._tasks.values() if task.visible_to(username)]
+        done = sum(1 for task in tasks if task.done)
+        return {"open": len(tasks) - done, "done": done}
 
     def _save(self):
         if self._path is not None:
