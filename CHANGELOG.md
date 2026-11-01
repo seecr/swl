@@ -10,6 +10,11 @@
 - `Dispatcher(authenticated=True)` refuses websockets without a logged-in user (close code
   1008); `Dispatcher(identify=fn)` links a websocket to an identity in another way.
 - `Dispatcher.connected_users()`: the identities with at least one open page.
+- `Dispatcher.user_connected(identity)` and `user_disconnected(identity)`: hooks for
+  subclasses, called when a user's first page connects and their last page closes (e.g.
+  to show who is online).
+- `Dispatcher(idle_timeout=...)` closes a page that sent nothing (no ping) for that many
+  seconds, so a sleeping phone or a lost network does not stay "online".
 - `UserbaseUser.identity`: the username.
 - `websocket.js` reloads every placeholder with `data-swl-on-changed` after a reconnect, so
   changes signalled while the connection was down are not missed. It notices a dead connection

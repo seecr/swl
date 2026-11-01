@@ -11,6 +11,7 @@
 #
 ## end license ##
 
+import asyncio
 from types import SimpleNamespace
 
 import pytest
@@ -161,3 +162,57 @@ def test_ping():
         assert alice.receive_json() == {"response": "pong"}
         alice.send_json({"command": "ping"})
         assert alice.receive_json() == {"response": "pong"}
+
+
+class Presence(Dispatcher):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.events = []
+
+    async def user_connected(self, identity):
+        self.events.append(("online", identity))
+
+    async def user_disconnected(self, identity):
+        self.events.append(("offline", identity))
+
+
+def test_first_and_last_page_of_a_user():
+    dispatcher = Presence()
+    with client_for(dispatcher) as client:
+        with connect(client, "alice") as tab1:
+            tab1.receive_json()
+            assert dispatcher.events == [("online", "alice")]
+            with connect(client, "alice") as tab2, connect(client) as anonymous:
+                tab2.receive_json()
+                anonymous.receive_json()
+            # tab1 is still open: alice is still online
+            tab1.send_json({"command": "ping"})
+            assert tab1.receive_json() == {"response": "pong"}
+            assert dispatcher.events == [("online", "alice")]
+        client.portal.call(lambda: asyncio.sleep(0.05))
+    assert dispatcher.events == [("online", "alice"), ("offline", "alice")]
+
+
+def test_a_failing_hook_does_not_stop_the_page():
+    class Failing(Dispatcher):
+        async def user_connected(self, identity):
+            raise RuntimeError("oops")
+
+    dispatcher = Failing()
+    with client_for(dispatcher) as client, connect(client, "alice") as alice:
+        assert alice.receive_json() == {"response": "pong"}
+        alice.send_json({"command": "ping"})
+        assert alice.receive_json() == {"response": "pong"}
+
+
+def test_idle_pages_are_closed():
+    dispatcher = Presence(idle_timeout=0.2)
+    with client_for(dispatcher) as client, connect(client, "alice") as alice:
+        alice.receive_json()
+        alice.send_json({"command": "ping"})  # in time
+        assert alice.receive_json() == {"response": "pong"}
+        with pytest.raises(WebSocketDisconnect) as exc_info:
+            alice.receive_json()  # nothing sent for 0.2 s: closed
+        assert exc_info.value.code == 1001
+    assert dispatcher.connected_users() == set()
+    assert dispatcher.events == [("online", "alice"), ("offline", "alice")]

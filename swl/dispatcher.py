@@ -22,11 +22,24 @@ belongs to the user that is logged in when it connects: `websocket.user.identity
 (Starlette's `BaseUser.identity`), which needs the `AuthenticationMiddleware`.
 
 With `Dispatcher(authenticated=True)` only logged-in users can connect.
+
+Who is online: `connected_users()`. A subclass can react when a user's first page
+connects (`user_connected`) and when their last page closes (`user_disconnected`).
+websocket.js pings every 10 seconds; with `idle_timeout` (seconds) a page that has not
+sent anything for that long is closed (a phone that went to sleep, a lost network), so it
+does not count as online forever. Background tabs ping less often (browsers slow down
+their timers, to once a minute), so keep it well above a minute.
 """
+
+import asyncio
+import logging
 
 from starlette.websockets import WebSocketDisconnect
 
+logger = logging.getLogger(__name__)
+
 POLICY_VIOLATION = 1008  # websocket close code: not allowed
+GOING_AWAY = 1001  # websocket close code: the server closes an idle connection
 
 
 def user_identity(websocket):
@@ -40,9 +53,10 @@ def user_identity(websocket):
 
 
 class Dispatcher:
-    def __init__(self, authenticated=False, identify=user_identity):
+    def __init__(self, authenticated=False, identify=user_identity, idle_timeout=None):
         self._authenticated = authenticated
         self._identify = identify
+        self._idle_timeout = idle_timeout
         self._listeners = {}  # websocket -> identity of its user (or None)
 
     async def _pong(self, websocket):
@@ -55,16 +69,49 @@ class Dispatcher:
             return
         await websocket.accept()
         await self._pong(websocket)
+        first = identity is not None and identity not in self.connected_users()
         self._listeners[websocket] = identity
+        if first:
+            await self._call_hook(self.user_connected, identity)
         try:
             while True:
                 try:
-                    data = await websocket.receive_json()
+                    data = await self._receive(websocket)
                 except WebSocketDisconnect:
+                    break
+                except asyncio.TimeoutError:
+                    await self._close(websocket, GOING_AWAY)
                     break
                 await self.handle(websocket, data)
         finally:
             self._listeners.pop(websocket, None)
+            if identity is not None and identity not in self.connected_users():
+                await self._call_hook(self.user_disconnected, identity)
+
+    async def _receive(self, websocket):
+        if self._idle_timeout is None:
+            return await websocket.receive_json()
+        return await asyncio.wait_for(websocket.receive_json(), self._idle_timeout)
+
+    @staticmethod
+    async def _close(websocket, code):
+        try:
+            await websocket.close(code=code)
+        except Exception:
+            pass  # already gone
+
+    @staticmethod
+    async def _call_hook(hook, identity):
+        try:
+            await hook(identity)
+        except Exception:
+            logger.exception(f"{hook.__name__}({identity!r}) failed")
+
+    async def user_connected(self, identity):
+        """The first open page of this user connected. For subclasses."""
+
+    async def user_disconnected(self, identity):
+        """The last open page of this user closed. For subclasses."""
 
     def connected_users(self):
         """The identities of the users with at least one open page."""

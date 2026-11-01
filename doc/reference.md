@@ -222,6 +222,8 @@ on two devices gets it on both. `Dispatcher(identify=fn)` takes another function
 | `Dispatcher(authenticated=False, identify=...)` | `authenticated=True`: refuse websockets without a logged-in user (close code 1008) |
 | `await signal_change(obj, users=None)` | `obj`: object with a `qid`, or the qid; `users`: identities (or one) to send it to |
 | `connected_users()` | identities with at least one open page |
+| `Dispatcher(idle_timeout=seconds)` | close a page that sent nothing for that long (websocket.js pings every 10 s; background tabs about once a minute, so keep it above that) |
+| `async user_connected(identity)` / `async user_disconnected(identity)` | for subclasses: the first page of a user connected, the last one closed |
 
 The user is looked up once, when the page connects. After a logout the page goes to the login
 page, which closes its websocket.
