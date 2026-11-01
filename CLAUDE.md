@@ -29,7 +29,9 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
   `HX-Redirect`, `HX-Replace-Url`. Empty response = 204, fail = 422 (+ `HX-Reswap: none`).
 - `swl/static/swl/swl.js`: browser side (event handlers, dialogs via `swl.ui`, `swl_action`,
   `swl.rehydrate`, `swl.kickstart`, toasts); `swl-run.js` boots it; `websocket.js` = live updates
-  (`data-swl-on-changed` placeholders reload when the dispatcher signals a change).
+  (`data-swl-on-changed` placeholders reload when the dispatcher signals a change, and all of
+  them after a reconnect). `swl/dispatcher.py`: `signal_change(obj, users=[identities])` sends
+  a change only to those users' pages (`websocket.user.identity`).
 - `swl/templates/swl/`: `base.j2` (loads htmx + htmx-config meta), `placeholder.j2` (macro),
   `kickstart.j2`, `modal-content.j2`, account/users views (`swl/views/account.py`).
 - `swl/resources/<framework>-web-resources.json`: CDN scripts/styles per framework, all from

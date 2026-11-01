@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- `Dispatcher.signal_change(obj, users=[...])` sends a change only to the open pages of those
+  users (their `websocket.user.identity`), so a qid that tells something, like a private
+  conversation, does not reach everyone. `obj` may also be the qid itself.
+- `Dispatcher(authenticated=True)` refuses websockets without a logged-in user (close code
+  1008); `Dispatcher(identify=fn)` links a websocket to an identity in another way.
+- `Dispatcher.connected_users()`: the identities with at least one open page.
+- `UserbaseUser.identity`: the username.
+- `websocket.js` reloads every placeholder with `data-swl-on-changed` after a reconnect, so
+  changes signalled while the connection was down are not missed. It notices a dead connection
+  by a ping without an answer (5 s), and pings at once when the page becomes visible again or
+  the browser comes back online.
+
+### Changed
+
+- The example only accepts websockets of logged-in users.
+- `Dispatcher._listeners` is a dict (websocket to identity) instead of a list.
+
 ## 5.2.0 (2026-10-30)
 
 ### Added

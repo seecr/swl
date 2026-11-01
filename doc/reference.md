@@ -195,12 +195,42 @@ the page is ignored.
 1. Route `WebSocketRoute("/ws", dispatcher.endpoint)` with a `swl.dispatcher.Dispatcher()`, and
    load `/static/swl/websocket.js` in the page.
 2. Give placeholders `on_changed=["<qid>", ...]` (or the attribute `data-swl-on-changed="qid1 qid2"`).
-3. After a change, `await dispatcher.signal_change(obj)`; `obj.qid` is the qid. Every open page
-   reloads the placeholders that list it.
+3. After a change, `await dispatcher.signal_change(obj)`; `obj.qid` is the qid (or pass the qid
+   itself). Every open page reloads the placeholders that list it.
 
 The qid is any string you choose: an object id (`"Order:123"`) to refresh only pages that show
 that order, or a collection name (`"orders"`). The websocket needs `uvicorn[standard]` (or
 `websockets`) on the server and websocket support in any proxy in front of it.
+
+**Only some users.** Without more, the qid goes to *every* open page, also to pages that do not
+show it; only the reload itself checks who may see what. When the qid tells something (a
+private conversation, `"Chat:alice:bob"`), send it to the users concerned only:
+
+```python
+await dispatcher.signal_change(conversation, users=["alice", "bob"])
+```
+
+A page belongs to the user that was logged in when it connected: `websocket.user.identity`,
+Starlette's `BaseUser.identity`, so the `AuthenticationMiddleware` must run for the websocket
+too (it does when it is app middleware). For SWL's `Userbase` users the identity is the
+username; an application's own user class implements `identity`. A user with the page open
+on two devices gets it on both. `Dispatcher(identify=fn)` takes another function
+`fn(websocket) -> identity or None`.
+
+| Dispatcher | |
+|---|---|
+| `Dispatcher(authenticated=False, identify=...)` | `authenticated=True`: refuse websockets without a logged-in user (close code 1008) |
+| `await signal_change(obj, users=None)` | `obj`: object with a `qid`, or the qid; `users`: identities (or one) to send it to |
+| `connected_users()` | identities with at least one open page |
+
+The user is looked up once, when the page connects. After a logout the page goes to the login
+page, which closes its websocket.
+
+**Missed changes.** `websocket.js` reconnects when the connection drops (with a growing delay,
+at most 30 s). Changes signalled while it was down do not reach the page, so after a reconnect
+it reloads every placeholder with `on_changed`. A connection that dies without closing (a phone
+that slept, another network) is noticed by a ping without an answer within 5 s; when the page
+becomes visible again or the browser comes back online it pings at once.
 
 ## Deep links
 
@@ -634,7 +664,8 @@ after another and keeps the last; `"this:replace"` cancels the running one.
 **Live updates do not arrive.** Check that `websocket.js` is loaded, the `/ws` route exists, the
 server has `uvicorn[standard]` (a log line "No supported WebSocket library detected" means it
 doesn't), the qid in `signal_change` matches `on_changed` exactly, and that `signal_change` is
-awaited.
+awaited. With `users=...`: the page's user must have that identity (`connected_users()` shows
+who is connected); with `authenticated=True`: the websocket must get the session cookie.
 
 **Error pages appear inside my page.** The page lacks the htmx config from `base.j2`:
 `<meta name="htmx-config" content='{"noSwap": [204, 304, "4xx", "5xx"]}'>`.

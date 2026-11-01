@@ -106,7 +106,7 @@ def create_app(data_dir, userbase=None, framework="swl"):
         userbase.create(DEMO_USER, DEMO_PASSWORD, admin=True)
 
     store = TaskStore(data_dir / "tasks.json")
-    dispatcher = Dispatcher()
+    dispatcher = Dispatcher(authenticated=True)  # only logged-in users get live updates
 
     # SWL: our templates first, then SWL's own (swl/base.j2, swl/modal.j2, ...).
     # "ui.framework" chooses the CSS framework: "swl" (SWL's own swl-base.css, no

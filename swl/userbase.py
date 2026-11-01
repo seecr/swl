@@ -193,6 +193,10 @@ class UserbaseUser(BaseUser):
     def id(self):
         return self._user["id"]
 
+    @property
+    def identity(self):
+        return self._user["username"]
+
     @classmethod
     def encoder(cls):
         return json.JSONEncoder
