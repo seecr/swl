@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 5.3.0 (2026-11-01)
 
 ### Added
 
@@ -20,7 +20,6 @@
   changes signalled while the connection was down are not missed. It notices a dead connection
   by a ping without an answer (5 s), and pings at once when the page becomes visible again or
   the browser comes back online.
-
 - Translations (`swl.i18n`): texts marked with `_()` / `ngettext` / `N_` in Python and
   `{{ _("...") }}` / `{% trans %}` in templates, translated with gettext (Babel) into the
   language of each request. `swl.i18n_middleware` chooses it: the application's selector, the
