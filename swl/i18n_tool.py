@@ -18,7 +18,7 @@ Translation catalogs for SWL and SWL applications, with Babel.
     python -m swl.i18n_tool update <package>             # .pot -> every .po
     python -m swl.i18n_tool compile <package>            # .po -> .mo (what is used)
 
-<package> is the directory of the Python package (e.g. "enigma"); the catalogs go to
+<package> is the directory of the Python package (e.g. "myapp"); the catalogs go to
 <package>/locale; --domain is "messages" (SWL's own: "swl"). Texts are found in *.py
 (_, N_, gettext, ngettext) and in templates *.j2 ({{ _("...") }}, {% trans %}); tests
 (*_test.py) are skipped. Commit the .po and the .mo files.

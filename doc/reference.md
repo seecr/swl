@@ -580,10 +580,10 @@ matches `nl`. Without the middleware everything is English, as written.
 **Catalogs.** An application keeps its translations in `<package>/locale`:
 
 ```sh
-python -m swl.i18n_tool extract enigma        # texts -> enigma/locale/messages.pot
-python -m swl.i18n_tool init enigma nl        # once per language: .../nl/LC_MESSAGES/messages.po
-python -m swl.i18n_tool update enigma         # after extract: new texts into every .po
-python -m swl.i18n_tool compile enigma        # .po -> .mo, which is what is used
+python -m swl.i18n_tool extract myapp        # texts -> myapp/locale/messages.pot
+python -m swl.i18n_tool init myapp nl        # once per language: .../nl/LC_MESSAGES/messages.po
+python -m swl.i18n_tool update myapp         # after extract: new texts into every .po
+python -m swl.i18n_tool compile myapp        # .po -> .mo, which is what is used
 ```
 
 and adds them with `swl.i18n.add_translations(path / "locale")`; they win over SWL's. Commit
