@@ -1,7 +1,7 @@
 # The SWL website
 
 The website for SWL: what SWL is, a quick start, where to find the sources, and the reference,
-online and as a PDF. It is published at <https://seecr.github.io/swl/>.
+online and as a PDF. It is published at <https://swl.seecr.nl/>.
 
 It is a [Hugo](https://gohugo.io) site. The home page is `content/_index.md`; the layout is in
 `layouts/` and the styles in `static/css/site.css`. The reference page and the PDF are made from
@@ -17,7 +17,7 @@ newer). On macOS: `brew install hugo pandoc typst`. The PDF's layout is the Typs
 ```sh
 cd site
 make          # site in public/, including public/swl-reference.pdf
-make serve    # dev server on http://localhost:1313/swl/
+make serve    # dev server on http://localhost:1313/
 make pdf      # only static/swl-reference.pdf
 make clean
 ```

@@ -1,7 +1,7 @@
 # The SWL website (Hugo), with the reference as a page and as a PDF.
 #
 #   make            build everything into public/
-#   make serve      run the Hugo dev server (http://localhost:1313/swl/)
+#   make serve      run the Hugo dev server (http://localhost:1313/)
 #   make pdf        only the reference PDF
 #
 # Extra Hugo options go in HUGO_FLAGS, e.g. `make serve HUGO_FLAGS="--bind 0.0.0.0"`.

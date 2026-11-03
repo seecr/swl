@@ -45,8 +45,8 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://seecr.github.io/swl/"
-Documentation = "https://seecr.github.io/swl/reference/"
+Homepage = "https://swl.seecr.nl/"
+Documentation = "https://swl.seecr.nl/reference/"
 Source = "https://github.com/seecr/swl"
 Issues = "https://github.com/seecr/swl/issues"
 Changelog = "https://github.com/seecr/swl/blob/main/CHANGELOG.md"

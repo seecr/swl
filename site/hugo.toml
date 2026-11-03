@@ -1,4 +1,4 @@
-baseURL = "https://seecr.github.io/swl/"
+baseURL = "https://swl.seecr.nl/"
 languageCode = "en"
 title = "SWL"
 disableKinds = ["taxonomy", "term", "RSS", "sitemap"]

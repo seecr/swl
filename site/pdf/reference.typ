@@ -69,7 +69,7 @@
     #v(0.3em)
     #text(style: "italic", fill: muted)[interactive web apps in Python, without a JavaScript frontend]
     #v(1.6em)
-    #text(font: mono, size: 10pt, fill: muted)[version #version · seecr.github.io/swl]
+    #text(font: mono, size: 10pt, fill: muted)[version #version · swl.seecr.nl]
   ]
   #place(bottom + center, image("seecr-logo.png", height: 0.75cm))
 ]
