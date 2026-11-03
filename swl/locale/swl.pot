@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-03 08:07+0000\n"
+"POT-Creation-Date: 2026-11-03 16:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,18 +58,22 @@ msgid "The requested action does not exist"
 msgstr ""
 
 #: swl/i18n.py:296
-msgid "The server sent an unexpected response"
+msgid "This is too large to send (a file, perhaps)"
 msgstr ""
 
 #: swl/i18n.py:297
-msgid "Unknown function"
+msgid "The server sent an unexpected response"
 msgstr ""
 
 #: swl/i18n.py:298
-msgid "Error in function"
+msgid "Unknown function"
 msgstr ""
 
 #: swl/i18n.py:299
+msgid "Error in function"
+msgstr ""
+
+#: swl/i18n.py:300
 msgid "Saved"
 msgstr ""
 

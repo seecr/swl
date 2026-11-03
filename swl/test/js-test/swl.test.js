@@ -256,6 +256,7 @@ QUnit.module("swl on htmx", (hooks) => {
             ["/action/swl_error", "(HTTP 500)"],
             ["/action/swl_forbidden", "(HTTP 403)"],
             ["/action/does_not_exist", "(HTTP 404)"],
+            ["/action/swl_too_large", "too large to send (a file, perhaps) (HTTP 413)"],
         ];
         for (const [url, expected] of cases) {
             fixture(DIALOG + `<button id="btn" type="button" hx-post="${url}">Go</button>`);

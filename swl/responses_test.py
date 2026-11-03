@@ -171,16 +171,16 @@ def test_open_modal():
     r = SuccessResponse().open_modal(data="blah")
     assert render(r) == (
         200,
-        {"swl-modal-open": {"size": "lg", "scrollable": False, "calls": []}},
+        {"swl-modal-open": {"size": "lg", "scrollable": True, "calls": []}},
         {MODAL_CONTENT: "blah"},
         {},
     )
 
     r = SuccessResponse().open_modal(
-        data="blah", call="method", size="xl", scrollable=True
+        data="blah", call="method", size="xl", scrollable=False
     )
     assert render(r)[1] == {
-        "swl-modal-open": {"size": "xl", "scrollable": True, "calls": ["method"]}
+        "swl-modal-open": {"size": "xl", "scrollable": False, "calls": ["method"]}
     }
 
     r = SuccessResponse().open_modal(
@@ -189,7 +189,7 @@ def test_open_modal():
     assert render(r)[1] == {
         "swl-modal-open": {
             "size": "lg",
-            "scrollable": False,
+            "scrollable": True,
             "calls": ["method1", "method2"],
         }
     }

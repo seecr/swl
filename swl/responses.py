@@ -195,7 +195,7 @@ class SuccessResponse(_SWLResponse):
         self._event("swl-modal-close", {})
         return self
 
-    def open_modal(self, data, size="lg", scrollable=False, call=None, rehydrate=None):
+    def open_modal(self, data, size="lg", scrollable=True, call=None, rehydrate=None):
         if isinstance(call, str):
             call = [call]
         if size not in ["sm", "lg", "xl"]:

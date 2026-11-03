@@ -106,7 +106,7 @@ were called**.
 |---|---|
 | `hydrate(id, html, rehydrate=None)` | the element with that id gets `html` as content. `rehydrate=dict(action=url, context={...})` also changes how it reloads (see [rehydrate](#placeholders-and-rehydrate)). Hydrating the same id twice keeps the last |
 | `rehydrate(*ids, context=None)` | these placeholders reload themselves; `context` is added to that one request |
-| `open_modal(html, size="lg", scrollable=False, call=None, rehydrate=None)` | `html` in the modal; `size`: `"sm"`, `"lg"` or `"xl"`; `call`: function name(s) to run once the modal is visible |
+| `open_modal(html, size="lg", scrollable=True, call=None, rehydrate=None)` | `html` in the modal; `size`: `"sm"`, `"lg"` or `"xl"`; `call`: function name(s) to run once the modal is visible; `scrollable`: only the body (`.swl-modal-body`) scrolls, the header and footer stay in place (`False`: the whole modal scrolls) |
 | `hydrate_modal(html, rehydrate=None, call=None)` | replace the content of the (open) modal; `call` runs when it is or becomes visible |
 | `close_modal()` | close the modal |
 | `open_contextmenu(html, location)` | `html` as a menu at `location={"x": ..., "y": ...}` (use the posted `event_x`/`event_y`) |
@@ -509,7 +509,10 @@ The choice does two things:
   `<html data-swl-framework="...">` lets your CSS differ per framework.
 
 SWL's modal, message dialog, toast and context menu do not depend on the framework: they are
-plain HTML (`<dialog>`, popover) styled by `swl.css`. Their colours are CSS variables that follow
+plain HTML (`<dialog>`, popover) styled by `swl.css`. On phones they are at most as high as
+what is visible (`100dvh`, so the buttons of a long modal are not behind the browser's bars)
+and below 576 pixels they take almost the whole width. In a modal only the body scrolls
+(`open_modal(scrollable=True)`, the default). Their colours are CSS variables that follow
 Bootstrap's, Tabler's or Bulma's colours when one is loaded; a theme is a few lines in your own stylesheet:
 
 ```css
@@ -759,6 +762,11 @@ Route("/{slug}", swl.endpoint(project_page, authenticated=False, paths=project_p
   `hx-include="closest form"`.
 - `hx-get` and `hx-delete` do not send the enclosing form; use `hx-post` or `hx-include`.
 - `hx-vals` must be valid JSON: double quotes inside, single quotes around the attribute.
+
+**An upload gives "This is too large to send" (HTTP 413).** The web server in front of the
+application refused the request before it got there: raise its limit, e.g. nginx's
+`client_max_body_size` (1 MB by default), a little above the largest upload the application
+accepts.
 
 **An attribute on a parent element is ignored.** htmx 4 does not inherit attributes unless
 asked: write `hx-confirm:inherited`, `hx-vals:inherited`, `hx-target:inherited`.

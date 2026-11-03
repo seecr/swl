@@ -491,6 +491,8 @@ function _message_for_status(status) {
         message = _get("error_forbidden");
     } else if (status === 404) {
         message = _get("error_not_found");
+    } else if (status === 413) {
+        message = _get("error_too_large");  // e.g. nginx's client_max_body_size
     } else {
         message = _get("error_server");
     }

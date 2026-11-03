@@ -14,7 +14,7 @@
 import asyncio
 import itertools
 
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse, Response
 
 from swl.responses import FailResponse, SuccessResponse
 
@@ -38,6 +38,11 @@ async def swl_error(request, **kwargs):
 
 async def swl_forbidden(request, **kwargs):
     return SuccessResponse()
+
+
+async def swl_too_large(request, **kwargs):
+    """What nginx answers when an upload is above client_max_body_size."""
+    return Response(status_code=413)
 
 
 async def swl_fail(request, **kwargs):
@@ -116,6 +121,7 @@ __actions__ = [
     dict(authenticated=False, method=swl_error),
     dict(authenticated=True, method=swl_forbidden),
     dict(authenticated=False, method=swl_fail),
+    dict(authenticated=False, method=swl_too_large),
     dict(authenticated=False, method=swl_calls),
     dict(authenticated=False, method=swl_reset_form),
     dict(authenticated=False, method=swl_toast),

@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Modals: only the body scrolls by default (`open_modal(scrollable=True)`), so the header
+  with the close button and the footer with the buttons stay in place; `scrollable=False`
+  for the old behaviour. Content without a `.swl-modal-body` scrolls as a whole. The
+  scrollable layout lets the body shrink now (before, a long body could be cut off).
+- Modals and dialogs are at most as high as what is visible (`100dvh`, with `100vh` as a
+  fallback): on Android the buttons of a long modal ended up behind the browser's bars.
+  Below 576 pixels wide they take almost the whole width, with less padding.
+
+### Added
+
+- A message of its own for HTTP 413 ("This is too large to send (a file, perhaps)"), e.g.
+  when nginx's `client_max_body_size` refuses an upload, instead of a server error.
+
 ## 5.4.1 (2026-11-03)
 
 ### Changed

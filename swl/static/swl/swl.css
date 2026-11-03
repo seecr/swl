@@ -125,7 +125,10 @@ dialog.swl-modal::backdrop, dialog.swl-dialog::backdrop { background: transparen
     flex-direction: column;
     width: calc(100% - 2rem);
     max-width: var(--swl-modal-width, 50rem);
+    /* dvh: what is visible now. On Android 100vh is the height with the address bar
+     * hidden, so the bottom of a long window (its buttons) would be behind the bars. */
     max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
     margin: 0;
     padding: 0;
     overflow: auto;
@@ -139,8 +142,31 @@ dialog.swl-modal::backdrop, dialog.swl-dialog::backdrop { background: transparen
 .swl-modal-sm { --swl-modal-width: 25rem; }
 .swl-modal-lg { --swl-modal-width: 50rem; }
 .swl-modal-xl { --swl-modal-width: 71rem; }
-.swl-modal-scrollable .swl-modal-box { overflow: hidden; }
-.swl-modal-scrollable .swl-modal-body { overflow: auto; }
+/* scrollable (the default, open_modal(scrollable=True)): only the body scrolls, the header
+ * (title, close button) and the footer (buttons) stay in place. Content without a
+ * .swl-modal-body scrolls as a whole. */
+.swl-modal-scrollable .swl-modal-box:has(> .swl-modal-body) { overflow: hidden; }
+.swl-modal-scrollable .swl-modal-box > .swl-modal-header,
+.swl-modal-scrollable .swl-modal-box > .swl-modal-footer { flex: 0 0 auto; }
+.swl-modal-scrollable .swl-modal-box > .swl-modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* phones (or a large font size, which makes the page narrower): more of the width */
+@media (max-width: 575.98px) {
+    .swl-modal-box, .swl-dialog-box {
+        width: calc(100% - 1rem);
+        max-height: calc(100vh - 1rem);
+        max-height: calc(100dvh - 1rem);
+    }
+    .swl-modal-header, .swl-modal-body { padding-left: 1rem; padding-right: 1rem; }
+    .swl-modal-body { padding-top: 1rem; padding-bottom: 1rem; }
+    .swl-modal-footer { padding-left: 1rem; padding-right: 1rem; }
+    .swl-dialog-box { padding: 1rem; }
+}
 
 @keyframes swl-pop {
     from { opacity: 0; transform: translateY(.5rem) scale(.98); }

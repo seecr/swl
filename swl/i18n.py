@@ -293,6 +293,7 @@ JS_MESSAGES = {
     "error_network": N_("The server could not be reached"),
     "error_forbidden": N_("You are not allowed to do this, or your session has expired"),
     "error_not_found": N_("The requested action does not exist"),
+    "error_too_large": N_("This is too large to send (a file, perhaps)"),
     "error_invalid_response": N_("The server sent an unexpected response"),
     "error_unknown_function": N_("Unknown function"),
     "error_function_failed": N_("Error in function"),
