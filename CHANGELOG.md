@@ -20,6 +20,10 @@
   Spanish.
 - `hint="..."`: a help text below the control (`swl-hint`, linked with `aria-describedby`),
   and `id="..."`: a fixed id instead of a random one.
+- `swl.success().saved(id)`: "✓ Saved" for a moment at an element, for fields that save
+  themselves when they change; in its `.swl-saved` element, or one added at its end
+  (`role="status"`). Fades out after `delay` ms (config `response.saved.delay`, 2500). The
+  text is translated (`saved` in SWL's texts).
 
 ## 5.3.0 (2026-11-01)
 

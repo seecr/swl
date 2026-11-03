@@ -105,6 +105,7 @@ were called**.
 | `close_modal()` | close the modal |
 | `open_contextmenu(html, location)` | `html` as a menu at `location={"x": ..., "y": ...}` (use the posted `event_x`/`event_y`) |
 | `toast(text, delay=None, background=None)` | a short message; `text` may be HTML; defaults from the config |
+| `saved(id, delay=None)` | "Saved" for a moment at the element with that id, e.g. a field that saves itself on change: in its `.swl-saved` element, or in one added at its end. Fades out after `delay` ms (config `response.saved.delay`); call it for more than one element. See [Saved](#saved) |
 | `call(function, **kwargs)` | `window[function](kwargs)` |
 | `trigger(event, **detail)` | dispatch your own browser event with `event.detail = detail`; it bubbles up to `document` |
 | `reset_form()` | reset the form of the element that made the request |
@@ -126,7 +127,32 @@ What goes over the wire, in case you look at it in the browser:
 
 The event names in `HX-Trigger` are `swl-call`, `swl-rehydrate`, `swl-recipe`,
 `swl-modal-open`, `swl-modal-call`, `swl-modal-close`, `swl-contextmenu`, `swl-toast`,
-`swl-reset-form`, `swl-session-store` and `swl-error`, plus your own from `trigger()`.
+`swl-saved`, `swl-reset-form`, `swl-session-store` and `swl-error`, plus your own from
+`trigger()`.
+
+### Saved
+
+A field that saves itself when it changes (`hx-post` on the field) tells the user it did with
+`saved`: a quiet "✓ Saved" that fades out, where the user is looking, instead of a toast.
+
+```jinja
+<div id="field-phone">
+    <input name="phone" value="{{ customer.phone }}" hx-post="{{ register('save_phone') }}">
+    <span class="swl-saved" role="status"></span>
+</div>
+```
+
+```python
+async def save_phone(request, swl, **kwargs):
+    async with request.form() as form:
+        ...  # save it
+    return swl.success().saved("field-phone")
+```
+
+Put the `.swl-saved` element where the text should appear; without one SWL adds it at the end
+of the element. With `role="status"` (or `aria-live="polite"`) in the page from the start,
+screen readers read it out. The text is `saved` of SWL's texts, so it follows the language of
+the page. A failed save (`swl.fail()`) shows its message as usual and no "Saved".
 
 ## What a request sends
 
@@ -632,6 +658,7 @@ request: `format_date(d, "medium")`, `format_time`, `format_datetime(dt, tzinfo=
 | `urls.cdn` | `https://cdn.jsdelivr.net` | `{BASE_URL}` in resource urls; `base.j2` preconnects to it |
 | `response.toast.delay` | `500` | toast duration in ms |
 | `response.toast.background` | none | toast background color |
+| `response.saved.delay` | `2500` | how long "Saved" shows (`saved()`), in ms |
 | `i18n.locales` | `["en"]` | the languages to use, the first is the default; see [Translations](#translations) |
 | `i18n.cookie` | `swl_lang` | the cookie that chooses a language |
 | `routes.allowlist` | `ROUTES_ALLOWLIST` | who may read `/.routes`: IPs/CIDRs, a list or a comma-separated string; see [Listing the routes](#listing-the-routes) |

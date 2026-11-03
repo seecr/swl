@@ -17,6 +17,7 @@
  */
 
 import { swl_action, rehydrate } from "/static/swl/swl.js";
+import { _get } from "/static/swl/lang.js";
 
 const DIALOG = `
     <dialog class="swl-dialog">
@@ -379,6 +380,48 @@ QUnit.module("swl on htmx", (hooks) => {
         window.removeEventListener("error", on_error);
         assert.deepEqual(errors, []);
         assert.ok(popover_open("#toast"), "still showing: the second toast restarted the timer");
+    });
+
+    QUnit.test("saved shows 'Saved' at the element, then hides it after its delay", async (assert) => {
+        fixture(DIALOG + `
+            <div id="the_field"><input name="x"> <span class="swl-saved" role="status"></span></div>
+            <div id="other_field"><input name="y"></div>`);
+        const shown = (selector) => $(selector)?.classList.contains("swl-saved-shown") === true;
+
+        await swl_action("/action/swl_saved", {});
+        await waitFor(() => shown("#the_field .swl-saved"), "shown in its .swl-saved");
+
+        assert.equal(document.querySelectorAll("#the_field .swl-saved").length, 1, "its own one");
+        assert.ok($("#the_field .swl-saved").textContent.includes(_get("saved")));
+        assert.ok($("#the_field .swl-saved .bi-check2"), "with a check");
+        let added = $("#other_field .swl-saved");
+        assert.ok(added, "added to an element without one");
+        assert.equal(added.getAttribute("role"), "status", "read out");
+        assert.ok(shown("#other_field .swl-saved"));
+        assert.notOk(dialog_shown());
+
+        await waitFor(() => !shown("#the_field .swl-saved"), "hidden after its delay");
+        assert.equal($("#the_field .swl-saved").textContent.trim(), _get("saved"), "stays in place");
+    });
+
+    QUnit.test("saved for an element that is not on the page does nothing", async (assert) => {
+        fixture(DIALOG + `<div id="the_place"></div>`);
+        await swl_action("/action/swl_saved", {});
+        await sleep(100);
+        assert.equal(document.querySelectorAll("#qunit-fixture .swl-saved").length, 0);
+        assert.notOk(dialog_shown());
+    });
+
+    QUnit.test("saving again while 'Saved' shows restarts its delay", async (assert) => {
+        fixture(`<div id="the_field"><span class="swl-saved"></span></div>`);
+        const shown = () => $("#the_field .swl-saved").classList.contains("swl-saved-shown");
+        await swl_action("/action/swl_saved", {});
+        await waitFor(shown, "shown");
+        await sleep(200);
+        await swl_action("/action/swl_saved", {});
+        await sleep(200);  // 400 ms after the first save: past its delay (300)
+        assert.ok(shown(), "still shown: the second save restarted the delay");
+        await waitFor(() => !shown(), "hidden after the second delay");
     });
 
     QUnit.test("session_store stores values", async (assert) => {

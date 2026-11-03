@@ -337,6 +337,32 @@ _on("swl-contextmenu", (e) => {
     menu.onclick = (click) => { if (click.target.closest("button, a")) hide(); };
 });
 
+/*
+ * "Saved" for a moment at an element (SuccessResponse.saved): in its .swl-saved element, or in
+ * one added at its end. It fades out after `delay` ms; a new save restarts that.
+ */
+const SAVED_SHOWN = "swl-saved-shown";
+_on("swl-saved", (e) => {
+    for (let {id, delay} of e.detail.targets || []) {
+        let target = document.getElementById(id);
+        if (!target) {
+            continue;
+        }
+        let elem = target.matches(".swl-saved") ? target : target.querySelector(".swl-saved");
+        if (!elem) {
+            elem = document.createElement("span");
+            elem.className = "swl-saved";
+            elem.setAttribute("role", "status");
+            target.append(elem);
+        }
+        elem.innerHTML = '<i class="bi bi-check2" aria-hidden="true"></i> ';
+        elem.append(_get("saved"));
+        elem.classList.add(SAVED_SHOWN);
+        clearTimeout(elem._swl_saved_timer);
+        elem._swl_saved_timer = setTimeout(() => elem.classList.remove(SAVED_SHOWN), delay ?? 2500);
+    }
+});
+
 /* The toast (swl/toast.j2) is a popover that hides itself after `delay` ms. */
 let _toast_timer = null;
 _on("swl-toast", (e) => {

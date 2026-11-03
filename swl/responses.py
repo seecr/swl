@@ -224,6 +224,19 @@ class SuccessResponse(_SWLResponse):
         self._hx_headers["HX-Replace-Url"] = target_url
         return self
 
+    def saved(self, target, delay=None):
+        """Show "Saved" for a moment at the element with id `target`, e.g. a field that
+        saves itself when it changes: in its `.swl-saved` element (put one where it should
+        appear, e.g. <span class="swl-saved" role="status"></span>), or in one added at
+        its end. `delay`: milliseconds it stays (config "saved.delay", default 2500).
+        Can be called for more than one element."""
+        if delay is None:
+            delay = self._config.get("saved.delay", 2500)
+        self._event("swl-saved", {"targets": []})["targets"].append(
+            {"id": target, "delay": delay}
+        )
+        return self
+
     def toast(self, text, delay=None, background=None):
         if delay is None:
             delay = self._config.get("toast.delay", 500)

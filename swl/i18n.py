@@ -296,6 +296,7 @@ JS_MESSAGES = {
     "error_invalid_response": N_("The server sent an unexpected response"),
     "error_unknown_function": N_("Unknown function"),
     "error_function_failed": N_("Error in function"),
+    "saved": N_("Saved"),
 }
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-03 08:05+0000\n"
+"POT-Creation-Date: 2026-11-03 08:07+0000\n"
 "PO-Revision-Date: 2026-11-01 18:16+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -69,6 +69,10 @@ msgstr "Onbekende functie"
 #: swl/i18n.py:298
 msgid "Error in function"
 msgstr "Fout in functie"
+
+#: swl/i18n.py:299
+msgid "Saved"
+msgstr "Opgeslagen"
 
 #: swl/templates/swl/account.j2:17
 msgid "My account"

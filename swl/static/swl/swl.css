@@ -291,6 +291,9 @@ dialog.swl-modal::backdrop, dialog.swl-dialog::backdrop { background: transparen
 }
 .swl-field > label { display: block; margin-bottom: .3rem; font-weight: 500; }
 .swl-field > input, .swl-field > select, .swl-field > textarea { margin-bottom: 0; }
+/* "Saved" at a field after it saved itself (SuccessResponse.saved): fades in, and out again */
+.swl-saved { color: var(--swl-success); font-size: .875em; opacity: 0; transition: opacity .4s ease-in-out; }
+.swl-saved.swl-saved-shown { opacity: 1; transition-duration: .15s; }
 /* "(optional)" after a label (swl/inputs.j2): quieter than the label, never split over two lines */
 .swl-optional { font-weight: normal; font-size: .875em; color: var(--swl-muted); white-space: nowrap; }
 .swl-hint { margin-top: .25rem; font-size: .875em; color: var(--swl-muted); }

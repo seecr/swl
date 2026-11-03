@@ -11,6 +11,7 @@
     "error_not_found": "The requested action does not exist",
     "error_invalid_response": "The server sent an unexpected response",
     "error_unknown_function": "Unknown function",
-    "error_function_failed": "Error in function"
+    "error_function_failed": "Error in function",
+    "saved": "Saved"
 }
 

@@ -11,6 +11,7 @@
     "error_not_found": "De gevraagde actie bestaat niet",
     "error_invalid_response": "De server gaf een onverwacht antwoord",
     "error_unknown_function": "Onbekende functie",
-    "error_function_failed": "Fout in functie"
+    "error_function_failed": "Fout in functie",
+    "saved": "Opgeslagen"
 }
 

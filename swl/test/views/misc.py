@@ -60,6 +60,10 @@ async def swl_toast(request, **kwargs):
     return SuccessResponse().toast("Saved <b>it</b>", delay=500)
 
 
+async def swl_saved(request, **kwargs):
+    return SuccessResponse().saved("the_field", delay=300).saved("other_field", delay=300)
+
+
 async def swl_session_store(request, **kwargs):
     return SuccessResponse().session_store("swl_test_key", {"a": [1, 2]})
 
@@ -115,6 +119,7 @@ __actions__ = [
     dict(authenticated=False, method=swl_calls),
     dict(authenticated=False, method=swl_reset_form),
     dict(authenticated=False, method=swl_toast),
+    dict(authenticated=False, method=swl_saved),
     dict(authenticated=False, method=swl_session_store),
     dict(authenticated=False, method=swl_contextmenu),
     dict(authenticated=False, method=swl_counted),

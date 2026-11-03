@@ -285,6 +285,32 @@ def test_toast_defaults():
     }
 
 
+def test_saved():
+    r = SuccessResponse().saved("field-name")
+    assert render(r) == (
+        204,
+        {"swl-saved": {"targets": [{"id": "field-name", "delay": 2500}]}},
+        {},
+        {},
+    )
+
+    r = SuccessResponse().saved("a", delay=1000).saved("b")
+    assert render(r)[1] == {
+        "swl-saved": {"targets": [{"id": "a", "delay": 1000}, {"id": "b", "delay": 2500}]}
+    }
+
+    # together with other events, e.g. a call
+    r = SuccessResponse().call("f").saved("a")
+    assert list(render(r)[1]) == ["swl-call", "swl-saved"]
+
+
+def test_saved_defaults():
+    swl = SWL(config=Config({"response": {"saved": {"delay": 4000}}}))
+    assert render(swl.success().saved("a"))[1] == {
+        "swl-saved": {"targets": [{"id": "a", "delay": 4000}]}
+    }
+
+
 def test_http_response():
     async def action(request):
         response = SuccessResponse().hydrate("p", "<i>ü</i>").call("f", name="Müller")
