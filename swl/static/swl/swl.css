@@ -290,7 +290,10 @@ dialog.swl-modal::backdrop, dialog.swl-dialog::backdrop { background: transparen
     font-size: .875em;
 }
 .swl-field > label { display: block; margin-bottom: .3rem; font-weight: 500; }
-.swl-field > input { margin-bottom: 0; }
+.swl-field > input, .swl-field > select, .swl-field > textarea { margin-bottom: 0; }
+/* "(optional)" after a label (swl/inputs.j2): quieter than the label, never split over two lines */
+.swl-optional { font-weight: normal; font-size: .875em; color: var(--swl-muted); white-space: nowrap; }
+.swl-hint { margin-top: .25rem; font-size: .875em; color: var(--swl-muted); }
 .swl-check { display: flex; align-items: center; gap: .5rem; margin: 0; padding-bottom: .55rem; }
 .swl-check > input { margin: 0; }
 

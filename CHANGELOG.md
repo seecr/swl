@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- The form field macros of `swl/inputs.j2` (`text_input`, `password_input`, `number_input`,
+  `date_input`, `textarea_input`) put the label above the control (`swl-field`) with the
+  framework's classes (`SWL.ui`), like SWL's own forms, instead of Bootstrap floating labels.
+  They now look right with every `ui.framework`. The arguments stay the same; the controls no
+  longer get a `placeholder` (the floating label needed it). `floating_label` is still there
+  for templates that import it.
+- `mandatory=True` of those macros now makes the control `required`; it did nothing before.
+
+### Added
+
+- `optional=True` for the `swl/inputs.j2` macros: "(optional)" after the label, quiet and
+  never split over two lines (`swl-optional`). When most fields are required, mark the few
+  optional ones instead of every required one. Translated in Dutch, German, French and
+  Spanish.
+- `hint="..."`: a help text below the control (`swl-hint`, linked with `aria-describedby`),
+  and `id="..."`: a fixed id instead of a random one.
+
 ## 5.3.0 (2026-11-01)
 
 ### Added

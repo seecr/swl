@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 18:15+0100\n"
+"POT-Creation-Date: 2026-11-03 08:05+0000\n"
 "PO-Revision-Date: 2026-11-01 18:16+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -18,55 +18,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: swl/i18n.py:285 swl/templates/swl/dialog.j2:20
+#: swl/i18n.py:286 swl/templates/swl/dialog.j2:20
 msgid "Confirm"
 msgstr "Bestätigen"
 
-#: swl/i18n.py:286 swl/templates/swl/dialog.j2:25
+#: swl/i18n.py:287 swl/templates/swl/dialog.j2:25
 msgid "Yes"
 msgstr "Ja"
 
-#: swl/i18n.py:287 swl/templates/swl/dialog.j2:24
+#: swl/i18n.py:288 swl/templates/swl/dialog.j2:24
 msgid "No"
 msgstr "Nein"
 
-#: swl/i18n.py:288 swl/templates/swl/dialog.j2:26
+#: swl/i18n.py:289 swl/templates/swl/dialog.j2:26
 msgid "Ok"
 msgstr "Ok"
 
-#: swl/i18n.py:289
+#: swl/i18n.py:290
 msgid "Error"
 msgstr "Fehler"
 
-#: swl/i18n.py:290
+#: swl/i18n.py:291
 msgid "Info"
 msgstr "Information"
 
-#: swl/i18n.py:291
+#: swl/i18n.py:292
 msgid "The server could not process the request"
 msgstr "Der Server konnte die Anfrage nicht verarbeiten"
 
-#: swl/i18n.py:292
+#: swl/i18n.py:293
 msgid "The server could not be reached"
 msgstr "Der Server ist nicht erreichbar"
 
-#: swl/i18n.py:293
+#: swl/i18n.py:294
 msgid "You are not allowed to do this, or your session has expired"
 msgstr "Sie sind dazu nicht berechtigt, oder Ihre Sitzung ist abgelaufen"
 
-#: swl/i18n.py:294
+#: swl/i18n.py:295
 msgid "The requested action does not exist"
 msgstr "Die angeforderte Aktion existiert nicht"
 
-#: swl/i18n.py:295
+#: swl/i18n.py:296
 msgid "The server sent an unexpected response"
 msgstr "Der Server hat eine unerwartete Antwort gesendet"
 
-#: swl/i18n.py:296
+#: swl/i18n.py:297
 msgid "Unknown function"
 msgstr "Unbekannte Funktion"
 
-#: swl/i18n.py:297
+#: swl/i18n.py:298
 msgid "Error in function"
 msgstr "Fehler in Funktion"
 
@@ -112,6 +112,10 @@ msgstr "Neues Passwort wiederholen"
 #: swl/templates/swl/modal-content.j2:31
 msgid "Close"
 msgstr "Schließen"
+
+#: swl/templates/swl/inputs.j2:33
+msgid "optional"
+msgstr "optional"
 
 #: swl/templates/swl/users.j2:18
 msgid "Users"

@@ -11,12 +11,38 @@
 #
 ## end license #}
 
+{#
+ # Form fields: a label above the control (swl-field, swl.css), with the framework's classes
+ # (SWL.ui), so they look right with every ui.framework.
+ #
+ #   label        - the label text
+ #   name         - the field name
+ #   value        - the value (not for password_input)
+ #   form         - id of the form the field belongs to, when it is outside it
+ #   mandatory    - required: the browser asks for it before the form is sent
+ #   optional     - "(optional)" after the label. When most fields of a form are required,
+ #                  mark the few optional ones instead of every required one.
+ #   autocomplete - the autocomplete attribute (text and password)
+ #   id           - the control's id (default: a random one)
+ #   hint         - a short help text below the control
+ #}
+
 {% macro random_id(len) -%}{% for i in range(0,len) -%}{{ [0,1,2,3,4,5,6,7,8,9,"a","b","c","d","e","f"]|random }}{% endfor %}{%- endmacro -%}
 
-{% macro label(id, text, mandatory=False) %}
-    <label for="{{ id }}">{{ text }}</label>
+{% macro label(id, text, mandatory=False, optional=False) %}
+    <label for="{{ id }}">{{ text }}{% if optional %} <span class="swl-optional">({{ _("optional") }})</span>{% endif %}</label>
 {% endmacro %}
 
+{# a field: the label, the control (caller) and an optional hint #}
+{% macro field(id, text, optional=False, hint="") %}
+<div class="swl-field">
+    {{ label(id, text, optional=optional) }}
+    {{ caller() }}
+    {% if hint %}<div class="swl-hint" id="{{ id }}-hint">{{ hint }}</div>{% endif %}
+</div>
+{% endmacro %}
+
+{# Bootstrap's floating label, as these macros used to be; only for templates that import it #}
 {% macro floating_label(id, text, mandatory) %}
 <div class="form-floating">
     {{ caller() }}
@@ -24,37 +50,44 @@
 </div>
 {% endmacro %}
 
-{% macro text_input(label, name, value="", form=None, mandatory=False, autocomplete="") %}
-    {% set _id = random_id(10) %}
-    {% call floating_label(_id, label) %}
-    <input type="text" {% if form != None %}form="{{ form }}"{% endif %} class="form-control" id="{{ _id }}" name="{{ name }}" value="{{ value }}" placeholder="{{ label }}" {% if autocomplete != "" %}autocomplete="{{ autocomplete }}"{% endif %}></input>
+{% macro _attrs(form, mandatory, autocomplete, hint, id) -%}
+    {%- if form != None %} form="{{ form }}"{% endif -%}
+    {%- if mandatory %} required{% endif -%}
+    {%- if autocomplete %} autocomplete="{{ autocomplete }}"{% endif -%}
+    {%- if hint %} aria-describedby="{{ id }}-hint"{% endif -%}
+{%- endmacro %}
+
+{% macro text_input(label, name, value="", form=None, mandatory=False, autocomplete="", optional=False, id=None, hint="") %}
+    {% set _id = id or random_id(10) %}
+    {% call field(_id, label, optional, hint) %}
+    <input type="text" class="{{ SWL.ui.input }}" id="{{ _id }}" name="{{ name }}" value="{{ value }}"{{ _attrs(form, mandatory, autocomplete, hint, _id) }}>
     {% endcall %}
 {% endmacro %}
 
-{% macro password_input(label, name, form=None, mandatory=False, autocomplete="") %}
-    {% set _id = random_id(10) %}
-    {% call floating_label(_id, label) %}
-    <input type="password" {% if form != None %}form="{{ form }}"{% endif %} class="form-control" id="{{ _id }}" name="{{ name }}" placeholder="{{ label }}" {% if autocomplete != "" %}autocomplete="{{ autocomplete }}"{% endif %}></input>
+{% macro password_input(label, name, form=None, mandatory=False, autocomplete="", optional=False, id=None, hint="") %}
+    {% set _id = id or random_id(10) %}
+    {% call field(_id, label, optional, hint) %}
+    <input type="password" class="{{ SWL.ui.input }}" id="{{ _id }}" name="{{ name }}"{{ _attrs(form, mandatory, autocomplete, hint, _id) }}>
     {% endcall %}
 {% endmacro %}
 
-{% macro number_input(label, name, value="", form=None, mandatory=False) %}
-    {% set _id = random_id(10) %}
-    {% call floating_label(_id, label) %}
-    <input type="number" {% if form != None %}form="{{ form }}"{% endif %} class="form-control" id="{{ _id }}" name="{{ name }}" value="{{ value }}" placeholder="{{ label }}"></input>
+{% macro number_input(label, name, value="", form=None, mandatory=False, optional=False, id=None, hint="") %}
+    {% set _id = id or random_id(10) %}
+    {% call field(_id, label, optional, hint) %}
+    <input type="number" class="{{ SWL.ui.input }}" id="{{ _id }}" name="{{ name }}" value="{{ value }}"{{ _attrs(form, mandatory, "", hint, _id) }}>
     {% endcall %}
 {% endmacro %}
 
-{% macro date_input(label, name, value="", form=None, mandatory=False) %}
-    {% set _id = random_id(10) %}
-    {% call floating_label(_id, label) %}
-    <input type="date" {% if form != None %}form="{{ form }}"{% endif %} class="form-control" id="{{ _id }}" name="{{ name }}" value="{{ value }}" placeholder="{{ label }}"></input>
+{% macro date_input(label, name, value="", form=None, mandatory=False, optional=False, id=None, hint="") %}
+    {% set _id = id or random_id(10) %}
+    {% call field(_id, label, optional, hint) %}
+    <input type="date" class="{{ SWL.ui.input }}" id="{{ _id }}" name="{{ name }}" value="{{ value }}"{{ _attrs(form, mandatory, "", hint, _id) }}>
     {% endcall %}
 {% endmacro %}
 
-{% macro textarea_input(label, name, value="", height="2em", form=None, mandatory=False) %}
-    {% set _id = random_id(10) %}
-    {% call floating_label(_id, label) %}
-    <textarea {% if form != None %}form="{{ form }}"{% endif %} class="form-control" name="{{ name }}" id="{{ _id }}" style="height: {{ height }}">{{ value }}</textarea>
+{% macro textarea_input(label, name, value="", height="2em", form=None, mandatory=False, optional=False, id=None, hint="") %}
+    {% set _id = id or random_id(10) %}
+    {% call field(_id, label, optional, hint) %}
+    <textarea class="{{ SWL.ui.textarea }}" id="{{ _id }}" name="{{ name }}" style="height: {{ height }}"{{ _attrs(form, mandatory, "", hint, _id) }}>{{ value }}</textarea>
     {% endcall %}
 {% endmacro %}

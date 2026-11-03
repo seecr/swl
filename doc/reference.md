@@ -407,8 +407,27 @@ Load SWL itself in `body_extra`:
 | `swl/contextmenu.j2` | the context menu: a popover `#swl-contextmenu`; put a `<div class="swl-menu">` with buttons in it | `open_contextmenu` |
 | `swl/dialog.j2`, `swl/toast.j2` | message dialog (`<dialog>`) and toast (popover); included by `base.j2` | errors, `hx-confirm`, `toast` |
 | `swl/placeholder.j2` | the `placeholder` macro | |
-| `swl/inputs.j2` | macros `text_input`, `password_input`, `number_input`, `date_input`, `textarea_input` (Bootstrap floating labels) | |
+| `swl/inputs.j2` | macros `text_input`, `password_input`, `number_input`, `date_input`, `textarea_input`: a label above the control (`swl-field`) with `SWL.ui` classes, for every framework. `mandatory=True` makes it required, `optional=True` adds "(optional)" to the label, `hint` a help text below it, `id` a fixed id. See [Form fields](#form-fields) | |
 | `swl/card.j2`, `swl/footer.j2`, `swl/alert.j2`, `swl/breadcrumbs.j2` | small Bootstrap pieces (older; need Bootstrap's CSS) | |
+
+### Form fields
+
+`swl/inputs.j2` builds a field the way SWL's own forms do: the label above the control, the
+classes of the framework.
+
+```jinja
+{% from "swl/inputs.j2" import text_input, textarea_input %}
+<form class="swl-stack" hx-post="{{ register('save_customer') }}">
+    {{ text_input(_("Name"), "name", value=customer.name, mandatory=True, autocomplete="name") }}
+    {{ text_input(_("Phone"), "phone", value=customer.phone, optional=True) }}
+    {{ textarea_input(_("Notes"), "notes", value=customer.notes, optional=True,
+                      hint=_("Only for your colleagues")) }}
+</form>
+```
+
+When most fields of a form are required, mark the few optional ones (`optional=True` shows a
+quiet "(optional)" that is never split over two lines) instead of an asterisk on every required
+one. `mandatory=True` adds `required`, so the browser asks for the field before the form is sent.
 
 ### Styling
 
@@ -460,7 +479,7 @@ Bootstrap's, Tabler's or Bulma's colours when one is loaded; a theme is a few li
 `swl.css` also has layout classes that work with every framework: `swl-container`, `swl-nav` (top
 bar, with `swl-brand`), `swl-columns` (columns that stack on small screens; `swl-wide` makes the
 first one wider), `swl-card` (with a `<header>` and `swl-card-body`), `swl-tabs`, `swl-stack`,
-`swl-row`, `swl-end`, `swl-field` (a label above an input), `swl-list`, `swl-badge`, `swl-muted`,
+`swl-row`, `swl-end`, `swl-field` (a label above an input; `swl-optional`, `swl-hint`), `swl-list`, `swl-badge`, `swl-muted`,
 `swl-small`, `swl-hidden`, `swl-link` (a button that looks like a link), `swl-icon-button` and
 `swl-menu`. The example application uses only these and `SWL.ui`, so it runs with each framework:
 `python -m swl_tasks --framework bulma`.
