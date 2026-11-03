@@ -338,6 +338,52 @@ _on("swl-contextmenu", (e) => {
 });
 
 /*
+ * The help balloon (swl/info.j2): a popover opened by its (i) button (popovertarget), so the
+ * browser opens and closes it (a click elsewhere, Escape). Here it is placed: below the
+ * button, above it when there is no room below, and always inside the window. It stays
+ * invisible until placed (data-swl-placed), so it never flashes in a corner.
+ */
+const INFO_GAP = 6;
+const INFO_EDGE = 8;
+
+function place_info(text) {
+    let button = document.querySelector(`[popovertarget="${CSS.escape(text.id)}"]`);
+    if (!button) {
+        return;
+    }
+    let b = button.getBoundingClientRect();
+    let t = text.getBoundingClientRect();
+    let left = b.left + b.width / 2 - t.width / 2;
+    left = Math.max(INFO_EDGE, Math.min(left, window.innerWidth - t.width - INFO_EDGE));
+    let top = b.bottom + INFO_GAP;
+    if (top + t.height > window.innerHeight - INFO_EDGE && b.top - INFO_GAP - t.height >= INFO_EDGE) {
+        top = b.top - INFO_GAP - t.height;
+    }
+    Object.assign(text.style, {left: left + "px", top: top + "px"});
+    text.setAttribute("data-swl-placed", "");
+}
+
+document.addEventListener("toggle", (e) => {
+    if (!e.target.matches?.(".swl-info-text")) {
+        return;
+    }
+    if (e.newState === "open") {
+        place_info(e.target);
+    } else {
+        e.target.removeAttribute("data-swl-placed");
+    }
+}, true);  // toggle does not bubble
+
+/* scrolling (the page, a modal's body) or resizing moves the button: the balloon goes along */
+function _place_open_infos() {
+    for (let text of document.querySelectorAll(".swl-info-text:popover-open")) {
+        place_info(text);
+    }
+}
+document.addEventListener("scroll", _place_open_infos, true);
+window.addEventListener("resize", _place_open_infos);
+
+/*
  * "Saved" for a moment at an element (SuccessResponse.saved). SWL is the mechanism, the
  * application decides how it looks: the content is a copy of the <template> in the element's
  * .swl-saved element (default: a check and SWL's text "saved"), shown with the class
@@ -596,4 +642,4 @@ function rehydrate(placeholder_id, context) {
     }
 }
 
-export { swl_action, kickstart, rehydrate, ui };
+export { swl_action, kickstart, rehydrate, ui, place_info };

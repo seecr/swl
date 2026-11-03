@@ -452,6 +452,7 @@ Load SWL itself in `body_extra`:
 | `swl/dialog.j2`, `swl/toast.j2` | message dialog (`<dialog>`) and toast (popover); included by `base.j2` | errors, `hx-confirm`, `toast` |
 | `swl/placeholder.j2` | the `placeholder` macro | |
 | `swl/inputs.j2` | macros `text_input`, `password_input`, `number_input`, `date_input`, `textarea_input`: a label above the control (`swl-field`) with `SWL.ui` classes, for every framework. `mandatory=True` makes it required, `optional=True` adds "(optional)" to the label, `hint` a help text below it, `id` a fixed id. See [Form fields](#form-fields) | |
+| `swl/info.j2` | the `info(text, label=None)` macro: a small (i) button that shows `text` in a balloon. See [Help balloons](#help-balloons) | |
 | `swl/card.j2`, `swl/footer.j2`, `swl/alert.j2`, `swl/breadcrumbs.j2` | small Bootstrap pieces (older; need Bootstrap's CSS) | |
 
 ### Form fields
@@ -472,6 +473,26 @@ classes of the framework.
 When most fields of a form are required, mark the few optional ones (`optional=True` shows a
 quiet "(optional)" that is never split over two lines) instead of an asterisk on every required
 one. `mandatory=True` adds `required`, so the browser asks for the field before the form is sent.
+
+### Help balloons
+
+An explanation that would be a hover text on a computer cannot be read on a phone. `info`
+puts it behind a small (i) instead: clicking or tapping it shows the text in a balloon, and
+a click elsewhere or Escape closes it.
+
+```jinja
+{% from "swl/info.j2" import info %}
+<label for="colour">{{ _("Main colour") }}</label>
+{{ info(_("Buttons, links and what is selected")) }}
+```
+
+The balloon is a native popover (`popovertarget`), so it is on top of everything, also of an
+open modal (Escape then closes the balloon first); `swl.js` places it below the (i), or above
+it when there is no room, always inside the window. The text is escaped (pass `Markup` for
+HTML); `label` is what a screen reader says for the button (default "More information",
+translated). Put the (i) next to a label, not inside it: a click on a `<label>` also goes to
+its control. The look: `.swl-info` (the button) and `.swl-info-text` (the balloon), with the
+`--swl-*` variables.
 
 ### Styling
 

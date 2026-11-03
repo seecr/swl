@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-03 16:55+0000\n"
+"POT-Creation-Date: 2026-11-03 20:09+0000\n"
 "PO-Revision-Date: 2026-11-01 18:16+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -120,6 +120,10 @@ msgstr "Herhaal nieuw wachtwoord"
 #: swl/templates/swl/modal-content.j2:31
 msgid "Close"
 msgstr "Sluiten"
+
+#: swl/templates/swl/info.j2:28
+msgid "More information"
+msgstr "Meer informatie"
 
 #: swl/templates/swl/inputs.j2:33
 msgid "optional"

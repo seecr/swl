@@ -262,6 +262,49 @@ dialog.swl-modal::backdrop, dialog.swl-dialog::backdrop { background: transparen
     box-shadow: var(--swl-shadow);
 }
 
+/* ---------------------------------------------------------------- help balloon (swl/info.j2) */
+
+/* the (i): small and quiet in the text, with a larger target for a finger */
+.swl-info {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.15em;
+    height: 1.15em;
+    margin: 0 .2em;
+    padding: 0;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--swl-muted);
+    box-shadow: none;
+    font: italic 700 .8em/1 Georgia, "Times New Roman", serif;
+    vertical-align: .05em;
+    cursor: pointer;
+}
+.swl-info::after { content: ""; position: absolute; inset: -.6em; }
+.swl-info:hover, .swl-info:focus-visible, .swl-info:has(+ .swl-info-text:popover-open) {
+    color: var(--swl-accent);
+}
+/* the balloon; swl.js places it (position: fixed, from popover) next to the (i) */
+.swl-info-text[popover] {
+    inset: auto;
+    width: max-content;
+    max-width: min(18rem, calc(100vw - 1rem));
+    margin: 0;
+    padding: .5rem .7rem;
+    border: 1px solid var(--swl-border);
+    border-radius: var(--swl-radius);
+    background: var(--swl-bg);
+    color: var(--swl-fg);
+    box-shadow: var(--swl-shadow);
+    font: normal 400 .875rem/1.4 var(--bs-body-font-family, system-ui, sans-serif);
+    text-align: left;
+    white-space: normal;
+}
+.swl-info-text[popover]:not([data-swl-placed]) { visibility: hidden; }
+
 /* A menu: a list of buttons or links, e.g. inside the context menu */
 .swl-menu { display: flex; flex-direction: column; }
 .swl-menu > button, .swl-menu > a {

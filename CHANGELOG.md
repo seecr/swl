@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Help balloons: `{% from "swl/info.j2" import info %}{{ info(text) }}` puts an explanation
+  behind a small (i) button; clicking or tapping it shows the text in a balloon (a native
+  popover, also on top of a modal), a click elsewhere or Escape closes it. For texts that
+  would be a hover text on a computer, which a phone cannot show. `swl.js` places the
+  balloon next to the button; `.swl-info` and `.swl-info-text` in `swl.css`. New text
+  "More information" (the button's label for screen readers) in nl, de, fr and es.
+
 ## 5.5.0 (2026-11-03)
 
 ### Changed

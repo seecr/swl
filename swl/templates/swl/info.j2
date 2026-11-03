@@ -1,0 +1,30 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # A help text behind a small (i) button: clicking or tapping it shows the text in a
+ # balloon, a click elsewhere or Escape closes it. For explanations that would be a hover
+ # text on a computer, which a phone cannot show. The balloon is a native popover, so it
+ # is on top of everything, also of an open modal; swl.js places it next to the button.
+ #
+ #   {% from "swl/info.j2" import info %}
+ #   {{ _("Main colour") }} {{ info(_("Buttons, links and what is selected")) }}
+ #
+ #   text  - the help text (escaped; pass Markup for HTML)
+ #   label - what a screen reader says for the button (default "More information")
+ #}
+{% from "swl/inputs.j2" import random_id %}
+{% macro info(text, label=None) -%}
+{%- set id = "swl-info-" ~ random_id(10) -%}
+<button type="button" class="swl-info" popovertarget="{{ id }}" aria-label="{{ label or _('More information') }}" title="{{ label or _('More information') }}">i</button>
+<span id="{{ id }}" class="swl-info-text" popover>{{ text }}</span>
+{%- endmacro %}
