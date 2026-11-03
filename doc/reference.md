@@ -447,7 +447,7 @@ Load SWL itself in `body_extra`:
 | Template | What | Needed for |
 |---|---|---|
 | `swl/modal.j2` | the modal: a `<dialog id="swl-modal">` with `#modal-content` | `open_modal`, `hydrate_modal` |
-| `swl/modal-content.j2` | base for modal content: blocks `modal_title`, `modal_content`, and optionally `modal_icon` (left of the title, e.g. `<span class="swl-avatar swl-avatar-lg">`), `modal_subtitle` (a line below it) and `modal_footer`. Any button with `data-swl-close` (or `data-bs-dismiss="modal"`) closes the modal | |
+| `swl/modal-content.j2` | base for modal content: blocks `modal_title`, `modal_content`, and optionally `modal_icon` (left of the title, e.g. `<span class="swl-avatar swl-avatar-lg">`), `modal_subtitle` (a line below it) and `modal_footer`. Any button with `data-swl-close` (or `data-bs-dismiss="modal"`) closes the modal. Only `modal_content` (`.swl-modal-body`) scrolls, the header and footer stay in place (`open_modal(scrollable=False)`: the whole modal scrolls); content of your own without a `.swl-modal-body` scrolls as a whole | |
 | `swl/contextmenu.j2` | the context menu: a popover `#swl-contextmenu`; put a `<div class="swl-menu">` with buttons in it | `open_contextmenu` |
 | `swl/dialog.j2`, `swl/toast.j2` | message dialog (`<dialog>`) and toast (popover); included by `base.j2` | errors, `hx-confirm`, `toast` |
 | `swl/placeholder.j2` | the `placeholder` macro | |
