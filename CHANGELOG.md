@@ -8,8 +8,8 @@
   `date_input`, `textarea_input`) put the label above the control (`swl-field`) with the
   framework's classes (`SWL.ui`), like SWL's own forms, instead of Bootstrap floating labels.
   They now look right with every `ui.framework`. The arguments stay the same; the controls no
-  longer get a `placeholder` (the floating label needed it). `floating_label` is still there
-  for templates that import it.
+  longer get a `placeholder` (the floating label needed it). The `floating_label` macro is
+  gone.
 - `mandatory=True` of those macros now makes the control `required`; it did nothing before.
 
 ### Added
@@ -26,10 +26,12 @@
   days after an update. A `?version=` on the page's script does not prevent that: modules
   import `./swl.js` without it. Mount `/static` (yours and SWL's) with it. The example and
   the documentation use it.
-- `swl.success().saved(id)`: "✓ Saved" for a moment at an element, for fields that save
-  themselves when they change; in its `.swl-saved` element, or one added at its end
-  (`role="status"`). Fades out after `delay` ms (config `response.saved.delay`, 2500). The
-  text is translated (`saved` in SWL's texts).
+- `swl.success().saved(id)`: "Saved" for a moment at an element, for fields that save
+  themselves when they change. SWL is the mechanism, the application decides how it looks:
+  the content is a copy of the `<template>` in the element's `.swl-saved` element (default
+  "✓ Saved", translated), shown with the class `swl-saved-shown` and removed again once
+  faded out, so screen readers read it out (`role="status"`). Fades out after `delay` ms
+  (config `response.saved.delay`, 2500); a new save restarts it.
 
 ## 5.3.0 (2026-11-01)
 

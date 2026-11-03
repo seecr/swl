@@ -139,12 +139,14 @@ The event names in `HX-Trigger` are `swl-call`, `swl-rehydrate`, `swl-recipe`,
 ### Saved
 
 A field that saves itself when it changes (`hx-post` on the field) tells the user it did with
-`saved`: a quiet "✓ Saved" that fades out, where the user is looking, instead of a toast.
+`saved`: a quiet "Saved" that fades out, where the user is looking, instead of a toast.
 
 ```jinja
 <div id="field-phone">
     <input name="phone" value="{{ customer.phone }}" hx-post="{{ register('save_phone') }}">
-    <span class="swl-saved" role="status"></span>
+    <span class="swl-saved" role="status">
+        <template><i class="bi bi-cloud-check"></i> {{ _("Saved") }}</template>
+    </span>
 </div>
 ```
 
@@ -155,10 +157,20 @@ async def save_phone(request, swl, **kwargs):
     return swl.success().saved("field-phone")
 ```
 
-Put the `.swl-saved` element where the text should appear; without one SWL adds it at the end
-of the element. With `role="status"` (or `aria-live="polite"`) in the page from the start,
-screen readers read it out. The text is `saved` of SWL's texts, so it follows the language of
-the page. A failed save (`swl.fail()`) shows its message as usual and no "Saved".
+SWL is the mechanism; the application decides how it looks. Put the `.swl-saved` element
+where it should appear, with what it should show in a `<template>`: SWL puts a copy of it in
+the element (in a `.swl-saved-content` span) and adds the class `swl-saved-shown`; after the
+delay the class goes and, once faded out, the copy too. Without a `<template>` it shows
+"✓ Saved" in the language of the page; without a `.swl-saved` element SWL adds one at the end
+of the element. `swl.css` only fades it in and out (in `:where()`, so your CSS wins), e.g.
+
+```css
+.swl-saved { color: green; font-weight: 600; }
+```
+
+With `role="status"` (or `aria-live="polite"`) on the `.swl-saved` element from the start,
+screen readers read the copy out when it appears: it is added, not just made visible. A failed
+save (`swl.fail()`) shows its message as usual and no "Saved".
 
 ## What a request sends
 

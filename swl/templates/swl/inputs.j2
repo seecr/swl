@@ -42,14 +42,6 @@
 </div>
 {% endmacro %}
 
-{# Bootstrap's floating label, as these macros used to be; only for templates that import it #}
-{% macro floating_label(id, text, mandatory) %}
-<div class="form-floating">
-    {{ caller() }}
-    {{ label(id, text, mandatory) }}
-</div>
-{% endmacro %}
-
 {% macro _attrs(form, mandatory, autocomplete, hint, id) -%}
     {%- if form != None %} form="{{ form }}"{% endif -%}
     {%- if mandatory %} required{% endif -%}

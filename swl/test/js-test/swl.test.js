@@ -382,7 +382,7 @@ QUnit.module("swl on htmx", (hooks) => {
         assert.ok(popover_open("#toast"), "still showing: the second toast restarted the timer");
     });
 
-    QUnit.test("saved shows 'Saved' at the element, then hides it after its delay", async (assert) => {
+    QUnit.test("saved shows 'Saved' at the element, then removes it after its delay", async (assert) => {
         fixture(DIALOG + `
             <div id="the_field"><input name="x"> <span class="swl-saved" role="status"></span></div>
             <div id="other_field"><input name="y"></div>`);
@@ -392,8 +392,8 @@ QUnit.module("swl on htmx", (hooks) => {
         await waitFor(() => shown("#the_field .swl-saved"), "shown in its .swl-saved");
 
         assert.equal(document.querySelectorAll("#the_field .swl-saved").length, 1, "its own one");
-        assert.ok($("#the_field .swl-saved").textContent.includes(_get("saved")));
-        assert.ok($("#the_field .swl-saved .bi-check2"), "with a check");
+        assert.equal($("#the_field .swl-saved").textContent.trim(), _get("saved"), "the default text");
+        assert.ok($("#the_field .swl-saved .swl-saved-content .bi-check2"), "with a check");
         let added = $("#other_field .swl-saved");
         assert.ok(added, "added to an element without one");
         assert.equal(added.getAttribute("role"), "status", "read out");
@@ -401,7 +401,28 @@ QUnit.module("swl on htmx", (hooks) => {
         assert.notOk(dialog_shown());
 
         await waitFor(() => !shown("#the_field .swl-saved"), "hidden after its delay");
-        assert.equal($("#the_field .swl-saved").textContent.trim(), _get("saved"), "stays in place");
+        await waitFor(() => $("#the_field .swl-saved").textContent.trim() === "",
+            "the content removed once hidden: a next save is read out again");
+    });
+
+    QUnit.test("saved shows the application's <template>, and leaves the template alone", async (assert) => {
+        fixture(`<div id="the_field"><span class="swl-saved" role="status">` +
+            `<template><b class="mine">Klaar</b> met opslaan</template></span></div>`);
+        let saved = $("#the_field .swl-saved");
+        assert.equal(saved.textContent, "", "nothing to read out before a save");
+
+        await swl_action("/action/swl_saved", {});
+        await waitFor(() => saved.classList.contains("swl-saved-shown"), "shown");
+
+        assert.equal($("#the_field .swl-saved-content").textContent, "Klaar met opslaan");
+        assert.ok($("#the_field .swl-saved-content b.mine"), "the application's html");
+        assert.notOk($("#the_field .swl-saved-content .bi-check2"), "not SWL's default");
+        let template = $("#the_field .swl-saved > template");
+        assert.ok(template, "the template stays");
+        assert.equal(template.content.textContent, "Klaar met opslaan", "unchanged");
+
+        await waitFor(() => !$("#the_field .swl-saved-content"), "removed after its delay");
+        assert.ok($("#the_field .swl-saved > template"), "the template is still there");
     });
 
     QUnit.test("saved for an element that is not on the page does nothing", async (assert) => {
@@ -421,6 +442,8 @@ QUnit.module("swl on htmx", (hooks) => {
         await swl_action("/action/swl_saved", {});
         await sleep(200);  // 400 ms after the first save: past its delay (300)
         assert.ok(shown(), "still shown: the second save restarted the delay");
+        assert.equal(document.querySelectorAll("#the_field .swl-saved-content").length, 1,
+            "one copy, not two");
         await waitFor(() => !shown(), "hidden after the second delay");
     });
 

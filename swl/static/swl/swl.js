@@ -338,10 +338,50 @@ _on("swl-contextmenu", (e) => {
 });
 
 /*
- * "Saved" for a moment at an element (SuccessResponse.saved): in its .swl-saved element, or in
- * one added at its end. It fades out after `delay` ms; a new save restarts that.
+ * "Saved" for a moment at an element (SuccessResponse.saved). SWL is the mechanism, the
+ * application decides how it looks: the content is a copy of the <template> in the element's
+ * .swl-saved element (default: a check and SWL's text "saved"), shown with the class
+ * swl-saved-shown. After `delay` ms the class goes, and once faded out the copy too: a screen
+ * reader reads out the content of a role="status" element when it is added, so it must not
+ * stay. A new save restarts it. Without a .swl-saved element one is added at the end.
  */
 const SAVED_SHOWN = "swl-saved-shown";
+const SAVED_CONTENT = "swl-saved-content";
+
+function _saved_content(elem) {
+    let template = elem.querySelector(":scope > template");
+    if (template) {
+        return template.content.cloneNode(true);
+    }
+    let content = document.createDocumentFragment();
+    content.append(Object.assign(document.createElement("i"), {className: "bi bi-check2"}), " ", _get("saved"));
+    content.firstChild.setAttribute("aria-hidden", "true");
+    return content;
+}
+
+function _show_saved(elem, delay) {
+    let shown = elem._swl_saved = {};  // a later save replaces it
+    elem.querySelector(`:scope > .${SAVED_CONTENT}`)?.remove();
+    let content = document.createElement("span");
+    content.className = SAVED_CONTENT;
+    content.append(_saved_content(elem));
+    elem.append(content);
+    elem.classList.add(SAVED_SHOWN);
+    setTimeout(() => {
+        if (elem._swl_saved !== shown) {
+            return;
+        }
+        elem.classList.remove(SAVED_SHOWN);
+        let remove = () => {
+            if (elem._swl_saved === shown) {
+                content.remove();
+            }
+        };
+        elem.addEventListener("transitionend", remove, {once: true});
+        setTimeout(remove, 1000);  // also without a transition
+    }, delay);
+}
+
 _on("swl-saved", (e) => {
     for (let {id, delay} of e.detail.targets || []) {
         let target = document.getElementById(id);
@@ -355,11 +395,7 @@ _on("swl-saved", (e) => {
             elem.setAttribute("role", "status");
             target.append(elem);
         }
-        elem.innerHTML = '<i class="bi bi-check2" aria-hidden="true"></i> ';
-        elem.append(_get("saved"));
-        elem.classList.add(SAVED_SHOWN);
-        clearTimeout(elem._swl_saved_timer);
-        elem._swl_saved_timer = setTimeout(() => elem.classList.remove(SAVED_SHOWN), delay ?? 2500);
+        _show_saved(elem, delay ?? 2500);
     }
 });
 
