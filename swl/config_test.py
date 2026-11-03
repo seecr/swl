@@ -43,7 +43,7 @@ def restore_logging():
 def test_configure_logging(restore_logging):
     configure_logging("DEBUG")
     assert logging.getLogger().level == logging.DEBUG
-    assert logging.getLogger("my_app").isEnabledFor(logging.DEBUG), "the application's own"
+    assert logging.getLogger("my_app").isEnabledFor(logging.DEBUG), "the app's own"
     for name, level in QUIETED.items():
         assert logging.getLogger(name).level == level, name
     assert not logging.getLogger("PIL.PngImagePlugin").isEnabledFor(logging.DEBUG)
