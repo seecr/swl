@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.4.1 (2026-11-03)
+
+### Changed
+
+- `configure_logging` sets Pillow's logger (`PIL`) to INFO, as it already did for uvicorn,
+  python-multipart and the database libraries: at DEBUG Pillow logs every chunk of every
+  image it reads ("STREAM b'IDAT' ..."), e.g. many lines for each PDF made with ReportLab.
+
 ## 5.4.0 (2026-11-03)
 
 ### Changed

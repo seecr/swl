@@ -64,3 +64,4 @@ def configure_logging(loglevel):
     logging.getLogger("sqlalchemy.engine").setLevel("WARNING")
     logging.getLogger("aiosqlite").setLevel("WARNING")
     logging.getLogger("databases").setLevel("WARNING")
+    logging.getLogger("PIL").setLevel("INFO")  # Pillow: every chunk of every image it reads
