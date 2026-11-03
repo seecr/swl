@@ -2,7 +2,7 @@
 #
 # "SWL"(Seecr Web Lib) makes developing webbased apps easier
 #
-# Copyright (C) 2024-2025 Seecr (Seek You Too B.V.) https://seecr.nl
+# Copyright (C) 2024-2026 Seecr (Seek You Too B.V.) https://seecr.nl
 #
 # This file is part of "Seecr Web Lib"
 #
@@ -18,6 +18,7 @@ from pathlib import Path
 from .actions import Actions
 from .config import configure_logging
 from .responses import *
+from .static_files import StaticFiles
 from .swl import SWL
 from .uvicorn_app import uvicorn_main
 

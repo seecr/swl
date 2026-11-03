@@ -23,13 +23,12 @@ from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.routing import Mount, Route, WebSocketRoute
-from starlette.staticfiles import StaticFiles
 
 from markupsafe import Markup
 
 from seecr_stdlib.config import Config
 
-from swl import SWL, static_dir
+from swl import SWL, StaticFiles, static_dir
 from swl.dispatcher import Dispatcher
 from swl.i18n import _
 from swl.frameworks import FrameworkCookieMiddleware

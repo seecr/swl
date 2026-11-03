@@ -20,6 +20,12 @@
   Spanish.
 - `hint="..."`: a help text below the control (`swl-hint`, linked with `aria-describedby`),
   and `id="..."`: a fixed id instead of a random one.
+- `swl.StaticFiles`: Starlette's `StaticFiles` (same arguments) that sends
+  `Cache-Control: no-cache`, so browsers check with the server before using their copy (a
+  cheap 304 when unchanged) instead of running an old `swl.js` or application script for
+  days after an update. A `?version=` on the page's script does not prevent that: modules
+  import `./swl.js` without it. Mount `/static` (yours and SWL's) with it. The example and
+  the documentation use it.
 - `swl.success().saved(id)`: "✓ Saved" for a moment at an element, for fields that save
   themselves when they change; in its `.swl-saved` element, or one added at its end
   (`role="status"`). Fades out after `delay` ms (config `response.saved.delay`, 2500). The

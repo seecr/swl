@@ -27,9 +27,8 @@ guided introduction, read `example/README.md` first; this page is for looking th
 ```python
 from starlette.applications import Starlette
 from starlette.routing import Mount, Route
-from starlette.staticfiles import StaticFiles
 from seecr_stdlib.config import Config
-from swl import SWL, static_dir
+from swl import SWL, StaticFiles, static_dir
 
 swl = SWL(config=Config({}), templates=[my_templates_dir])  # your templates first, then SWL's
 swl.register_modules(my_views)                               # modules with __actions__
@@ -42,6 +41,13 @@ app = Starlette(routes=[
     Mount("/static", StaticFiles(directory=static_dir)),     # swl.js and friends
 ])
 ```
+
+`swl.StaticFiles` is Starlette's `StaticFiles` (same arguments) that sends
+`Cache-Control: no-cache` with every file: the browser keeps its copy but asks the server
+before using it, a cheap `304 Not Modified` when it did not change. Without it a browser may
+keep using an old `swl.js` for days after an update, also when the page's own url has a
+`?version=`: JavaScript modules import `./swl.js` without it. Mount your own static files
+with it too.
 
 Login needs Starlette's `SessionMiddleware` and `AuthenticationMiddleware` with
 `swl.session.SessionAuthBackend(userbase)`; see `example/swl_tasks/app.py` for a complete setup

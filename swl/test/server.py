@@ -13,6 +13,8 @@
 
 from starlette.applications import Starlette
 from starlette.staticfiles import StaticFiles
+
+from swl.static_files import StaticFiles as SWLStaticFiles
 from starlette.responses import HTMLResponse
 from starlette.routing import Route, Mount
 
@@ -85,7 +87,7 @@ def app():
             Mount("/test", app=StaticFiles(directory=test_dir), name="test"),
             Mount(
                 "/static",
-                app=StaticFiles(directory=this_dir.parent / "static"),
+                app=SWLStaticFiles(directory=this_dir.parent / "static"),
                 name="static",
             ),
         ],
