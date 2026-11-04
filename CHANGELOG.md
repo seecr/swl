@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 5.7.0 (2026-11-04)
 
 > Trees: a tree that the server fills and that tells it what happens in it, clicks and drag and
 > drop; the example shows its tasks as one. Also: extra scripts and styles on top of the CSS
