@@ -44,8 +44,8 @@ def _load(path):
 
 
 class WebResources:
-    """The styles and scripts swl/base.j2 loads: those in path (a JSON file with "styles" and
-    "scripts"), followed by those in each of the extra files (e.g. a library only some
+    """The styles and scripts swl/base.j2 loads: those in path (a JSON file with "styles"
+    and "scripts"), followed by those in each of the extra files (e.g. a library only some
     applications use)."""
 
     def __init__(self, path=None, base_url=None, extra=()):

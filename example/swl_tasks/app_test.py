@@ -339,7 +339,9 @@ def test_the_tree(client):
     assert f'name="selected_task" value="{two.id}"' in partials(response)["selection"]
     assert response.headers["HX-Replace-Url"] == f"/tasks/{two.id}/details?view=tree"
     # a click on a status: nothing
-    response = client.post(action(client, "task_tree_select"), data={"node": "status-open"})
+    response = client.post(
+        action(client, "task_tree_select"), data={"node": "status-open"}
+    )
     assert response.status_code == 204
 
     # drag "Two" above "One"
@@ -405,14 +407,19 @@ def test_moving_with_a_filter_and_other_users(tmp_path):
     from swl_tasks.store import TaskStore
 
     store = TaskStore()
-    a = store.add("apple", "demo")
-    secret = store.add("secret", "other", private=True)
+    store.add("apple", "demo")
+    store.add("secret", "other", private=True)
     b = store.add("banana", "demo")
     c = store.add("apple pie", "demo")
     # with search text "apple" the tree shows [apple, apple pie]; move "apple pie" first
     store.move(c.id, "demo", done=False, position=0, q="apple")
     assert [t.title for t in store.find("demo")] == ["apple pie", "apple", "banana"]
-    assert [t.title for t in store.find("other")] == ["apple pie", "apple", "secret", "banana"]
+    assert [t.title for t in store.find("other")] == [
+        "apple pie",
+        "apple",
+        "secret",
+        "banana",
+    ]
     # to an empty Done
     store.move(b.id, "demo", done=True, position=0)
     assert [t.title for t in store.find("demo", status="done")] == ["banana"]

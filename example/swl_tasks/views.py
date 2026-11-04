@@ -69,9 +69,9 @@ LABELS = {
 # --- Where you are: the url -------------------------------------------------------------
 #
 # The screen is described by five things: the search text, the status filter, the view
-# (list or tree), the selected task and its tab. They live in the #filters form (the last two as hidden fields, see
-# selection.j2), so every request that includes #filters knows the whole screen, and
-# actions put it in the url:
+# (list or tree), the selected task and its tab. They live in the #filters form (the last
+# two as hidden fields, see selection.j2), so every request that includes #filters knows
+# the whole screen, and actions put it in the url:
 #
 #     /tasks/<task id>/<tab>?q=<search>&status=<status>&view=tree
 #
@@ -304,7 +304,8 @@ STATUS_ICONS = {"open": "bi bi-circle", "done": "bi bi-check-circle"}
 
 
 def tree_view(swl, store, username, screen):
-    """The tasks_list action with view=tree: the tree element, and tree_init to fill it."""
+    """The tasks_list action with view=tree: the tree element, and tree_init to fill
+    it."""
     html = swl.template("tasks/tree.j2").render(tree_id=TASK_TREE)
     return (
         swl.success()
@@ -365,8 +366,8 @@ async def task_tree_data(request, swl, store, **kwargs):
 
 
 async def task_tree_select(request, swl, store, **kwargs):
-    """A click on a node in the tree: tree.js posts its id as "node", with the params. A task
-    shows in the detail panel, on its first tab; a status does nothing."""
+    """A click on a node in the tree: tree.js posts its id as "node", with the params.
+    A task shows in the detail panel, on its first tab; a status does nothing."""
     async with request.form() as form:
         node = form.get("node", "")
         screen = screen_from({**form, "view": "tree", "selected_task": node})
@@ -377,9 +378,9 @@ async def task_tree_select(request, swl, store, **kwargs):
 
 
 async def task_tree_move(request, swl, store, dispatcher, **kwargs):
-    """A task dragged in the tree. tree.js posts node, parent and position (among its new
-    siblings, from 0), old_parent and old_position, and the params. A failure makes the tree
-    reload, so the task goes back to where it is."""
+    """A task dragged in the tree. tree.js posts node, parent and position (among its
+    new siblings, from 0), old_parent and old_position, and the params. A failure makes
+    the tree reload, so the task goes back to where it is."""
     async with request.form() as form:
         task_id = form.get("node", "")
         parent = form.get("parent", "")

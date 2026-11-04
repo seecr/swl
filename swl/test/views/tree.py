@@ -31,11 +31,13 @@ async def tree_test_data(request, **kwargs):
     async with request.form() as form:
         posted = _posted(form)
     nodes = [dict(n) for n in NODES] or [
-        tree_node("f1", "Folder <b>1</b>", parent="#", opened=True, type="folder", draggable=False),
+        tree_node("f1", "Folder <b>1</b>", parent="#", opened=True, type="folder",
+                  draggable=False),
         tree_node("a", "A", parent="f1", type="item"),
         tree_node("b", "B", parent="f1", type="item"),
         tree_node("c", "C", parent="f1", type="item"),
-        tree_node("f2", "Folder 2", parent="#", opened=True, type="folder", draggable=False),
+        tree_node("f2", "Folder 2", parent="#", opened=True, type="folder",
+                  draggable=False),
         tree_node("d", "D", parent="f2", type="item"),
     ]
     # the posted values travel along with the first node, for the test to check
@@ -53,7 +55,8 @@ async def tree_test_set_nodes(request, **kwargs):
 
 async def tree_test_select(request, **kwargs):
     async with request.form() as form:
-        return SuccessResponse().call("tree_test_record", action="select", **_posted(form))
+        posted = _posted(form)
+    return SuccessResponse().call("tree_test_record", action="select", **posted)
 
 
 async def tree_test_move(request, **kwargs):
