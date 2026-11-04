@@ -1,5 +1,6 @@
 {{ define "main" }}
-{{ with .Params.news }}<aside class="news">{{ . | markdownify }}</aside>{{ end }}
+{{/* the highlights of the latest x.y release: data/news.json, made by `make news` from CHANGELOG.md */}}
+{{ with site.Data.news }}{{ if .text }}<aside class="news"><p><strong>SWL {{ .version }} is out.</strong> {{ .text | markdownify }} See the <a href="{{ site.Params.changelog }}">changelog</a>.</p></aside>{{ end }}{{ end }}
 <article class="home">
   {{ .Content }}
 </article>

@@ -8,6 +8,11 @@ It is a [Hugo](https://gohugo.io) site. The home page is `content/_index.md`; th
 `../doc/reference.md`; the generated `content/reference.md` and `static/swl-reference.pdf` are
 not in git.
 
+The banner at the top of the home page announces the latest x.y release with its highlights:
+the quote (`> ...`) right below the `## x.y.0` heading in `../CHANGELOG.md`. `news.py` puts it
+in `data/news.json` (not in git) for `layouts/index.html`; it stays during the x.y.z bug-fix
+releases. An x.y.0 without highlights stops the release (`.github/workflows/publish.yml`).
+
 ## Building
 
 You need `hugo` (extended, 0.120 or newer), `pandoc` (3.8 or newer) and `typst` (0.15 or

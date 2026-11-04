@@ -17,6 +17,8 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
+      - name: An x.y.0 release needs highlights in CHANGELOG.md (the banner on the website)
+        run: python site/news.py CHANGELOG.md "$GITHUB_REF_NAME" > /dev/null
       - run: pip install build
       - run: python -m build
       - uses: actions/upload-artifact@v7

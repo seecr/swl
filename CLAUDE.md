@@ -83,6 +83,10 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
   and makes a GitHub release from its CHANGELOG section (`.github/workflows/publish.yml`), and
   PyPI never accepts a version twice. Don't push tags
   unless asked. `.github/workflows/test.yml` runs the tests on every push.
+- An x.y.0 release (y goes up) gets highlights: a quote (`> ...`) right below its heading in
+  CHANGELOG.md, a few sentences on the main changes since the previous x.y. The website shows
+  them as the banner on its home page until the next x.y (`site/news.py`); publishing an x.y.0
+  tag without them fails. Bug-fix releases (x.y.z) need none.
 - Never push or publish to PyPI; that is the maintainers' decision. No
   `Claude-Session:` lines in commit messages.
 - Keep changes on a branch; report behaviour changes and anything left undone.

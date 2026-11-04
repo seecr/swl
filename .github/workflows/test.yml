@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e . -e example/
-      - run: python -m pytest swl example/swl_tasks
+      - run: python -m pytest swl example/swl_tasks site/news_test.py
 
   javascript:
     runs-on: ubuntu-latest

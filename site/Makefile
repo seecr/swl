@@ -12,18 +12,24 @@ SWL_DIR ?= ..
 REFERENCE_MD := $(SWL_DIR)/doc/reference.md
 SWL_VERSION   = $(shell git -C $(SWL_DIR) describe --tags 2>/dev/null || echo main)
 
-.PHONY: all build serve pdf reference clean
+.PHONY: all build serve pdf reference news clean
 
 all: build
 
-build: reference pdf
+build: reference pdf news
 	hugo --minify $(HUGO_FLAGS)
 
-serve: reference pdf
+serve: reference pdf news
 	hugo server $(HUGO_FLAGS)
 
 reference: content/reference.md
 pdf: static/swl-reference.pdf
+
+# The banner on the home page: the highlights of the latest x.y release, from CHANGELOG.md
+# (news.py). Made every time, as the version comes from the tags.
+news:
+	mkdir -p data
+	python3 news.py $(SWL_DIR)/CHANGELOG.md "$(SWL_VERSION)" > data/news.json
 
 # The reference page on the site: SWL's doc/reference.md with Hugo front matter.
 content/reference.md: $(REFERENCE_MD)
@@ -47,4 +53,4 @@ static/swl-reference.pdf: $(REFERENCE_MD) pdf/reference.typ pdf/reference.lua pd
 
 clean:
 	rm -rf public resources content/reference.md static/swl-reference.pdf pdf/reference.out.typ \
-	    .hugo_build.lock
+	    data/news.json .hugo_build.lock

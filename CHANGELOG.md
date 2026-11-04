@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+> Trees: a tree that the server fills and that tells it what happens in it, clicks and drag and
+> drop; the example shows its tasks as one. Also: extra scripts and styles on top of the CSS
+> framework's, and `swl_action()` tells whether the action succeeded.
+
 ### Added
 
 - Trees: `static/swl/tree.js` drives [jstree](https://www.jstree.com) from the server.

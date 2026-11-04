@@ -1,6 +1,5 @@
 ---
 title: "SWL"
-news: "**SWL 5.3 is out.** Translations: SWL apps speak the visitor's language, and SWL's own screens come in five. Live updates can go to specific users only, catch up after a lost connection, and show who is online. See the [changelog](https://github.com/seecr/swl/blob/main/CHANGELOG.md)."
 ---
 
 ## introduction
@@ -104,6 +103,11 @@ German, French and Spanish.</dd>
 <dd>Actions keep the url up to date, and a page route renders the same screen from it. Screens
 survive a reload and can be shared.</dd>
 
+<dt>trees</dt>
+<dd>A tree that loads its nodes from an action and tells the server what happens in it: clicks,
+and nodes dragged to another place. Actions can select, rename, add and remove nodes. Optional,
+with jstree.</dd>
+
 <dt>ready-made parts</dt>
 <dd>A modal, confirm and error dialogs, toasts and context menus, all plain HTML
 (<code>&lt;dialog&gt;</code>, popover). Login, "my account" and user management screens.</dd>
@@ -116,7 +120,7 @@ all. Light and dark work with each of them.</dd>
 ## try the example
 
 The example application is a small task list. It uses nearly everything: dialogs, search as you
-type, tabs, a context menu, live updates between browser tabs, private tasks that only their
+type, tabs, a context menu, a tree with drag and drop, live updates between browser tabs, private tasks that only their
 owner hears about, screens that survive a reload, and switches for the language, the CSS
 framework and dark mode.
 
