@@ -32,6 +32,10 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
   (`data-swl-on-changed` placeholders reload when the dispatcher signals a change, and all of
   them after a reconnect). `swl/dispatcher.py`: `signal_change(obj, users=[identities])` sends
   a change only to those users' pages (`websocket.user.identity`).
+- `swl/static/swl/tree.js` + `swl/tree.py` (`tree_node`): optional trees with jstree (needs
+  jQuery, loaded by the app, e.g. via `paths.extra_resources`); the server drives them with
+  `.call("tree_init" | "tree_select" | "tree_rename" | "tree_create" | "tree_delete" |
+  "tree_refresh", ...)`. JS tests in `swl/test/js-test/tree.test.js`.
 - `swl/i18n.py`: translations (Babel/gettext): `_()`, `ngettext`, `N_`, `I18n` (locales,
   selector, catalogs), `I18nMiddleware` (`swl.i18n_middleware`), Jinja `_`/`{% trans %}`
   and `format_*` filters. SWL's catalogs in `swl/locale` (domain `swl`; nl, de, fr);

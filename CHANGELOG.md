@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Trees: `static/swl/tree.js` drives [jstree](https://www.jstree.com) from the server.
+  `.call("tree_init", tree_id=..., data_url=..., select_url=..., move_url=..., params=...)`
+  makes an element a tree that loads its nodes from an action (JSON, made with the new
+  `swl.tree.tree_node`), posts a click to `select_url` and a drag and drop to `move_url`
+  (`dnd="same-parent"` or `"any"`, with jstree's types plugin for where nodes may go). When the
+  move action fails, the tree reloads. `tree_select`, `tree_rename`, `tree_create`,
+  `tree_delete` and `tree_refresh` change it from an action; `tree_refresh` selects a node
+  only after the reload. Node texts are shown as text unless `html=True`. Optional: jstree
+  needs jQuery, which only the pages with a tree load. `swl.css` gives jstree's default theme
+  SWL's colours (also in dark mode). See "Trees" in the reference; the example has a tree view.
+- `paths.extra_resources`: one or more JSON files with styles and scripts that `base.j2` loads
+  after the framework's (or `paths.resources`), e.g. jQuery and jstree.
+
+### Changed
+
+- `swl_action()` resolves to `true` when the action succeeded and `false` when it failed
+  (`swl.fail()`, an HTTP error, no connection); it resolved to nothing before.
+
 ## 5.6.0 (2026-11-03)
 
 ### Added

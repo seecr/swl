@@ -26,7 +26,8 @@ An action answers with swl.success() or swl.fail(), see swl/responses.py:
   .rehydrate(id, context=)  let a placeholder reload itself
   .open_modal(html)         show html in the modal dialog
   .toast(text)              show a short message
-  .call(function, **kw)     call a javascript function with kw
+  .call(function, **kw)     call a javascript function with kw (e.g. tree_init, see
+                            "The tree" below)
   .set_url(url, **params)   change the url in the address bar
                             (see "Where you are: the url")
   swl.fail().message(text)  show an error message
@@ -39,16 +40,20 @@ from types import SimpleNamespace
 from urllib.parse import urlencode
 
 from markupsafe import Markup, escape
+from starlette.responses import JSONResponse
 
 from swl.i18n import N_, _
+from swl.tree import tree_node
 
 from .store import TaskStore
 
 TASKS_LIST = "tasks-list"  # id of the placeholder with the task list (page.j2)
 TASK_DETAIL = "task-detail"  # id of the placeholder with the selected task (page.j2)
 SELECTION = "selection"  # id of the hidden fields that remember the selected task and tab
+TASK_TREE = "task-tree"  # id of the tree (tree.j2), in the "tasks-list" placeholder
 STATUSES = ["all", "open", "done"]
 TABS = ["details", "history"]
+VIEWS = ["list", "tree"]  # the tasks as a table (list.j2) or as a tree (tree.j2)
 # what the select and the tabs show; translated where they are shown
 LABELS = {
     "all": N_("All"),
@@ -56,17 +61,19 @@ LABELS = {
     "done": N_("Done"),
     "details": N_("Details"),
     "history": N_("History"),
+    "list": N_("List"),
+    "tree": N_("Tree"),
 }
 
 
 # --- Where you are: the url -------------------------------------------------------------
 #
-# The screen is described by four things: the search text, the status filter, the selected
-# task and its tab. They live in the #filters form (the last two as hidden fields, see
+# The screen is described by five things: the search text, the status filter, the view
+# (list or tree), the selected task and its tab. They live in the #filters form (the last two as hidden fields, see
 # selection.j2), so every request that includes #filters knows the whole screen, and
 # actions put it in the url:
 #
-#     /tasks/<task id>/<tab>?q=<search>&status=<status>
+#     /tasks/<task id>/<tab>?q=<search>&status=<status>&view=tree
 #
 # The page route (app.py) reads that url and renders the same screen, so a reload, a
 # bookmark or a link to a colleague shows exactly what you saw.
@@ -76,18 +83,24 @@ def screen_from(form):
     """The screen as posted with the #filters form."""
     status = form.get("status", "all")
     tab = form.get("selected_tab")
+    view = form.get("view")
     return {
         "q": form.get("q", "").strip(),
         "status": status if status in STATUSES else "all",
+        "view": view if view in VIEWS else VIEWS[0],
         "task_id": form.get("selected_task") or None,
         "tab": tab if tab in TABS else TABS[0],
     }
 
 
-def page_url(q="", status="all", task_id=None, tab=TABS[0]):
+def page_url(q="", status="all", view=VIEWS[0], task_id=None, tab=TABS[0]):
     """The url of a screen: the selection in the path, the filters as query parameters."""
     path = f"/tasks/{task_id}/{tab}" if task_id else "/"
-    params = {k: v for k, v in (("q", q), ("status", status)) if v and v != "all"}
+    params = {
+        k: v
+        for k, v in (("q", q), ("status", status), ("view", view))
+        if v and v not in ("all", VIEWS[0])
+    }
     return path + ("?" + urlencode(params) if params else "")
 
 
@@ -124,6 +137,8 @@ async def tasks_list(request, swl, store, **kwargs):
         highlight = form.get("highlight")
 
     username = request.user.username
+    if screen["view"] == "tree":
+        return tree_view(swl, store, username, screen)
     tasks = store.find(username, q=screen["q"], status=screen["status"])
     html = swl.template("tasks/list.j2").render(
         tasks=tasks,
@@ -159,23 +174,25 @@ async def task_detail(request, swl, store, **kwargs):
         if form.get("tab") in TABS:
             screen["tab"] = form["tab"]
 
-    username = request.user.username
+    response = show_task(swl, store, request.user.username, screen)
+    if screen["task_id"] != previous and screen["view"] == "list":
+        response.rehydrate(TASKS_LIST)  # to move the "selected" mark in the list
+    return response
+
+
+def show_task(swl, store, username, screen):
+    """The response that shows the task of the screen in the detail panel, remembers it as
+    the selection and puts it in the url."""
+    html = render_detail(swl, store, username, screen["task_id"], screen["tab"])
     if screen["task_id"] and store.get(screen["task_id"], username) is None:
         # deleted (maybe in another tab): show that once, then forget the selection
-        html = render_detail(swl, store, username, screen["task_id"], screen["tab"])
         screen["task_id"] = None
-    else:
-        html = render_detail(swl, store, username, screen["task_id"], screen["tab"])
-
-    response = (
+    return (
         swl.success()
         .hydrate(TASK_DETAIL, html)
         .hydrate(SELECTION, render_selection(screen["task_id"], screen["tab"]))
         .set_url(page_url(**screen))
     )
-    if screen["task_id"] != previous:
-        response.rehydrate(TASKS_LIST)  # to move the "selected" mark in the list
-    return response
 
 
 async def task_new(request, swl, **kwargs):
@@ -265,6 +282,129 @@ async def task_menu(request, swl, store, **kwargs):
     return swl.success().open_contextmenu(html, location=location)
 
 
+# --- The tree ---------------------------------------------------------------------------
+#
+# With "Tree" chosen in the #filters form, the tasks_list action renders tree.j2 (an empty
+# element) and calls tree_init (swl/static/swl/tree.js, which uses jstree). The tree then
+# talks to the server by itself:
+#   - it loads its nodes from task_tree_data (JSON, made with swl.tree.tree_node),
+#   - a click on a task posts task_tree_select, which shows the task on the right,
+#   - dragging a task posts task_tree_move: to reorder it, or to move it between Open and
+#     Done. When that fails (the task was deleted meanwhile), the tree reloads itself.
+# Every request also posts the params given to tree_init: here the filters.
+# It sits in the "tasks-list" placeholder, so a change (here or in another tab) builds it
+# again, as it does the list.
+
+TREE_TYPES = {  # what may go where (jstree's types plugin): tasks only into a status
+    "#": {"valid_children": ["status"]},
+    "status": {"valid_children": ["task"]},
+    "task": {"valid_children": []},
+}
+STATUS_ICONS = {"open": "bi bi-circle", "done": "bi bi-check-circle"}
+
+
+def tree_view(swl, store, username, screen):
+    """The tasks_list action with view=tree: the tree element, and tree_init to fill it."""
+    html = swl.template("tasks/tree.j2").render(tree_id=TASK_TREE)
+    return (
+        swl.success()
+        .hydrate(TASKS_LIST, html)
+        .set_url(page_url(**screen))
+        .call("show_counts", **counts_text(store.counts(username)))
+        .call(
+            "tree_init",
+            tree_id=TASK_TREE,
+            data_url=swl.register("task_tree_data"),
+            select_url=swl.register("task_tree_select"),
+            move_url=swl.register("task_tree_move"),
+            params={"q": screen["q"], "status": screen["status"]},
+            # the page already shows the selected task: only mark it in the tree
+            selected=screen["task_id"],
+            notify=False,
+            dnd="any",
+            types=TREE_TYPES,
+        )
+    )
+
+
+async def task_tree_data(request, swl, store, **kwargs):
+    """The nodes of the tree: the statuses, with the tasks in them. All at once, as a flat
+    list in which every node names its parent ("#" is the top)."""
+    async with request.form() as form:
+        q = form.get("q", "")
+        status = form.get("status", "all")
+
+    username = request.user.username
+    nodes = []
+    for name in ("open", "done"):
+        if status not in ("all", name):
+            continue
+        tasks = store.find(username, q=q, status=name)
+        nodes.append(
+            tree_node(
+                f"status-{name}",
+                f"{_(LABELS[name])} ({len(tasks)})",
+                parent="#",
+                type="status",
+                icon=STATUS_ICONS[name],
+                opened=True,
+                draggable=False,
+            )
+        )
+        nodes.extend(
+            tree_node(
+                task.id,
+                task.title,  # text: tree.js shows it as text, not HTML
+                parent=f"status-{name}",
+                type="task",
+                icon="bi bi-lock" if task.private else "bi bi-card-text",
+            )
+            for task in tasks
+        )
+    return JSONResponse(nodes)
+
+
+async def task_tree_select(request, swl, store, **kwargs):
+    """A click on a node in the tree: tree.js posts its id as "node", with the params. A task
+    shows in the detail panel, on its first tab; a status does nothing."""
+    async with request.form() as form:
+        node = form.get("node", "")
+        screen = screen_from({**form, "view": "tree", "selected_task": node})
+
+    if node.startswith("status-"):
+        return swl.success()
+    return show_task(swl, store, request.user.username, screen)
+
+
+async def task_tree_move(request, swl, store, dispatcher, **kwargs):
+    """A task dragged in the tree. tree.js posts node, parent and position (among its new
+    siblings, from 0), old_parent and old_position, and the params. A failure makes the tree
+    reload, so the task goes back to where it is."""
+    async with request.form() as form:
+        task_id = form.get("node", "")
+        parent = form.get("parent", "")
+        q = form.get("q", "")
+        try:
+            position = int(form.get("position", ""))
+        except ValueError:
+            return swl.fail().message(_("Invalid position"))
+
+    if (task := store.get(task_id, request.user.username)) is None:
+        return swl.fail().message(_("This task no longer exists"))
+    if parent not in ("status-open", "status-done"):
+        return swl.fail().message(_("A task can only go into Open or Done"))
+
+    store.move(
+        task.id,
+        request.user.username,
+        done=parent == "status-done",
+        position=position,
+        q=q,
+    )
+    await _signal_change(dispatcher, task)  # other tabs; this one rebuilds its tree too
+    return swl.success()
+
+
 async def _task(request, store):
     """The task posted as task_id, if this user may see it."""
     async with request.form() as form:
@@ -292,4 +432,7 @@ __actions__ = [
     task_toggle,
     task_delete,
     task_menu,
+    task_tree_data,
+    task_tree_select,
+    task_tree_move,
 ]

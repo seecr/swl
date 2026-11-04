@@ -569,7 +569,11 @@ _on("htmx:before:request", () => {
     _last_activity = Date.now();
     document.documentElement.classList.add("swl-wait");
 });
-_on("htmx:finally:request", () => {
+_on("htmx:finally:request", (e) => {
+    let ctx = e.detail.ctx;
+    if (ctx.swl_result) {  // a swl_action call: tell it how it went
+        ctx.swl_result.ok = (ctx.response?.status ?? 500) < 400 && !String(ctx.status).startsWith("error");
+    }
     _running = Math.max(0, _running - 1);
     _last_activity = Date.now();
     if (_running == 0) {
@@ -614,12 +618,16 @@ _on("submit", (e) => {
 /*
  * Post to an action from javascript; the response is handled like any other.
  * values: an object, a JSON string ('{"a": 1}') or a query string ("a=1&b=2").
+ * Resolves to true when the action succeeded, false when it failed (swl.fail(), an HTTP error,
+ * no connection), e.g. to undo something in the page that the server refused.
  */
-function swl_action(action, values) {
+async function swl_action(action, values) {
     if (typeof values === "string") {
         values = values.trim().startsWith("{") ? JSON.parse(values) : Object.fromEntries(new URLSearchParams(values));
     }
-    return htmx.ajax("POST", action, {values: values || {}, swap: "none"});
+    let result = {ok: false};
+    await htmx.ajax("POST", action, {values: values || {}, swap: "none", swl_result: result});
+    return result.ok;
 }
 
 /*

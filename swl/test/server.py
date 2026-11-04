@@ -42,6 +42,10 @@ async def homepage(request):
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
         crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/themes/default/style.min.css"
+        integrity="sha384-clXSAz7utDyIerGEOzTe7HkSNZ7xrhxVuTY6yGNeF4LBW1zmtgF3AfFMP7iMZuRB"
+        crossorigin="anonymous">
     <link rel="stylesheet" href="/static/swl/swl.css">
 
 
@@ -56,6 +60,14 @@ async def homepage(request):
         <script
           src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0/dist/htmx.min.js"
           integrity="sha384-BvJpBiO8Kh31EqtJe5DRIeWrHWnCGkwytKs9NKFi86Hhw96dEqdEMzZDeK9iEGTc"
+          crossorigin="anonymous"></script>
+        <script
+          src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
+          integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
+          crossorigin="anonymous"></script>
+        <script
+          src="https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/jstree.min.js"
+          integrity="sha384-foAvcRZ1cqpr2BrR53KQxGncZUQ2bYIq4y98ZBY0fNoWNXZW02MnL+fJ/lIyfyC+"
           crossorigin="anonymous"></script>
         <script src="/static/swl/swl-run.js" id="swl-run" type="module"></script>
 

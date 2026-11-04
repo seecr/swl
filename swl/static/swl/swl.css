@@ -475,6 +475,16 @@ input[type=checkbox].swl-switch:disabled { opacity: .55; cursor: not-allowed; }
 }
 .swl-link:hover { text-decoration: underline; }
 
+/* ---------------------------------------------------------------- trees (tree.js, jstree's default theme) */
+
+/* SWL's colours instead of jstree's light blue, so a tree fits each framework and dark mode */
+.jstree-default .jstree-anchor { color: var(--swl-fg); }
+.jstree-default .jstree-hovered { background: var(--swl-subtle-bg); box-shadow: none; }
+.jstree-default .jstree-clicked { background: color-mix(in srgb, var(--swl-accent) 16%, transparent); box-shadow: none; }
+.jstree-default .jstree-themeicon-custom.bi { background: none; color: var(--swl-muted); }
+[data-theme=dark] .jstree-default .jstree-ocl { filter: invert(.85); }  /* the open/close arrows */
+#vakata-dnd { padding: .1em .4em; border-radius: var(--swl-radius); background: var(--swl-bg); color: var(--swl-fg); box-shadow: var(--swl-shadow); }
+
 /* ---------------------------------------------------------------- framework touches (data-swl-framework on <html>) */
 
 /* Bulma: an icon next to a button's text, and a <select> without Bulma's wrapper <div class="select"> */

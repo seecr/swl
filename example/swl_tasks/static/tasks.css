@@ -46,3 +46,4 @@
 .task-login-header > h1 { margin: 0; }
 
 .task-private { margin-left: .35rem; color: var(--swl-muted); font-size: .85em; }
+.task-tree { min-height: 4rem; margin-bottom: .5rem; }

@@ -37,20 +37,32 @@ def is_valid(data, mandatory, allowed):
     return True
 
 
+def _load(path):
+    if isinstance(path, str):
+        path = pathlib.Path(path)
+    return {} if path is None else json.loads(path.read_text())
+
+
 class WebResources:
-    def __init__(self, path=None, base_url=None):
-        path = path or web_resources
-        if isinstance(path, str):
-            path = pathlib.Path(path)
-        conf = {} if path is None else json.loads(path.read_text())
+    """The styles and scripts swl/base.j2 loads: those in path (a JSON file with "styles" and
+    "scripts"), followed by those in each of the extra files (e.g. a library only some
+    applications use)."""
+
+    def __init__(self, path=None, base_url=None, extra=()):
+        confs = [_load(path or web_resources)]
+        if isinstance(extra, (str, pathlib.PurePath)):
+            extra = [extra]
+        confs.extend(_load(each) for each in extra or ())
 
         self._styles = [
             {**style, "href": style["href"].format(BASE_URL=base_url)}
+            for conf in confs
             for style in conf.get("styles", [])
             if is_valid(style, mandatory=["href"], allowed=["href", "integrity"])
         ]
         self._scripts = [
             {**script, "src": script["src"].format(BASE_URL=base_url)}
+            for conf in confs
             for script in conf.get("scripts", [])
             if is_valid(script, mandatory=["src"], allowed=["src", "integrity"])
         ]

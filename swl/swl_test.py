@@ -42,6 +42,18 @@ def test_swl(tmp_path):
     # assert swl.web_resources.base_url == "http://example.com"
 
 
+def test_swl_extra_resources(tmp_path):
+    conf_path = tmp_path / "extra.json"
+    conf_path.write_text(json.dumps({"scripts": [{"src": "extra.js"}]}))
+    swl = SWL(
+        config=Config(
+            {"ui": {"framework": "swl"}, "paths": {"extra_resources": [conf_path]}}
+        )
+    )
+    assert swl.scripts[0]["src"].endswith("htmx.min.js")
+    assert swl.scripts[-1]["src"] == "extra.js"
+
+
 def test_swl_default():
     swl = SWL(config=Config({}))
     assert len(swl.styles) == 2

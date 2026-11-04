@@ -48,7 +48,8 @@ class SWL:
         )
         self._actions.register_kwarg("swl", self)
         # "ui.framework": "swl", "bootstrap" (default) or "bulma"; "paths.resources"
-        # replaces its web resources with your own file. FrameworkCookieMiddleware can
+        # replaces its web resources with your own file, "paths.extra_resources" (a file or
+        # a list of files) adds to them. FrameworkCookieMiddleware can
         # choose another one per request (swl/frameworks.py).
         self._framework = framework(self._config.get("ui.framework"))
         self._web_resources_cache = {}
@@ -87,7 +88,9 @@ class SWL:
         fw = self._current_framework()
         if fw.name not in self._web_resources_cache:
             self._web_resources_cache[fw.name] = WebResources(
-                self._config.get("paths.resources") or fw.resources, self.cdn_url
+                self._config.get("paths.resources") or fw.resources,
+                self.cdn_url,
+                extra=self._config.get("paths.extra_resources") or (),
             )
         return self._web_resources_cache[fw.name]
 

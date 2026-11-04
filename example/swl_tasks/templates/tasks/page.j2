@@ -50,8 +50,8 @@
 
 <main class="swl-container">
     {#
-     # A plain form that holds "where you are": the filter fields, and (hidden) the selected task and
-     # tab. The task list and the detail panel include it in their requests (hx-include), so every
+     # A plain form that holds "where you are": the filter fields, the view (list or tree), and
+     # (hidden) the selected task and tab. The task list and the detail panel include it in their requests (hx-include), so every
      # action knows the whole screen and can put it in the url (views.page_url).
      #}
     <form id="filters" class="task-filters">
@@ -60,6 +60,11 @@
         <select name="status" class="{{ SWL.ui.select }}" aria-label="{{ _('Show') }}">
             {% for value in statuses %}
             <option value="{{ value }}" {{ "selected" if value == status }}>{{ _(labels[value]) }}</option>
+            {% endfor %}
+        </select>
+        <select name="view" class="{{ SWL.ui.select }}" aria-label="{{ _('View') }}">
+            {% for value in view_names %}
+            <option value="{{ value }}" {{ "selected" if value == view }}>{{ _(labels[value]) }}</option>
             {% endfor %}
         </select>
         <button type="button" class="{{ SWL.ui.button_primary }}" hx-post="{{ register('task_new') }}">
@@ -98,5 +103,7 @@
 {% block body_extra %}
 <script type="module" id="swl-run" src="/static/swl/swl-run.js"></script>
 <script type="module" src="/static/swl/websocket.js"></script>
+{# the tree view: tree.js drives jstree (jQuery and jstree come from tree-web-resources.json, see app.py) #}
+<script type="module" src="/static/swl/tree.js"></script>
 <script src="/example/tasks.js"></script>
 {% endblock %}

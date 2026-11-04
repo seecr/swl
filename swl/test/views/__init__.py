@@ -13,4 +13,4 @@
 
 from swl.utils import Views
 
-VIEWS = Views(__name__, ["rehydrate", "change", "modal", "misc"])
+VIEWS = Views(__name__, ["rehydrate", "change", "modal", "misc", "tree"])

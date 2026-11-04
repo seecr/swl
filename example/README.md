@@ -49,6 +49,7 @@ example/
     ├── templates/tasks/
     │   ├── page.j2          the page: navigation, filters, the task list and the detail panel
     │   ├── list.j2          the task list (rendered by the tasks_list action)
+    │   ├── tree.j2          the element for the tree view (filled by tree.js)
     │   ├── detail.j2        the detail panel with its tabs (rendered by task_detail)
     │   ├── tab_details.j2   the content of the "Details" tab
     │   ├── tab_history.j2   the content of the "History" tab
@@ -56,6 +57,7 @@ example/
     │   ├── menu.j2          the context menu
     │   ├── style_switch.j2  the language, CSS framework and light/dark switches in the top bar
     │   └── login.j2         the login page
+    ├── tree-web-resources.json  jQuery and jstree, for the tree view
     ├── locale/              the translations: messages.pot, and nl, de, es (.po and .mo)
     └── static/
         ├── tasks.js         two small functions the server calls, and the switches
@@ -340,7 +342,53 @@ python -m swl.i18n_tool compile swl_tasks     # .po -> .mo, which is what is use
 `test_translations_are_complete_and_compiled` in `app_test.py` fails when a text has no
 translation, or the `.mo` files are not compiled.
 
-### 10. Testing
+### 10. A tree
+
+Choose "Tree" next to the status filter: the same tasks, as a tree with "Open" and "Done".
+Click a task to see it on the right; drag it to change the order, or into the other status.
+
+The tree is [jstree](https://www.jstree.com), driven by SWL's `tree.js`. jstree needs jQuery,
+which SWL does not, so it is added to the page by the application: `app.py` lists
+`tree-web-resources.json` in `paths.extra_resources` (loaded after the framework's styles and
+scripts), and `page.j2` loads `/static/swl/tree.js`.
+
+The tree lives in the "tasks-list" placeholder. With view "tree", the `tasks_list` action
+renders `tree.j2` (just an empty `<div id="task-tree">`) and calls `tree_init` (views.py,
+`tree_view`):
+
+```python
+.call(
+    "tree_init",
+    tree_id=TASK_TREE,
+    data_url=swl.register("task_tree_data"),     # the nodes
+    select_url=swl.register("task_tree_select"), # a click
+    move_url=swl.register("task_tree_move"),     # a drag and drop
+    params={"q": screen["q"], "status": screen["status"]},  # posted with each request
+    selected=screen["task_id"],
+    notify=False,                                # the page already shows that task
+    dnd="any",
+    types=TREE_TYPES,                            # tasks go into a status, nowhere else
+)
+```
+
+From then on the tree talks to the server by itself:
+
+- `task_tree_data` answers with the nodes as JSON, made with `swl.tree.tree_node`: the statuses
+  (not draggable) and the tasks in them, each naming its parent. The titles are shown as text,
+  so a title with `<` is safe.
+- A click posts `task_tree_select` with `node` (and the `params`). It shows the task on the right
+  and puts it in the url, like a click in the list: `/tasks/<id>/details?view=tree`. A reload
+  shows the tree again with that task selected.
+- A drag and drop posts `task_tree_move` with `node`, `parent` and `position`. The store moves the
+  task, and `_signal_change` tells the open pages, which rebuild their list or tree. When the
+  action fails (the task was deleted in another tab), `tree.js` reloads the tree, so the task
+  goes back to where the server has it.
+
+An action can also change a tree directly: `tree_select`, `tree_rename`, `tree_create`,
+`tree_delete` and `tree_refresh` (see "Trees" in `doc/reference.md`). Here rebuilding the whole
+placeholder is simpler, as the tree is small.
+
+### 11. Testing
 
 Actions are tested like any Starlette endpoint, by posting to their url. `swl.test_utils` has
 helpers for SWL responses:

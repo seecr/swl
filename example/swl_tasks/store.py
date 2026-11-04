@@ -113,6 +113,31 @@ class TaskStore:
         self._save()
         return task
 
+    def move(self, task_id, username, done, position, q=""):
+        """Move a task to open or done (done), at position among the tasks this user sees
+        there with search text q (as in the tree: views.task_tree_move). The order is kept
+        in the order of the tasks."""
+        task = self._tasks[task_id]
+        if task.done != done:
+            task.done = done
+            task.log(N_("Marked as done") if done else N_("Marked as open"))
+        siblings = [
+            t
+            for t in self.find(username, q=q, status="done" if done else "open")
+            if t.id != task_id
+        ]
+        order = [t for t in self._tasks.values() if t.id != task_id]
+        if position < len(siblings):
+            index = order.index(siblings[max(position, 0)])  # just before that one
+        elif siblings:
+            index = order.index(siblings[-1]) + 1  # after the last one
+        else:
+            index = len(order)
+        order.insert(index, task)
+        self._tasks = {t.id: t for t in order}
+        self._save()
+        return task
+
     def delete(self, task_id):
         task = self._tasks.pop(task_id)
         self._save()

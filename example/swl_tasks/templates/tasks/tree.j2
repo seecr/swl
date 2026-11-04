@@ -1,0 +1,21 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # Rendered by the tasks_list action into the "tasks-list" placeholder when the view is "Tree".
+ #
+ # Only an empty element: the same response calls tree_init (swl/static/swl/tree.js), which
+ # turns it into a tree that loads its nodes from the task_tree_data action. See "The tree" in
+ # views.py.
+ #}
+<div id="{{ tree_id }}" class="task-tree"></div>
+<p class="swl-muted swl-small">{{ _("Click a task to see it on the right. Drag a task to change the order, or to move it between Open and Done.") }}</p>

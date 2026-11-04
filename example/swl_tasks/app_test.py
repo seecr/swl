@@ -245,6 +245,179 @@ def test_select_a_task_and_switch_tabs(client):
     assert other.id in str(store.find("demo"))
 
 
+def test_the_tree(client):
+    login(client)
+    store = client.app.state.store
+    one = store.add("One", "demo")
+    two = store.add("Two <b>", "demo", private=True)
+    three = store.add("Three", "demo")
+    store.toggle(three.id)
+
+    # "Tree" in the filters: the placeholder gets the tree element, and tree_init fills it
+    response = client.post(
+        action(client, "tasks_list"),
+        data={"view": "tree", "status": "all", "selected_task": one.id},
+    )
+    events = assert_success(response)
+    assert 'id="task-tree"' in partials(response)["tasks-list"]
+    assert response.headers["HX-Replace-Url"] == f"/tasks/{one.id}/details?view=tree"
+    show_counts, tree_init = events["swl-call"]["calls"]
+    assert show_counts["method"] == "show_counts"
+    assert tree_init["method"] == "tree_init"
+    kwargs = tree_init["kwargs"]
+    assert kwargs["tree_id"] == "task-tree"
+    assert kwargs["data_url"] == action(client, "task_tree_data")
+    assert kwargs["params"] == {"q": "", "status": "all"}
+    assert kwargs["selected"] == one.id and kwargs["notify"] is False
+    assert kwargs["dnd"] == "any"
+
+    # its nodes: the statuses, with the tasks in them
+    response = client.post(action(client, "task_tree_data"), data={"node": "#"})
+    assert response.json() == [
+        {
+            "id": "status-open",
+            "text": "Open (2)",
+            "parent": "#",
+            "icon": "bi bi-circle",
+            "state": {"opened": True},
+            "type": "status",
+            "data": {"draggable": False},
+        },
+        {
+            "id": one.id,
+            "text": "One",
+            "parent": "status-open",
+            "icon": "bi bi-card-text",
+            "type": "task",
+        },
+        {
+            "id": two.id,
+            "text": "Two <b>",  # as text: tree.js does not show it as HTML
+            "parent": "status-open",
+            "icon": "bi bi-lock",
+            "type": "task",
+        },
+        {
+            "id": "status-done",
+            "text": "Done (1)",
+            "parent": "#",
+            "icon": "bi bi-check-circle",
+            "state": {"opened": True},
+            "type": "status",
+            "data": {"draggable": False},
+        },
+        {
+            "id": three.id,
+            "text": "Three",
+            "parent": "status-done",
+            "icon": "bi bi-card-text",
+            "type": "task",
+        },
+    ]
+    response = client.post(
+        action(client, "task_tree_data"), data={"node": "#", "status": "done", "q": "x"}
+    )
+    assert response.json() == [
+        {
+            "id": "status-done",
+            "text": "Done (0)",
+            "parent": "#",
+            "icon": "bi bi-check-circle",
+            "state": {"opened": True},
+            "type": "status",
+            "data": {"draggable": False},
+        }
+    ]
+
+    # a click on a task: shown on the right (no list reload: the tree shows the selection)
+    response = client.post(
+        action(client, "task_tree_select"),
+        data={"node": two.id, "q": "", "status": "all"},
+    )
+    assert assert_success(response) == {}
+    assert "Two &lt;b&gt;" in partials(response)["task-detail"]
+    assert f'name="selected_task" value="{two.id}"' in partials(response)["selection"]
+    assert response.headers["HX-Replace-Url"] == f"/tasks/{two.id}/details?view=tree"
+    # a click on a status: nothing
+    response = client.post(action(client, "task_tree_select"), data={"node": "status-open"})
+    assert response.status_code == 204
+
+    # drag "Two" above "One"
+    with client.websocket_connect("/ws") as websocket:
+        assert websocket.receive_json() == {"response": "pong"}
+        response = client.post(
+            action(client, "task_tree_move"),
+            data={
+                "node": two.id,
+                "parent": "status-open",
+                "position": "0",
+                "old_parent": "status-open",
+                "old_position": "1",
+            },
+        )
+        assert_success(response)
+        assert websocket.receive_json() == {"response": "change", "obj": "tasks"}
+    assert [t.title for t in store.find("demo")] == ["Two <b>", "One", "Three"]
+
+    # drag "One" into Done, after "Three"; and back to Open, at the end
+    client.post(
+        action(client, "task_tree_move"),
+        data={"node": one.id, "parent": "status-done", "position": "1"},
+    )
+    assert [t.title for t in store.find("demo", status="done")] == ["Three", "One"]
+    assert store.get(one.id, "demo").history[-1]["what"] == "Marked as done"
+    client.post(
+        action(client, "task_tree_move"),
+        data={"node": one.id, "parent": "status-open", "position": "1"},
+    )
+    assert [t.title for t in store.find("demo")] == ["Two <b>", "One", "Three"]
+
+    # refused: the tree reloads itself (tree.js)
+    assert_fail(
+        client.post(
+            action(client, "task_tree_move"),
+            data={"node": one.id, "parent": two.id, "position": "0"},
+        ),
+        "A task can only go into Open or Done",
+    )
+    assert_fail(
+        client.post(
+            action(client, "task_tree_move"),
+            data={"node": "gone", "parent": "status-open", "position": "0"},
+        ),
+        "This task no longer exists",
+    )
+    assert_fail(
+        client.post(
+            action(client, "task_tree_move"),
+            data={"node": one.id, "parent": "status-open", "position": "x"},
+        ),
+        "Invalid position",
+    )
+
+    # a reload shows the tree again, with jstree loaded
+    html = client.get(f"/tasks/{one.id}/details?view=tree").text
+    assert '<option value="tree" selected>' in html
+    assert "jstree.min.js" in html and "/static/swl/tree.js" in html
+
+
+def test_moving_with_a_filter_and_other_users(tmp_path):
+    from swl_tasks.store import TaskStore
+
+    store = TaskStore()
+    a = store.add("apple", "demo")
+    secret = store.add("secret", "other", private=True)
+    b = store.add("banana", "demo")
+    c = store.add("apple pie", "demo")
+    # with search text "apple" the tree shows [apple, apple pie]; move "apple pie" first
+    store.move(c.id, "demo", done=False, position=0, q="apple")
+    assert [t.title for t in store.find("demo")] == ["apple pie", "apple", "banana"]
+    assert [t.title for t in store.find("other")] == ["apple pie", "apple", "secret", "banana"]
+    # to an empty Done
+    store.move(b.id, "demo", done=True, position=0)
+    assert [t.title for t in store.find("demo", status="done")] == ["banana"]
+
+
 def test_reload_renders_the_same_screen(client):
     login(client)
     task = client.app.state.store.add("Deep link me", "demo")

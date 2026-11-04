@@ -16,6 +16,7 @@ guided introduction, read `example/README.md` first; this page is for looking th
 - [Tabs](#tabs)
 - [Templates](#templates)
 - [Javascript](#javascript)
+- [Trees](#trees)
 - [Translations](#translations)
 - [Configuration](#configuration)
 - [Testing](#testing)
@@ -516,6 +517,8 @@ The choice does two things:
 - **The web resources** that `base.j2` loads (`swl/resources/*-web-resources.json`). To load
   something else (your own mirror, other versions), point `paths.resources` at your own JSON file
   with `styles` and `scripts` (it must include htmx); the framework's classes still apply.
+  To load a library *on top of* the framework's resources (e.g. jstree, see [Trees](#trees)),
+  list its JSON file(s) in `paths.extra_resources`.
 - **`SWL.ui`**: CSS classes for form elements and buttons in that framework, so a template works
   with each of them. SWL's own account and user screens use it, and so can yours:
 
@@ -591,7 +594,7 @@ On `window` after `swl-run.js` has loaded:
 
 | | |
 |---|---|
-| `swl_action(url, values)` / `swl.action(...)` | post to an action from javascript; `values` is an object or a query string; returns a promise |
+| `swl_action(url, values)` / `swl.action(...)` | post to an action from javascript; `values` is an object or a query string; returns a promise of `true` (it succeeded) or `false` (`swl.fail()`, an HTTP error, no connection) |
 | `swl.rehydrate(id, context)` | reload a placeholder |
 | `swl.kickstart(url, values)` | like `swl_action`, but first waits until the page and its placeholders have loaded |
 | `swl.ui.confirm(message)` | SWL's confirm dialog; a promise of `true`/`false` |
@@ -621,6 +624,97 @@ Attributes SWL adds to htmx:
 
 Everything else is plain htmx 4. The texts `swl.js` shows (dialog buttons, error messages) are
 put in the page by `base.j2`, in the page's language (see [Translations](#translations)).
+
+## Trees
+
+A tree that the server fills and that tells the server what happens in it: clicks, and
+nodes dragged to another place. `static/swl/tree.js` drives [jstree](https://www.jstree.com)
+3.3. jstree needs jQuery, so it is optional: only a page that shows a tree loads it.
+
+**Load** jQuery, jstree and its theme, plus `tree.js`. For example with
+`"paths": {"extra_resources": "tree-web-resources.json"}` and that file:
+
+```json
+{
+    "styles": [{"href": "https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/themes/default/style.min.css",
+                "integrity": "sha384-clXSAz7utDyIerGEOzTe7HkSNZ7xrhxVuTY6yGNeF4LBW1zmtgF3AfFMP7iMZuRB"}],
+    "scripts": [{"src": "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js",
+                 "integrity": "sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"},
+                {"src": "https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/jstree.min.js",
+                 "integrity": "sha384-foAvcRZ1cqpr2BrR53KQxGncZUQ2bYIq4y98ZBY0fNoWNXZW02MnL+fJ/lIyfyC+"}]
+}
+```
+
+and in the page (after `swl-run.js`):
+
+```html
+<script type="module" src="/static/swl/tree.js"></script>
+```
+
+`swl.css` gives jstree's default theme SWL's colours, so it fits each framework and dark mode.
+
+**Start** a tree from an action, into an empty element (`<div id="folder-tree"></div>`):
+
+```python
+return swl.success().hydrate("ph-tree", html).call(
+    "tree_init",
+    tree_id="folder-tree",
+    data_url=swl.register("folder_tree_data"),   # the nodes, as JSON
+    select_url=swl.register("folder_select"),    # a click on a node
+    move_url=swl.register("folder_move"),        # a node dragged to another place
+    params={"archive": archive.id},              # posted with every request of this tree
+    selected=folder.id,                          # select this node when the tree is ready
+    dnd="same-parent",                           # drag and drop: False, "same-parent" or "any"
+)
+```
+
+| `tree_init` option | |
+|---|---|
+| `tree_id` | id of the element (`"tree"` or `"#tree"`); a tree already in it is replaced |
+| `data_url` | action that answers with the nodes (below); posted with `node` (`"#"` for the top, else the node whose children load) and `selected`. Without it jstree reads the `<ul>` in the element |
+| `select_url` | posted with `node` when a node is clicked, or selected from the server |
+| `move_url` | posted with `node`, `parent`, `position`, `old_parent` and `old_position` after a drag and drop. Positions count from 0 among the siblings, *after* the move. When the action fails (`swl.fail()`), the tree reloads, so the node is back where the server has it |
+| `params` | values posted with every request |
+| `selected`, `notify` | the node to select when the tree is ready; `notify=False`: without posting `select_url` (when the page already shows it) |
+| `dnd` | `False` (default), `"same-parent"` (only reorder within a parent) or `"any"`; a node made with `draggable=False` cannot be dragged |
+| `types` | where nodes may go, jstree's types plugin: `{"#": {"valid_children": ["folder"]}, "folder": {"valid_children": ["item"]}, "item": {"valid_children": []}}`, with `type=` on the nodes |
+| `html` | `True`: node texts are HTML. By default they are shown as text, so a name with `<` is safe |
+| `plugins`, `options` | more jstree plugins and settings, for what is not covered here |
+
+**The nodes**: the data action answers with JSON, made with `swl.tree.tree_node`:
+
+```python
+from starlette.responses import JSONResponse
+from swl.tree import tree_node
+
+async def folder_tree_data(request, swl, **kwargs):
+    async with request.form() as form:
+        archive = get_archive(form["archive"])
+    return JSONResponse([
+        tree_node(f.id, f.name, parent=f.parent_id or "#", icon="bi bi-folder", opened=f.is_top)
+        for f in archive.folders
+    ])
+```
+
+`tree_node(id, text, parent=None, icon=None, opened=False, type=None, draggable=True,
+children=None, **data)`: give every node its `parent` (`"#"` for the top) when you answer
+with all nodes at once. For large trees, answer with the children of the posted `node` only,
+without `parent`, and `children=True` on nodes that have children: they load when opened.
+Anything else in `**data` ends up in `node.data` in the browser.
+
+**Change the tree** from any action:
+
+| | |
+|---|---|
+| `.call("tree_select", tree_id=..., node_id=..., notify=True)` | select a node (and open its parents); `notify=False`: without posting `select_url` |
+| `.call("tree_rename", tree_id=..., node_id=..., text=...)` | change a node's text |
+| `.call("tree_create", tree_id=..., nodes=[tree_node(..., parent=...)], select=None, notify=True)` | add nodes (each at `"last"`, or `position` in the node); then select one |
+| `.call("tree_delete", tree_id=..., node_id=..., select=None, notify=True)` | remove a node; then select another |
+| `.call("tree_refresh", tree_id=..., select=None, notify=True)` | load the nodes again (what is open and selected stays), then select one |
+
+A tree inside a placeholder is built again when the placeholder reloads: call `tree_init`
+again in that response. The example (`example/README.md`, "A tree") shows a complete tree with
+selection, deep links, drag and drop and live updates.
 
 ## Translations
 
@@ -697,6 +791,7 @@ request: `format_date(d, "medium")`, `format_time`, `format_datetime(dt, tzinfo=
 | `actions.hash` | `true` | `false`: use function names in urls instead of hashes |
 | `ui.framework` | `"bootstrap"` | `"swl"`, `"bootstrap"`, `"tabler"` or `"bulma"`; see [Styling](#styling) |
 | `paths.resources` | the framework's | your own JSON file with `styles` and `scripts` for `base.j2` (must include htmx) |
+| `paths.extra_resources` | none | a JSON file (or a list of them) with more `styles` and `scripts`, loaded after the framework's (or `paths.resources`); e.g. for [Trees](#trees) |
 | `urls.cdn` | `https://cdn.jsdelivr.net` | `{BASE_URL}` in resource urls; `base.j2` preconnects to it |
 | `response.toast.delay` | `500` | toast duration in ms |
 | `response.toast.background` | none | toast background color |

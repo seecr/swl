@@ -68,6 +68,7 @@ async def page(request, swl, store, **kwargs):
         {
             "q": request.query_params.get("q", ""),
             "status": request.query_params.get("status", "all"),
+            "view": request.query_params.get("view"),
             "selected_task": request.path_params.get("task_id"),
             "selected_tab": tab,
         }
@@ -86,6 +87,7 @@ async def page(request, swl, store, **kwargs):
             "body_class": "",
             "user": request.user,
             "statuses": views.STATUSES,
+            "view_names": views.VIEWS,
             "labels": views.LABELS,
             "languages": LANGUAGES,
             **screen,
@@ -129,11 +131,14 @@ def create_app(data_dir, userbase=None, framework="swl"):
     # "i18n.locales": the languages; the first is used when the browser asks for none of
     # them. swl.i18n_middleware (below) picks one per request; the example's own
     # translations are in locale/ (see "Translations" in the README).
+    # "paths.extra_resources": scripts and styles on top of the framework's; here jQuery,
+    # jstree and its theme, for the tree view (swl/static/swl/tree.js).
     swl = SWL(
         config=Config(
             {
                 "ui": {"framework": framework},
                 "i18n": {"locales": [code for code, _name in LANGUAGES]},
+                "paths": {"extra_resources": [here / "tree-web-resources.json"]},
             }
         ),
         templates=[here / "templates"],

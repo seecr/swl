@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl_tasks VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 18:24+0100\n"
+"POT-Creation-Date: 2026-11-04 11:50+0100\n"
 "PO-Revision-Date: 2026-11-01 18:24+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -18,31 +18,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: swl_tasks/app.py:99 swl_tasks/templates/tasks/login.j2:31
+#: swl_tasks/app.py:105 swl_tasks/templates/tasks/login.j2:31
 msgid "Log in"
 msgstr "Iniciar sesión"
 
-#: swl_tasks/store.py:89
+#: swl_tasks/store.py:93
 msgid "Created"
 msgstr "Creada"
 
-#: swl_tasks/store.py:98
+#: swl_tasks/store.py:102
 msgid "Edited"
 msgstr "Editada"
 
-#: swl_tasks/store.py:101
+#: swl_tasks/store.py:105
 msgid "Made private"
 msgstr "Hecha privada"
 
-#: swl_tasks/store.py:101
+#: swl_tasks/store.py:105
 msgid "Shared"
 msgstr "Compartida"
 
-#: swl_tasks/store.py:108
+#: swl_tasks/store.py:112 swl_tasks/store.py:123
 msgid "Marked as done"
 msgstr "Marcada como hecha"
 
-#: swl_tasks/store.py:108
+#: swl_tasks/store.py:112 swl_tasks/store.py:123
 msgid "Marked as open"
 msgstr "Marcada como abierta"
 
@@ -58,7 +58,7 @@ msgstr "Elija una tarea para ver aquí sus detalles."
 msgid "Edit task"
 msgstr "Editar tarea"
 
-#: swl_tasks/templates/tasks/form.j2:19 swl_tasks/templates/tasks/page.j2:66
+#: swl_tasks/templates/tasks/form.j2:19 swl_tasks/templates/tasks/page.j2:71
 msgid "New task"
 msgstr "Nueva tarea"
 
@@ -85,11 +85,6 @@ msgstr "Cancelar"
 #: swl_tasks/templates/tasks/form.j2:41
 msgid "Save"
 msgstr "Guardar"
-
-#: swl_tasks/templates/tasks/list.j2:28
-#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:56
-msgid "Done"
-msgstr "Hechas"
 
 #: swl_tasks/templates/tasks/list.j2:35
 msgid "Private: only you see this task"
@@ -173,6 +168,10 @@ msgstr "Buscar tareas"
 msgid "Show"
 msgstr "Mostrar"
 
+#: swl_tasks/templates/tasks/page.j2:65
+msgid "View"
+msgstr "Vista"
+
 #: swl_tasks/templates/tasks/style_switch.j2:23
 msgid "Language"
 msgstr "Idioma"
@@ -194,10 +193,6 @@ msgstr "Colores: claro"
 msgid "Colours: dark"
 msgstr "Colores: oscuro"
 
-#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:55
-msgid "Open"
-msgstr "Abiertas"
-
 #: swl_tasks/templates/tasks/tab_details.j2:16
 msgid "Private"
 msgstr "Privada"
@@ -210,42 +205,75 @@ msgstr "Sin notas."
 msgid "No history yet."
 msgstr "Aún no hay historial."
 
-#: swl_tasks/views.py:54
+#: swl_tasks/templates/tasks/tree.j2:21
+msgid ""
+"Click a task to see it on the right. Drag a task to change the order, or "
+"to move it between Open and Done."
+msgstr ""
+"Haz clic en una tarea para verla a la derecha. Arrastra una tarea para "
+"cambiar el orden o para moverla entre Abiertas y Hechas."
+
+#: swl_tasks/views.py:59
 msgid "All"
 msgstr "Todas"
 
-#: swl_tasks/views.py:57
+#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:60
+msgid "Open"
+msgstr "Abiertas"
+
+#: swl_tasks/templates/tasks/list.j2:28
+#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:61
+msgid "Done"
+msgstr "Hechas"
+
+#: swl_tasks/views.py:62
 msgid "Details"
 msgstr "Detalles"
 
-#: swl_tasks/views.py:58
+#: swl_tasks/views.py:63
 msgid "History"
 msgstr "Historial"
 
-#: swl_tasks/views.py:145
+#: swl_tasks/views.py:64
+msgid "List"
+msgstr "Lista"
+
+#: swl_tasks/views.py:65
+msgid "Tree"
+msgstr "Árbol"
+
+#: swl_tasks/views.py:160
 #, python-format
 msgid "%(open)d open / %(done)d done"
 msgstr "pendientes: %(open)d / hechas: %(done)d"
 
-#: swl_tasks/views.py:189 swl_tasks/views.py:207 swl_tasks/views.py:228
-#: swl_tasks/views.py:239
+#: swl_tasks/views.py:208 swl_tasks/views.py:228 swl_tasks/views.py:249
+#: swl_tasks/views.py:260 swl_tasks/views.py:393
 msgid "This task no longer exists"
 msgstr "Esta tarea ya no existe"
 
-#: swl_tasks/views.py:202
+#: swl_tasks/views.py:223
 msgid "A task needs a title"
 msgstr "Una tarea necesita un título"
 
-#: swl_tasks/views.py:209
+#: swl_tasks/views.py:230
 msgid "Only its owner can make a task private"
 msgstr "Solo su propietario puede hacer privada una tarea"
 
-#: swl_tasks/views.py:221
+#: swl_tasks/views.py:242
 msgid "Task saved"
 msgstr "Tarea guardada"
 
-#: swl_tasks/views.py:245
+#: swl_tasks/views.py:266
 #, python-format
 msgid "Deleted '%(title)s'"
 msgstr "'%(title)s' eliminada"
+
+#: swl_tasks/views.py:390
+msgid "Invalid position"
+msgstr "Posición no válida"
+
+#: swl_tasks/views.py:395
+msgid "A task can only go into Open or Done"
+msgstr "Una tarea solo puede ir a Abiertas o Hechas"
 
