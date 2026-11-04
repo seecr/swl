@@ -74,6 +74,9 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
   and `python -m playwright install chromium`; exits 1 on a failure).
 - Style: flake8 (`.flake8`, max line length 90, wrap by hand, no formatter), isort with the black
   profile. CI (`.github/workflows/test.yml`) runs pytest on 3.11-3.14, the JS tests and flake8.
+- Before every commit: `flake8 swl example` and the Python tests must pass. The pre-push hook
+  (`.githooks/pre-push`, on with `git config core.hooksPath .githooks`, once per clone) runs
+  both and stops a push that would make CI fail.
 
 ## Working agreements
 

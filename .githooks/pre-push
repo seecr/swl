@@ -1,0 +1,32 @@
+#!/bin/sh
+# Before `git push`: the checks CI runs that are quick (flake8 and the Python tests), so a
+# push does not turn CI red. Turn it on once per clone:
+#
+#     git config core.hooksPath .githooks
+#
+# Push anyway (e.g. work in progress on a branch): git push --no-verify
+
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+# the project's virtualenv if there is one, else whatever python is active
+PYTHON=python3
+[ -x env/bin/python ] && PYTHON=env/bin/python
+# flake8: from that python, else a flake8 on the PATH (e.g. brew install flake8)
+FLAKE8="$PYTHON -m flake8"
+if ! $FLAKE8 --version > /dev/null 2>&1 && command -v flake8 > /dev/null; then
+    FLAKE8=flake8
+fi
+
+fail() {
+    echo
+    echo "pre-push: $1; not pushed (git push --no-verify to push anyway)"
+    exit 1
+}
+
+$FLAKE8 --version > /dev/null 2>&1 || fail "flake8 is missing: brew install flake8, or make a virtualenv env/ with it"
+
+echo "pre-push: flake8"
+$FLAKE8 swl example || fail "flake8 found problems"
+
+echo "pre-push: tests"
+"$PYTHON" -m pytest -q swl example/swl_tasks site/news_test.py || fail "tests failed"
