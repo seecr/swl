@@ -15,14 +15,13 @@ import json
 import re
 
 import pytest
+from seecr_stdlib.config import Config
 from starlette.applications import Starlette
 from starlette.routing import Route
 from starlette.testclient import TestClient
 
 from .responses import MODAL_CONTENT, FailResponse, SuccessResponse, id_selector
-
 from .swl import SWL
-from seecr_stdlib.config import Config
 
 
 def render(response):

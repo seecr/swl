@@ -29,8 +29,8 @@ are plain HTML styled by swl.css (and pick up the framework's colours).
 
 import contextvars
 import importlib.resources
-from http.cookies import CookieError, SimpleCookie
 from dataclasses import dataclass, field
+from http.cookies import CookieError, SimpleCookie
 from types import MappingProxyType
 
 _resources = importlib.resources.files("swl.resources")

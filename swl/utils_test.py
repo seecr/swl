@@ -1,8 +1,8 @@
-from .utils import Views
-
-from contextlib import contextmanager
 import sys
 import types
+from contextlib import contextmanager
+
+from .utils import Views
 
 
 @contextmanager

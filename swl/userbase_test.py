@@ -11,14 +11,14 @@
 #
 ## end license ##
 
-from pathlib import Path
-
-import pytest
-import argon2
 import json
+from pathlib import Path
+from uuid import uuid1
+
+import argon2
+import pytest
 
 from .userbase import Userbase
-from uuid import uuid1
 
 
 @pytest.fixture

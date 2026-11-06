@@ -73,10 +73,12 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
   (open http://localhost:8000/). Headless: `python -m swl.test.run_js_tests` (needs `playwright`
   and `python -m playwright install chromium`; exits 1 on a failure).
 - Style: flake8 (`.flake8`, max line length 90, wrap by hand, no formatter), isort with the black
-  profile. CI (`.github/workflows/test.yml`) runs pytest on 3.11-3.14, the JS tests and flake8.
-- Before every commit: `flake8 swl example` and the Python tests must pass. The pre-push hook
-  (`.githooks/pre-push`, on with `git config core.hooksPath .githooks`, once per clone) runs
-  both and stops a push that would make CI fail.
+  profile; both from `requirements-dev.txt`. CI (`.github/workflows/test.yml`) runs pytest on
+  3.11-3.14, the JS tests, flake8 and isort.
+- Before every commit: `flake8 swl example`, `isort --check-only swl example` and the Python
+  tests must pass. The pre-push hook (`.githooks/pre-push`, on with
+  `git config core.hooksPath .githooks`, once per clone) runs them and stops a push that would
+  make CI fail.
 
 ## Working agreements
 

@@ -11,9 +11,9 @@
 #
 ## end license ##
 
-from starlette.responses import RedirectResponse
-
 import logging
+
+from starlette.responses import RedirectResponse
 
 from swl.i18n import _
 

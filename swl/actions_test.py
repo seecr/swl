@@ -17,7 +17,7 @@ from starlette.responses import PlainTextResponse
 from starlette.routing import Route
 from starlette.testclient import TestClient
 
-from swl.test_utils import environment, create_app, login_user, logout_user
+from swl.test_utils import create_app, environment, login_user, logout_user
 
 from .actions import Actions
 

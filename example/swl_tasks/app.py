@@ -18,20 +18,18 @@ Wires the example together: SWL, the actions, the pages, sessions and the websoc
 from datetime import datetime
 from pathlib import Path
 
+from markupsafe import Markup
+from seecr_stdlib.config import Config
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.routing import Mount, Route, WebSocketRoute
 
-from markupsafe import Markup
-
-from seecr_stdlib.config import Config
-
 from swl import SWL, StaticFiles, static_dir
 from swl.dispatcher import Dispatcher
-from swl.i18n import _
 from swl.frameworks import FrameworkCookieMiddleware
+from swl.i18n import _
 from swl.session import SessionAuthBackend, SessionSecretKey
 from swl.userbase import Userbase
 from swl.views import account

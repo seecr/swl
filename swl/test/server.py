@@ -11,19 +11,17 @@
 #
 ## end license ##
 
-from starlette.applications import Starlette
-from starlette.staticfiles import StaticFiles
-
-from swl.static_files import StaticFiles as SWLStaticFiles
-from starlette.responses import HTMLResponse
-from starlette.routing import Route, Mount
-
-import uvicorn
 import pathlib
 
-from swl.actions import Actions
-from swl.test.views import VIEWS
+import uvicorn
+from starlette.applications import Starlette
+from starlette.responses import HTMLResponse
+from starlette.routing import Mount, Route
+from starlette.staticfiles import StaticFiles
 
+from swl.actions import Actions
+from swl.static_files import StaticFiles as SWLStaticFiles
+from swl.test.views import VIEWS
 
 this_dir = pathlib.Path(__file__).parent
 test_dir = this_dir / "js-test"

@@ -12,6 +12,7 @@
 ## end license ##
 
 import json
+import re
 import secrets
 import warnings
 from pathlib import Path
@@ -19,9 +20,8 @@ from pathlib import Path
 import argon2
 import argon2.profiles
 from starlette.authentication import BaseUser
-from .passwd import Passwd
 
-import re
+from .passwd import Passwd
 
 ADMIN_USERNAME = "admin"
 

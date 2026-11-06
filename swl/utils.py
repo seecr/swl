@@ -11,8 +11,8 @@
 #
 ## end license ##
 
-from urllib.parse import urlencode
 import importlib
+from urllib.parse import urlencode
 
 
 def url(location, **params):

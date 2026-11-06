@@ -14,12 +14,11 @@
 import json
 
 import pytest
+from seecr_stdlib.config import Config
 from starlette.applications import Starlette
 from starlette.testclient import TestClient
 
 from .swl import SWL
-
-from seecr_stdlib.config import Config
 
 
 def test_swl(tmp_path):

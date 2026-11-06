@@ -19,11 +19,10 @@ import re
 
 import pytest
 from starlette.testclient import TestClient
+from swl_tasks.app import DEMO_PASSWORD, DEMO_USER, create_app
 
 from swl.test_utils import assert_fail, assert_success
 from swl.userbase import Userbase
-
-from swl_tasks.app import DEMO_PASSWORD, DEMO_USER, create_app
 
 
 @pytest.fixture

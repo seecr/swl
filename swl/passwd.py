@@ -11,16 +11,15 @@
 #
 ## end license ##
 
+import functools
 import json
+import re
 import uuid
+from collections import namedtuple
 from pathlib import Path
 
 import argon2
 import argon2.profiles
-from collections import namedtuple
-import functools
-
-import re
 
 ADMIN_USERNAME = "admin"
 

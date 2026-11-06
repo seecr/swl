@@ -14,24 +14,24 @@
 __all__ = ["SWL"]
 
 
-from ._version import __version__
+import pathlib
 
+import jinja2
+from markupsafe import Markup, escape
 from starlette.middleware import Middleware
 from starlette.routing import Route
 from starlette.templating import Jinja2Templates
 
 from swl.actions import Actions
 from swl.frameworks import framework, requested_framework
-from swl.i18n import COOKIE, I18n, I18nMiddleware, js_messages
+from swl.i18n import COOKIE, I18n, I18nMiddleware
 from swl.i18n import install as install_i18n
+from swl.i18n import js_messages
 from swl.resources import WebResources
-from swl.responses import SuccessResponse, FailResponse
-
+from swl.responses import FailResponse, SuccessResponse
 from swl.routes_endpoint import make_routes_route
 
-import jinja2
-import pathlib
-from markupsafe import Markup, escape
+from ._version import __version__
 
 static_dir = pathlib.Path(__file__).parent / "static"
 templates_dir = pathlib.Path(__file__).parent / "templates"

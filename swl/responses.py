@@ -29,8 +29,8 @@ import re
 from urllib.parse import urlencode
 
 from markupsafe import escape
-from starlette.responses import Response
 from seecr_stdlib.config import Config
+from starlette.responses import Response
 
 __all__ = [
     "SuccessResponse",

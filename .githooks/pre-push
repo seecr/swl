@@ -1,6 +1,6 @@
 #!/bin/sh
-# Before `git push`: the checks CI runs that are quick (flake8 and the Python tests), so a
-# push does not turn CI red. Turn it on once per clone:
+# Before `git push`: the checks CI runs that are quick (flake8, isort and the Python tests),
+# so a push does not turn CI red. Turn it on once per clone:
 #
 #     git config core.hooksPath .githooks
 #
@@ -8,6 +8,7 @@
 
 cd "$(git rev-parse --show-toplevel)" || exit 1
 
+# flake8 and isort come from requirements-dev.txt, in env/ or on the PATH
 # the project's virtualenv if there is one, else whatever python is active
 PYTHON=python3
 [ -x env/bin/python ] && PYTHON=env/bin/python
@@ -23,10 +24,20 @@ fail() {
     exit 1
 }
 
-$FLAKE8 --version > /dev/null 2>&1 || fail "flake8 is missing: brew install flake8, or make a virtualenv env/ with it"
+$FLAKE8 --version > /dev/null 2>&1 || fail "flake8 is missing: brew install flake8, or pip install -r requirements-dev.txt"
 
 echo "pre-push: flake8"
 $FLAKE8 swl example || fail "flake8 found problems"
+
+# isort: from that python, else an isort on the PATH
+ISORT="$PYTHON -m isort"
+if ! $ISORT --version > /dev/null 2>&1 && command -v isort > /dev/null; then
+    ISORT=isort
+fi
+$ISORT --version > /dev/null 2>&1 || fail "isort is missing: brew install isort, or pip install -r requirements-dev.txt"
+
+echo "pre-push: isort"
+$ISORT --check-only --diff swl example || fail "imports not sorted (isort swl example)"
 
 echo "pre-push: tests"
 "$PYTHON" -m pytest -q swl example/swl_tasks site/news_test.py || fail "tests failed"

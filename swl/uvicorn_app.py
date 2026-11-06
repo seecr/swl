@@ -11,12 +11,12 @@
 #
 ## end license ##
 
+import logging
+
 from uvicorn.config import Config
 from uvicorn.server import Server
 
 from .shutdown import Shutdown
-
-import logging
 
 logger = logging.getLogger(__name__)
 

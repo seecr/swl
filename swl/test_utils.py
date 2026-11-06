@@ -15,6 +15,7 @@ import json
 from pathlib import Path
 
 import pytest
+from seecr_stdlib.config import Config
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
@@ -27,8 +28,6 @@ from swl import SWL, templates_dir
 from swl.session import SessionAuthBackend
 from swl.userbase import Userbase
 from swl.views import account
-
-from seecr_stdlib.config import Config
 
 from . import VERSION
 

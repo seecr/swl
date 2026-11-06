@@ -14,7 +14,6 @@
 import json
 
 import pytest
-
 from seecr_stdlib.config import Config
 
 from swl import SWL

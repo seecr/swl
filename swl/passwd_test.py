@@ -11,17 +11,15 @@
 #
 ## end license ##
 
+import json
 from pathlib import Path
-
-import pytest
-
-from .passwd import Passwd
 from uuid import UUID, uuid1
 
+import argon2
+import pytest
 from seecr_testtools import anything
 
-import json
-import argon2
+from .passwd import Passwd
 
 
 @pytest.fixture
