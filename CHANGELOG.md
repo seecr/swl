@@ -10,6 +10,10 @@
   `ui.icons_stylesheet` replaces the Bootstrap Icons stylesheet (or, with `false`, leaves it
   out). In templates: `SWL.icons.close`; `swl.js` reads them from `#swl-icons` in the page.
   SWL's icons now also have the class `swl-icon`; `swl.css` styles that instead of `.bi`.
+- Web resources: an entry may have a `package` field (the npm name and version, e.g.
+  `"jstree@3.3.17"`) or `"own": true` (your own file, not a library), for tools that check
+  for outdated libraries. SWL ignores both; other unknown fields are still an error. An
+  application that uses them needs this version of SWL.
 
 ## 5.7.1 (2026-11-09)
 

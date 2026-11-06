@@ -58,6 +58,32 @@ def test_invalid_data(tmp_path):
         WebResources(test_path)
 
 
+def test_package_and_own(tmp_path):
+    (test_path := tmp_path / "test.json").write_text(
+        json.dumps(
+            {
+                "styles": [
+                    {"href": "https://cdn.example.org/site.css", "own": True},
+                ],
+                "scripts": [
+                    {"src": "https://cdn.example.org/x.js", "package": "somelib@1.2.3"},
+                ],
+            }
+        )
+    )
+    res = WebResources(test_path)
+    assert res.styles[0]["own"] is True
+    assert res.scripts[0]["package"] == "somelib@1.2.3"
+
+
+def test_unknown_key(tmp_path):
+    (test_path := tmp_path / "test.json").write_text(
+        json.dumps({"scripts": [{"src": "x.js", "pakage": "somelib@1.2.3"}]})
+    )
+    with pytest.raises(ValueError, match="Invalid key"):
+        WebResources(test_path)
+
+
 def test_integrity(tmp_path):
     tmp_path.joinpath("test.json").write_text(
         json.dumps(

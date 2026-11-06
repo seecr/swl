@@ -518,7 +518,10 @@ The choice does two things:
   something else (your own mirror, other versions), point `paths.resources` at your own JSON file
   with `styles` and `scripts` (it must include htmx); the framework's classes still apply.
   To load a library *on top of* the framework's resources (e.g. jstree, see [Trees](#trees)),
-  list its JSON file(s) in `paths.extra_resources`.
+  list its JSON file(s) in `paths.extra_resources`. Besides `href` (styles) or `src` (scripts)
+  and `integrity`, an entry may have `package` (the npm name and version, e.g.
+  `"jstree@3.3.17"`) or `"own": true` (your own file, not a library); SWL ignores both, they
+  are there for tools that check for outdated libraries. Any other field is an error.
 - **`SWL.ui`**: CSS classes for form elements and buttons in that framework, so a template works
   with each of them. SWL's own account and user screens use it, and so can yours:
 

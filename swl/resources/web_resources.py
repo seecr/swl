@@ -15,6 +15,12 @@ import importlib.resources
 import json
 import pathlib
 
+# Fields an entry may have besides "href" (styles) or "src" (scripts): "integrity" (the
+# SRI hash), and for tools that check for outdated libraries (SWL ignores them) "package"
+# (the npm name and version, e.g. "jstree@3.3.17") or "own": true (our own file, not a
+# library).
+OPTIONAL_KEYS = ["integrity", "package", "own"]
+
 # The resources of the frameworks SWL supports: see swl/frameworks.py
 bootstrap_web_resources = (
     importlib.resources.files("swl.resources") / "bootstrap-web-resources.json"
@@ -81,7 +87,9 @@ class WebResources:
             style
             for conf in confs
             for style in conf.get("styles", [])
-            if is_valid(style, mandatory=["href"], allowed=["href", "integrity", "icons"])
+            if is_valid(
+                style, mandatory=["href"], allowed=["href", "icons", *OPTIONAL_KEYS]
+            )
         ]
         if icons_stylesheet is not None:
             styles = _replace_icons(styles, icons_stylesheet)
@@ -92,7 +100,7 @@ class WebResources:
             {**script, "src": script["src"].format(BASE_URL=base_url)}
             for conf in confs
             for script in conf.get("scripts", [])
-            if is_valid(script, mandatory=["src"], allowed=["src", "integrity"])
+            if is_valid(script, mandatory=["src"], allowed=["src", *OPTIONAL_KEYS])
         ]
 
     @property
