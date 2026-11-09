@@ -59,6 +59,16 @@ def test_swl_default():
     # assert swl.web_resources.base_url == ""
 
 
+def test_password_managers_ignore():
+    # only the password managers' own opt-out attributes: no placeholder, which a
+    # field would show as its hint text
+    swl = SWL(config=Config({}))
+    assert str(swl.password_managers_ignore) == (
+        'data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" '
+        "data-protonpass-ignore"
+    )
+
+
 def test_swl_route_path():
     def monkey():
         pass

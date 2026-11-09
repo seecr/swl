@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- `SWL.password_managers_ignore` no longer adds `placeholder="off"`: a field showed "off" as
+  its hint text (e.g. a username field in an app's users dialog).
+
 ## 5.7.0 (2026-11-04)
 
 > Trees: a tree that the server fills and that tells it what happens in it, clicks and drag and

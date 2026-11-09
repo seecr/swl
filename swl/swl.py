@@ -188,7 +188,6 @@ class SWL:
             " ".join(
                 f'{name}="{escape(value[0])}"' if value else name
                 for name, *value in [
-                    ("placeholder", "off"),
                     ("data-1p-ignore",),
                     ("data-lpignore", "true"),
                     ("data-bwignore",),
