@@ -11,14 +11,16 @@
 #
 ## end license #}
 {#
- # The task list page. Everything SWL needs comes from swl/base.j2 (styles, htmx, the dialog and
- # the toast) and the includes below; this page only adds its own markup and scripts.
+ # The task list page, in one of SWL's layouts (swl/templates/swl/layouts/: sidebar, topbar or
+ # retro; the switch in the top bar). The layout brings the menu (swl.set_menu in app.py), the
+ # dialog and the context menu; everything else SWL needs comes from swl/base.j2 (styles, htmx,
+ # the toast). This page fills the layout's blocks: brand, toolbar and content.
  #
  # It works with each CSS framework SWL supports (python -m swl_tasks --framework swl|bootstrap|bulma):
  # form elements and buttons get their classes from SWL.ui, the layout comes from swl.css
  # (swl-nav, swl-container, swl-columns) and the example's own tasks.css.
  #}
-{% extends "swl/base.j2" %}
+{% extends "swl/layouts/" ~ layout ~ ".j2" %}
 {% from "swl/placeholder.j2" import placeholder %}
 
 {% block head_extra %}
@@ -26,29 +28,12 @@
         <link rel="stylesheet" href="/example/tasks.css">
 {% endblock %}
 
-{% block body %}
-{% include "swl/modal.j2" %}
-{% include "swl/contextmenu.j2" %}
+{% block brand %}SWL Tasks <span id="task-counts" class="swl-badge"></span>{% endblock %}
 
-<nav class="swl-nav">
-    <div class="swl-container">
-        <span class="swl-brand">SWL Tasks <span id="task-counts" class="swl-badge"></span></span>
-        <div class="task-toolbar">
-            {% include "tasks/style_switch.j2" %}
-            {% if user.admin %}
-            <button type="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" hx-post="{{ register('users_show') }}">
-                <i class="bi bi-people"></i> {{ _("Users") }}
-            </button>
-            {% endif %}
-            <button type="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" hx-post="{{ register('show_account') }}">
-                <i class="bi bi-person"></i> {{ user.username }}
-            </button>
-            <a role="button" class="{{ SWL.ui.button }} {{ SWL.ui.small }}" href="/logout">{{ _("Log out") }}</a>
-        </div>
-    </div>
-</nav>
+{# the language, CSS framework, layout and colours: on the right of the layout's bar #}
+{% block toolbar %}{% include "tasks/style_switch.j2" %}{% endblock %}
 
-<main class="swl-container">
+{% block content %}
     {#
      # A plain form that holds "where you are": the filter fields, the view (list or tree), and
      # (hidden) the selected task and tab. The task list and the detail panel include it in their requests (hx-include), so every
@@ -97,7 +82,6 @@
                                 on_changed=["tasks"]) %}{{ detail_html }}{% endcall %}
         </div>
     </div>
-</main>
 {% endblock %}
 
 {% block body_extra %}

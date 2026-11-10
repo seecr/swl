@@ -604,6 +604,64 @@ javascript and reload the page. The example application has both switches in its
 
 In every template: `register(name)` and `SWL` (the `SWL` object).
 
+### Layouts: a page with a menu
+
+SWL has three ready-made layouts for the frame around your pages: a menu, a bar with the
+user's menu, and the page. Using one is a choice, not a must: a page that extends
+`swl/base.j2` itself works as before. They are plain HTML (`<details>` dropdowns, popovers),
+so they work with every `ui.framework`.
+
+| Layout | |
+|---|---|
+| `swl/layouts/sidebar.j2` | the menu on the left, a bar at the top; on a narrow screen the menu opens from a button |
+| `swl/layouts/topbar.j2` | the app's name and the menu in a bar at the top; on a narrow screen the menu opens from a button |
+| `swl/layouts/retro.j2` | an easter egg: a desktop, the page in a window, a taskbar with a start menu |
+
+**Pick one** in your page template, and fill its blocks:
+
+```jinja
+{% extends "swl/layouts/sidebar.j2" %}
+{% block toolbar %}...more in the bar...{% endblock %}
+{% block content %}...the page...{% endblock %}
+```
+
+Blocks: `brand` (the app's name; default the menu's title), `toolbar` (more in the bar) and
+`content`; `head_extra` and `body_extra` are `base.j2`'s. The layout brings the modal
+(`swl/modal.j2`) and the context menu, and its own `swl-layouts.css` and `layouts.js` (served
+from `/static/swl/`). Because `extends` takes an expression, an app can also let the
+configuration or the user choose: `{% extends "swl/layouts/" ~ layout ~ ".j2" %}` (the example
+does, with a cookie).
+
+**The menu** comes from `swl.set_menu`, a list of `swl.menu.MenuItem` per part:
+
+```python
+from swl.i18n import N_
+from swl.menu import MenuItem
+
+swl.set_menu(
+    title="My App",
+    main=[MenuItem(N_("Tasks"), url="/tasks", icon="bi-check2-square")],
+    admin=[MenuItem(N_("Users"), action="users_show", icon="bi-people", scope="role:admin")],
+    user=[
+        MenuItem(N_("Account"), action="show_account", icon="bi-person"),
+        MenuItem(N_("Log out"), url="/logout", icon="bi-box-arrow-right"),
+    ],
+)
+```
+
+- `main` is the menu; `admin` a group of its own ("Manage", or `admin_label=`); `user` the
+  menu under the logged-in user's name (`request.user.display_name`).
+- An item is a link (`url`, marked as the current page on that url and the pages below it) or
+  an action (`action`, e.g. one that opens a dialog). `icon` is a Bootstrap Icons class.
+- `scope="role:admin"` shows the item only when the request has that scope (as your
+  authentication backend sets them); `check=lambda request: request.user.admin` only when the
+  check is true. A group without items is not shown.
+- Labels are translated with `_()` when the page is rendered; mark them with `N_`.
+
+**Colours**: the bars use `--swl-layout-bar-bg` and `--swl-layout-bar-fg`, the page
+`--swl-layout-content-bg`; set them in your own CSS. The layouts follow the light and dark
+colours of the framework (`theme.js`), except `retro`, which is always grey.
+
 ### Built-in views: `swl.views.account`
 
 Register with `swl.register_modules(account)` and `register_action_kwargs(userbase=...)`:

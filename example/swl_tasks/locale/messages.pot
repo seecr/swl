@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl_tasks VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-04 11:50+0100\n"
+"POT-Creation-Date: 2026-11-10 16:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: swl_tasks/app.py:105 swl_tasks/templates/tasks/login.j2:31
+#: swl_tasks/app.py:117 swl_tasks/templates/tasks/login.j2:31
 msgid "Log in"
+msgstr ""
+
+#: swl_tasks/app.py:167
+msgid "Tasks"
+msgstr ""
+
+#: swl_tasks/app.py:170
+msgid "Users"
+msgstr ""
+
+#: swl_tasks/app.py:177
+msgid "Account"
+msgstr ""
+
+#: swl_tasks/app.py:178
+msgid "Log out"
 msgstr ""
 
 #: swl_tasks/store.py:93
@@ -57,7 +73,7 @@ msgstr ""
 msgid "Edit task"
 msgstr ""
 
-#: swl_tasks/templates/tasks/form.j2:19 swl_tasks/templates/tasks/page.j2:71
+#: swl_tasks/templates/tasks/form.j2:19 swl_tasks/templates/tasks/page.j2:56
 msgid "New task"
 msgstr ""
 
@@ -143,48 +159,44 @@ msgstr ""
 msgid "Mark as done"
 msgstr ""
 
-#: swl_tasks/templates/tasks/page.j2:40
-msgid "Users"
-msgstr ""
-
-#: swl_tasks/templates/tasks/page.j2:46
-msgid "Log out"
-msgstr ""
-
-#: swl_tasks/templates/tasks/page.j2:59
+#: swl_tasks/templates/tasks/page.j2:44
 msgid "Search tasks..."
 msgstr ""
 
-#: swl_tasks/templates/tasks/page.j2:59
+#: swl_tasks/templates/tasks/page.j2:44
 msgid "Search tasks"
 msgstr ""
 
-#: swl_tasks/templates/tasks/page.j2:60
+#: swl_tasks/templates/tasks/page.j2:45
 msgid "Show"
 msgstr ""
 
-#: swl_tasks/templates/tasks/page.j2:65
+#: swl_tasks/templates/tasks/page.j2:50
 msgid "View"
 msgstr ""
 
-#: swl_tasks/templates/tasks/style_switch.j2:23
+#: swl_tasks/templates/tasks/style_switch.j2:25
 msgid "Language"
 msgstr ""
 
-#: swl_tasks/templates/tasks/style_switch.j2:28
+#: swl_tasks/templates/tasks/style_switch.j2:30
 msgid "CSS framework"
 msgstr ""
 
-#: swl_tasks/templates/tasks/style_switch.j2:34
-#: swl_tasks/templates/tasks/style_switch.j2:35
+#: swl_tasks/templates/tasks/style_switch.j2:36
+msgid "Layout"
+msgstr ""
+
+#: swl_tasks/templates/tasks/style_switch.j2:43
+#: swl_tasks/templates/tasks/style_switch.j2:44
 msgid "Colours: automatic"
 msgstr ""
 
-#: swl_tasks/templates/tasks/style_switch.j2:35
+#: swl_tasks/templates/tasks/style_switch.j2:44
 msgid "Colours: light"
 msgstr ""
 
-#: swl_tasks/templates/tasks/style_switch.j2:36
+#: swl_tasks/templates/tasks/style_switch.j2:45
 msgid "Colours: dark"
 msgstr ""
 
@@ -241,7 +253,7 @@ msgid "%(open)d open / %(done)d done"
 msgstr ""
 
 #: swl_tasks/views.py:208 swl_tasks/views.py:228 swl_tasks/views.py:249
-#: swl_tasks/views.py:260 swl_tasks/views.py:393
+#: swl_tasks/views.py:260 swl_tasks/views.py:394
 msgid "This task no longer exists"
 msgstr ""
 
@@ -262,11 +274,11 @@ msgstr ""
 msgid "Deleted '%(title)s'"
 msgstr ""
 
-#: swl_tasks/views.py:390
+#: swl_tasks/views.py:391
 msgid "Invalid position"
 msgstr ""
 
-#: swl_tasks/views.py:395
+#: swl_tasks/views.py:396
 msgid "A task can only go into Open or Done"
 msgstr ""
 

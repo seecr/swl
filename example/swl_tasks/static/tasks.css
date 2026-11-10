@@ -40,7 +40,7 @@
 }
 
 /* The look switches (style_switch.j2) */
-.task-style-switch { display: inline-flex; align-items: center; gap: .5rem; }
+.task-style-switch { display: inline-flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
 .task-style-switch > select:not([multiple]) { width: auto; height: auto; padding-top: .25rem; padding-bottom: .25rem; font-size: .875rem; }
 .task-login-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
 .task-login-header > h1 { margin: 0; }

@@ -42,6 +42,8 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
   `python -m swl.i18n_tool extract|update|compile swl --domain swl` after changing texts.
 - `swl/templates/swl/`: `base.j2` (loads htmx + htmx-config meta), `placeholder.j2` (macro),
   `kickstart.j2`, `modal-content.j2`, account/users views (`swl/views/account.py`).
+- `swl/templates/swl/layouts/`: optional page layouts (sidebar, topbar, retro) with
+  `swl-layouts.css` and `layouts.js`; their menu is `swl.set_menu` (`swl/menu.py`, `MenuItem`).
 - `swl/resources/<framework>-web-resources.json`: CDN scripts/styles per framework, all from
   cdn.jsdelivr.net with SRI hashes (htmx is `htmx.org@4.0.0`); `web_resources.py` loads them.
 - `swl/test_utils.py`: `assert_success(response)` (returns the events), `assert_fail(response, msg)`.

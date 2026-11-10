@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl_tasks VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-04 11:50+0100\n"
+"POT-Creation-Date: 2026-11-10 16:38+0000\n"
 "PO-Revision-Date: 2026-11-01 18:24+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -18,9 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: swl_tasks/app.py:105 swl_tasks/templates/tasks/login.j2:31
+#: swl_tasks/app.py:117 swl_tasks/templates/tasks/login.j2:31
 msgid "Log in"
 msgstr "Anmelden"
+
+#: swl_tasks/app.py:167
+msgid "Tasks"
+msgstr "Aufgaben"
+
+#: swl_tasks/app.py:170
+msgid "Users"
+msgstr "Benutzer"
+
+#: swl_tasks/app.py:177
+msgid "Account"
+msgstr "Konto"
+
+#: swl_tasks/app.py:178
+msgid "Log out"
+msgstr "Abmelden"
 
 #: swl_tasks/store.py:93
 msgid "Created"
@@ -58,7 +74,7 @@ msgstr "Wählen Sie eine Aufgabe, um hier die Details zu sehen."
 msgid "Edit task"
 msgstr "Aufgabe bearbeiten"
 
-#: swl_tasks/templates/tasks/form.j2:19 swl_tasks/templates/tasks/page.j2:71
+#: swl_tasks/templates/tasks/form.j2:19 swl_tasks/templates/tasks/page.j2:56
 msgid "New task"
 msgstr "Neue Aufgabe"
 
@@ -148,48 +164,44 @@ msgstr "Als offen markieren"
 msgid "Mark as done"
 msgstr "Als erledigt markieren"
 
-#: swl_tasks/templates/tasks/page.j2:40
-msgid "Users"
-msgstr "Benutzer"
-
-#: swl_tasks/templates/tasks/page.j2:46
-msgid "Log out"
-msgstr "Abmelden"
-
-#: swl_tasks/templates/tasks/page.j2:59
+#: swl_tasks/templates/tasks/page.j2:44
 msgid "Search tasks..."
 msgstr "Aufgaben suchen..."
 
-#: swl_tasks/templates/tasks/page.j2:59
+#: swl_tasks/templates/tasks/page.j2:44
 msgid "Search tasks"
 msgstr "Aufgaben suchen"
 
-#: swl_tasks/templates/tasks/page.j2:60
+#: swl_tasks/templates/tasks/page.j2:45
 msgid "Show"
 msgstr "Anzeigen"
 
-#: swl_tasks/templates/tasks/page.j2:65
+#: swl_tasks/templates/tasks/page.j2:50
 msgid "View"
 msgstr "Ansicht"
 
-#: swl_tasks/templates/tasks/style_switch.j2:23
+#: swl_tasks/templates/tasks/style_switch.j2:25
 msgid "Language"
 msgstr "Sprache"
 
-#: swl_tasks/templates/tasks/style_switch.j2:28
+#: swl_tasks/templates/tasks/style_switch.j2:30
 msgid "CSS framework"
 msgstr "CSS-Framework"
 
-#: swl_tasks/templates/tasks/style_switch.j2:34
-#: swl_tasks/templates/tasks/style_switch.j2:35
+#: swl_tasks/templates/tasks/style_switch.j2:36
+msgid "Layout"
+msgstr "Layout"
+
+#: swl_tasks/templates/tasks/style_switch.j2:43
+#: swl_tasks/templates/tasks/style_switch.j2:44
 msgid "Colours: automatic"
 msgstr "Farben: automatisch"
 
-#: swl_tasks/templates/tasks/style_switch.j2:35
+#: swl_tasks/templates/tasks/style_switch.j2:44
 msgid "Colours: light"
 msgstr "Farben: hell"
 
-#: swl_tasks/templates/tasks/style_switch.j2:36
+#: swl_tasks/templates/tasks/style_switch.j2:45
 msgid "Colours: dark"
 msgstr "Farben: dunkel"
 
@@ -249,7 +261,7 @@ msgid "%(open)d open / %(done)d done"
 msgstr "%(open)d offen / %(done)d erledigt"
 
 #: swl_tasks/views.py:208 swl_tasks/views.py:228 swl_tasks/views.py:249
-#: swl_tasks/views.py:260 swl_tasks/views.py:393
+#: swl_tasks/views.py:260 swl_tasks/views.py:394
 msgid "This task no longer exists"
 msgstr "Diese Aufgabe gibt es nicht mehr"
 
@@ -270,11 +282,11 @@ msgstr "Aufgabe gespeichert"
 msgid "Deleted '%(title)s'"
 msgstr "'%(title)s' gelöscht"
 
-#: swl_tasks/views.py:390
+#: swl_tasks/views.py:391
 msgid "Invalid position"
 msgstr "Ungültige Position"
 
-#: swl_tasks/views.py:395
+#: swl_tasks/views.py:396
 msgid "A task can only go into Open or Done"
 msgstr "Eine Aufgabe kann nur in Offen oder Erledigt"
 

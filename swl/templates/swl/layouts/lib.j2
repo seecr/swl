@@ -1,0 +1,51 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # What SWL's layouts share: a menu item (a link, or a button for an action) and a dropdown
+ # (<details>, so it needs no framework JavaScript; layouts.js closes it on a click
+ # elsewhere). Items are swl.menu.MenuItem; their label is translated here.
+ #}
+
+{% macro menu_link(item, request, class_="swl-layout-link") -%}
+{% set content %}{% if item.icon %}<i class="bi {{ item.icon }}" aria-hidden="true"></i>{% endif %}<span>{{ _(item.label) }}</span>{% endset %}
+{% if item.url is not none -%}
+<a href="{{ item.url }}" class="{{ class_ }}"{% if item.current(request) %} aria-current="page"{% endif %}>{{ content }}</a>
+{%- else -%}
+<button type="button" class="{{ class_ }}" hx-post="{{ register(item.action) }}">{{ content }}</button>
+{%- endif %}
+{%- endmacro %}
+
+{% macro dropdown(label, items, request, icon=None, class_="") -%}
+{% if items %}
+<details class="swl-layout-dropdown {{ class_ }}">
+    <summary class="swl-layout-link">{% if icon %}<i class="bi {{ icon }}" aria-hidden="true"></i>{% endif %}<span>{{ label }}</span></summary>
+    <div class="swl-menu swl-layout-dropdown-menu">
+        {% for item in items %}{{ menu_link(item, request, class_="") }}{% endfor %}
+    </div>
+</details>
+{% endif %}
+{%- endmacro %}
+
+{# The admin group and the user's menu, as dropdowns: the same in each layout #}
+{% macro tools(menu, request) -%}
+{{ dropdown(_(menu.admin_label), menu.admin, request, icon="bi-gear") }}
+{% if request.user.is_authenticated %}
+{{ dropdown(request.user.display_name, menu.user, request, icon="bi-person", class_="swl-layout-user") }}
+{% endif %}
+{%- endmacro %}
+
+{# The stylesheet and script of the layouts; in <body>, so a page's own head_extra keeps them #}
+{% macro assets() -%}
+<link rel="stylesheet" href="/static/swl/swl-layouts.css?version={{ VERSION }}">
+<script src="/static/swl/layouts.js?version={{ VERSION }}" defer></script>
+{%- endmacro %}

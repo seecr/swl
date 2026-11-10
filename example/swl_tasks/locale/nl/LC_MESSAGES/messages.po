@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl_tasks VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-04 11:50+0100\n"
+"POT-Creation-Date: 2026-11-10 16:38+0000\n"
 "PO-Revision-Date: 2026-11-01 18:24+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -18,9 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: swl_tasks/app.py:105 swl_tasks/templates/tasks/login.j2:31
+#: swl_tasks/app.py:117 swl_tasks/templates/tasks/login.j2:31
 msgid "Log in"
 msgstr "Inloggen"
+
+#: swl_tasks/app.py:167
+msgid "Tasks"
+msgstr "Taken"
+
+#: swl_tasks/app.py:170
+msgid "Users"
+msgstr "Gebruikers"
+
+#: swl_tasks/app.py:177
+msgid "Account"
+msgstr "Account"
+
+#: swl_tasks/app.py:178
+msgid "Log out"
+msgstr "Uitloggen"
 
 #: swl_tasks/store.py:93
 msgid "Created"
@@ -58,7 +74,7 @@ msgstr "Kies een taak om de details hier te zien."
 msgid "Edit task"
 msgstr "Taak wijzigen"
 
-#: swl_tasks/templates/tasks/form.j2:19 swl_tasks/templates/tasks/page.j2:71
+#: swl_tasks/templates/tasks/form.j2:19 swl_tasks/templates/tasks/page.j2:56
 msgid "New task"
 msgstr "Nieuwe taak"
 
@@ -147,48 +163,44 @@ msgstr "Weer open zetten"
 msgid "Mark as done"
 msgstr "Afvinken"
 
-#: swl_tasks/templates/tasks/page.j2:40
-msgid "Users"
-msgstr "Gebruikers"
-
-#: swl_tasks/templates/tasks/page.j2:46
-msgid "Log out"
-msgstr "Uitloggen"
-
-#: swl_tasks/templates/tasks/page.j2:59
+#: swl_tasks/templates/tasks/page.j2:44
 msgid "Search tasks..."
 msgstr "Taken zoeken..."
 
-#: swl_tasks/templates/tasks/page.j2:59
+#: swl_tasks/templates/tasks/page.j2:44
 msgid "Search tasks"
 msgstr "Taken zoeken"
 
-#: swl_tasks/templates/tasks/page.j2:60
+#: swl_tasks/templates/tasks/page.j2:45
 msgid "Show"
 msgstr "Toon"
 
-#: swl_tasks/templates/tasks/page.j2:65
+#: swl_tasks/templates/tasks/page.j2:50
 msgid "View"
 msgstr "Weergave"
 
-#: swl_tasks/templates/tasks/style_switch.j2:23
+#: swl_tasks/templates/tasks/style_switch.j2:25
 msgid "Language"
 msgstr "Taal"
 
-#: swl_tasks/templates/tasks/style_switch.j2:28
+#: swl_tasks/templates/tasks/style_switch.j2:30
 msgid "CSS framework"
 msgstr "CSS-framework"
 
-#: swl_tasks/templates/tasks/style_switch.j2:34
-#: swl_tasks/templates/tasks/style_switch.j2:35
+#: swl_tasks/templates/tasks/style_switch.j2:36
+msgid "Layout"
+msgstr "Indeling"
+
+#: swl_tasks/templates/tasks/style_switch.j2:43
+#: swl_tasks/templates/tasks/style_switch.j2:44
 msgid "Colours: automatic"
 msgstr "Kleuren: automatisch"
 
-#: swl_tasks/templates/tasks/style_switch.j2:35
+#: swl_tasks/templates/tasks/style_switch.j2:44
 msgid "Colours: light"
 msgstr "Kleuren: licht"
 
-#: swl_tasks/templates/tasks/style_switch.j2:36
+#: swl_tasks/templates/tasks/style_switch.j2:45
 msgid "Colours: dark"
 msgstr "Kleuren: donker"
 
@@ -247,7 +259,7 @@ msgid "%(open)d open / %(done)d done"
 msgstr "%(open)d open / %(done)d klaar"
 
 #: swl_tasks/views.py:208 swl_tasks/views.py:228 swl_tasks/views.py:249
-#: swl_tasks/views.py:260 swl_tasks/views.py:393
+#: swl_tasks/views.py:260 swl_tasks/views.py:394
 msgid "This task no longer exists"
 msgstr "Deze taak bestaat niet meer"
 
@@ -268,11 +280,11 @@ msgstr "Taak opgeslagen"
 msgid "Deleted '%(title)s'"
 msgstr "'%(title)s' verwijderd"
 
-#: swl_tasks/views.py:390
+#: swl_tasks/views.py:391
 msgid "Invalid position"
 msgstr "Ongeldige positie"
 
-#: swl_tasks/views.py:395
+#: swl_tasks/views.py:396
 msgid "A task can only go into Open or Done"
 msgstr "Een taak kan alleen in Open of Klaar"
 

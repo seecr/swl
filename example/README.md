@@ -30,7 +30,8 @@ python -m swl_tasks         # or: swl-tasks
 Open <http://127.0.0.1:8000/> and log in as **demo** / **demo-password**. Tasks and users are
 stored in `./swl-tasks-data` (change it with `--data-dir`; `--port` and `--host` work too).
 `--framework bootstrap`, `--framework tabler` or `--framework bulma` shows the same app in that CSS framework; the
-switches in the top bar change the framework and light/dark colours while you use it.
+switches in the top bar change the framework, the layout (SWL's sidebar, topbar or retro) and light/dark colours
+while you use it.
 
 Run the tests with `pytest example/swl_tasks`.
 
@@ -47,7 +48,7 @@ example/
     ├── __main__.py          python -m swl_tasks
     ├── app_test.py          tests for the actions
     ├── templates/tasks/
-    │   ├── page.j2          the page: navigation, filters, the task list and the detail panel
+    │   ├── page.j2          the page, in one of SWL's layouts: filters, the task list and the detail panel
     │   ├── list.j2          the task list (rendered by the tasks_list action)
     │   ├── tree.j2          the element for the tree view (filled by tree.js)
     │   ├── detail.j2        the detail panel with its tabs (rendered by task_detail)
@@ -55,7 +56,7 @@ example/
     │   ├── tab_history.j2   the content of the "History" tab
     │   ├── form.j2          the new/edit form (shown in the modal)
     │   ├── menu.j2          the context menu
-    │   ├── style_switch.j2  the language, CSS framework and light/dark switches in the top bar
+    │   ├── style_switch.j2  the language, CSS framework, layout and light/dark switches in the top bar
     │   └── login.j2         the login page
     ├── tree-web-resources.json  jQuery and jstree, for the tree view
     ├── locale/              the translations: messages.pot, and nl, de, es (.po and .mo)

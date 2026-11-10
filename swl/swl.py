@@ -28,6 +28,7 @@ from swl.i18n import COOKIE, I18n, I18nMiddleware
 from swl.i18n import install as install_i18n
 from swl.i18n import js_messages
 from swl.icons import icons
+from swl.menu import Menu
 from swl.resources import WebResources
 from swl.responses import FailResponse, SuccessResponse
 from swl.routes_endpoint import make_routes_route
@@ -76,6 +77,9 @@ class SWL:
             cookie=self._config.get("i18n.cookie", COOKIE),
         )
         install_i18n(self._templates.env, self.i18n)
+
+        # the menu for SWL's layouts (swl/templates/swl/layouts/), see set_menu
+        self.menu = Menu()
 
         self._templates.env.globals["SWL"] = self
         self._templates.env.globals["register"] = self._actions.register
@@ -178,6 +182,13 @@ class SWL:
 
     def endpoint(self, *args, **kwargs):
         return self._actions.wrap(*args, **kwargs)
+
+    def set_menu(self, title="", main=(), admin=(), user=(), **kwargs):
+        """The menu for SWL's layouts (swl/layouts/*.j2): main (the menu), admin (a group
+        of its own, "Manage"; admin_label= for another name) and user (the menu of the
+        logged-in user), each a list of swl.menu.MenuItem. title is the app's name in the
+        layout."""
+        self.menu = Menu(title=title, main=main, admin=admin, user=user, **kwargs)
 
     def add_template_globals(self, **kwargs):
         for key, value in kwargs.items():

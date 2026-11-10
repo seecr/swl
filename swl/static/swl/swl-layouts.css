@@ -1,0 +1,499 @@
+/* begin license *
+ *
+ * "SWL"(Seecr Web Lib) makes developing webbased apps easier
+ *
+ * Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+ *
+ * This file is part of "Seecr Web Lib"
+ *
+ * "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+ * SPDX-License-Identifier: MIT
+ *
+ * end license */
+
+/*
+ * SWL's layouts (swl/templates/swl/layouts/): sidebar, topbar and retro. Plain HTML
+ * (<details> dropdowns, popovers), so they work with every CSS framework or none.
+ * Colours: the --swl-layout-* variables below; override them in your own CSS, e.g.
+ *     :root { --swl-layout-bar-bg: #1d293b; }
+ */
+:root {
+    --swl-layout-bar-bg: #1d293b;
+    --swl-layout-bar-fg: #fff;
+    --swl-layout-bar-hover: color-mix(in srgb, #fff 14%, transparent);
+    --swl-layout-content-bg: var(--swl-subtle-bg);
+    --swl-layout-side-width: 15rem;
+}
+
+body.swl-layout {
+    margin: 0;
+    background: var(--swl-layout-content-bg);
+}
+
+/* ---------------------------------------------------------------- shared parts */
+
+.swl-layout ul.swl-layout-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: .25rem;
+}
+
+/* a menu item, the button of a dropdown: a link in the bar, whatever the framework */
+.swl-layout .swl-layout-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 0;
+    padding: .45rem .7rem;
+    border: 0;
+    border-radius: var(--swl-radius);
+    background: transparent;
+    box-shadow: none;
+    color: inherit;
+    font: inherit;
+    line-height: 1.4;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.swl-layout .swl-layout-link:hover,
+.swl-layout .swl-layout-link:focus-visible,
+.swl-layout .swl-layout-link[aria-current] {
+    background: var(--swl-layout-bar-hover);
+    color: inherit;
+}
+
+.swl-layout-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    color: inherit;
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.swl-layout-brand:hover { color: inherit; }
+
+.swl-layout-bar {
+    display: flex;
+    align-items: center;
+    gap: .5rem 1rem;
+    min-height: 3.5rem;
+    padding: .4rem 1rem;
+    background: var(--swl-layout-bar-bg);
+    color: var(--swl-layout-bar-fg);
+}
+
+.swl-layout-tools {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .25rem .5rem;
+    margin-left: auto;
+}
+
+.swl-layout-content {
+    padding: 1.25rem;
+    min-width: 0;
+}
+
+/* the dropdowns: <details>, the menu below its summary, right-aligned */
+.swl-layout-dropdown { position: relative; }
+.swl-layout-dropdown > summary { list-style: none; }
+.swl-layout-dropdown > summary::-webkit-details-marker { display: none; }
+.swl-layout-dropdown > summary::after {
+    content: "";
+    border: .3em solid transparent;
+    border-top-color: currentColor;
+    margin-top: .3em;
+}
+.swl-layout-dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + .25rem);
+    z-index: 1050;
+    min-width: 12rem;
+    padding: .3rem;
+    border: 1px solid var(--swl-border);
+    border-radius: var(--swl-radius);
+    background: var(--swl-bg);
+    color: var(--swl-fg);
+    box-shadow: var(--swl-shadow);
+}
+
+/* the button that opens the menu on a narrow screen */
+.swl-layout .swl-layout-menu-button { display: none; font-size: 1.25rem; }
+
+/* a narrow screen: the tools (and a toolbar) go to a line of their own when they don't fit */
+@media (max-width: 61.99rem) {
+    .swl-layout-bar { flex-wrap: wrap; }
+    .swl-layout-tools { min-width: 0; max-width: 100%; }
+}
+
+/* ---------------------------------------------------------------- sidebar */
+
+.swl-layout-sidebar .swl-layout-frame {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* the menu: a column on a wide screen; a popover (from the menu button) on a narrow one */
+.swl-layout-sidebar .swl-layout-side[popover] {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    inset: auto;
+    flex: 0 0 var(--swl-layout-side-width);
+    height: 100vh;
+    width: auto;
+    margin: 0;
+    padding: 1.25rem 1rem;
+    border: 0;
+    overflow: auto;
+    background: var(--swl-layout-bar-bg);
+    color: var(--swl-layout-bar-fg);
+}
+.swl-layout-sidebar .swl-layout-side ul.swl-layout-items { flex-direction: column; }
+.swl-layout-sidebar .swl-layout-side .swl-layout-link { display: flex; }
+
+.swl-layout-sidebar .swl-layout-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* the bar above the page: light, as the page */
+.swl-layout-sidebar .swl-layout-bar {
+    background: var(--swl-bg);
+    color: var(--swl-fg);
+    border-bottom: 1px solid var(--swl-border);
+}
+.swl-layout-sidebar .swl-layout-bar .swl-layout-link:hover,
+.swl-layout-sidebar .swl-layout-bar .swl-layout-link:focus-visible {
+    background: var(--swl-subtle-bg);
+}
+.swl-layout-sidebar .swl-layout-bar-title { display: none; font-weight: 600; }
+
+@media (max-width: 61.99rem) {
+    .swl-layout-sidebar .swl-layout-side[popover]:not(:popover-open) { display: none; }
+    .swl-layout-sidebar .swl-layout-side[popover]:popover-open {
+        position: fixed;
+        inset: 0 auto 0 0;
+        height: 100%;
+        width: min(18rem, 85vw);
+        box-shadow: var(--swl-shadow);
+    }
+    .swl-layout-sidebar .swl-layout-side[popover]::backdrop { background: var(--swl-overlay); }
+    .swl-layout-sidebar .swl-layout-menu-button { display: inline-flex; }
+    .swl-layout-sidebar .swl-layout-bar-title { display: inline; }
+}
+
+/* ---------------------------------------------------------------- topbar */
+
+.swl-layout-topbar .swl-layout-bar { position: sticky; top: 0; z-index: 1040; }
+
+.swl-layout-topbar .swl-layout-topnav[popover] {
+    display: block;
+    position: static;
+    inset: auto;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: visible;
+    background: transparent;
+    color: inherit;
+}
+
+.swl-layout-topbar .swl-layout-content {
+    max-width: 75rem;
+    margin: 0 auto;
+}
+
+@media (max-width: 61.99rem) {
+    .swl-layout-topbar .swl-layout-menu-button { display: inline-flex; order: -1; }
+    .swl-layout-topbar .swl-layout-topnav[popover]:not(:popover-open) { display: none; }
+    .swl-layout-topbar .swl-layout-topnav[popover]:popover-open {
+        position: fixed;
+        inset: 3.5rem 0 auto 0;
+        padding: .5rem 1rem 1rem;
+        background: var(--swl-layout-bar-bg);
+        color: var(--swl-layout-bar-fg);
+        box-shadow: var(--swl-shadow);
+    }
+    .swl-layout-topbar .swl-layout-topnav ul.swl-layout-items { flex-direction: column; }
+    .swl-layout-topbar .swl-layout-topnav .swl-layout-link { display: flex; }
+}
+
+/* ---------------------------------------------------------------- retro (an easter egg) */
+
+body.swl-layout-retro {
+    --swl-retro-grey: #c0c0c0;
+    --swl-retro-dark: #808080;
+    --swl-retro-navy: #000080;
+    --swl-retro-raised: inset -1px -1px #0a0a0a, inset 1px 1px #fff,
+        inset -2px -2px var(--swl-retro-dark), inset 2px 2px #dfdfdf;
+    --swl-retro-sunken: inset -1px -1px #fff, inset 1px 1px var(--swl-retro-dark),
+        inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+    --swl-bg: var(--swl-retro-grey);
+    --swl-fg: #000;
+    --swl-subtle-bg: #d4d0c8;
+    --swl-border: var(--swl-retro-dark);
+    --swl-radius: 0;
+    --swl-accent: var(--swl-retro-navy);
+    color-scheme: light;
+    background: #008080;
+    color: #000;
+    font-family: "MS Sans Serif", "Microsoft Sans Serif", Tahoma, Arial, sans-serif;
+    font-size: 13px;
+    overflow: hidden;
+}
+
+.swl-retro-raised { background: var(--swl-retro-grey); box-shadow: var(--swl-retro-raised); }
+.swl-retro-sunken { box-shadow: var(--swl-retro-sunken); padding: 2px 8px; }
+
+.swl-retro-desktop {
+    position: fixed;
+    inset: 0 0 38px 0;
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+}
+
+.swl-retro-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.swl-layout-retro .swl-retro-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: #fff;
+    font: inherit;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+.swl-layout-retro .swl-retro-icon i { font-size: 30px; line-height: 1; }
+.swl-layout-retro .swl-retro-icon:hover span,
+.swl-layout-retro .swl-retro-icon:focus-visible span {
+    background: var(--swl-retro-navy);
+    outline: 1px dotted #fff;
+}
+
+.swl-retro-window {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 1100px;
+    padding: 3px;
+}
+
+.swl-retro-titlebar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 3px 3px 6px;
+    background: linear-gradient(90deg, var(--swl-retro-navy), #1084d0);
+    color: #fff;
+    font-weight: bold;
+}
+.swl-retro-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.swl-retro-title-buttons { display: flex; gap: 2px; }
+.swl-retro-title-buttons > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 16px;
+    background: var(--swl-retro-grey);
+    box-shadow: var(--swl-retro-raised);
+    color: #000;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.swl-retro-menubar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 0;
+}
+.swl-layout-retro .swl-retro-menubar .swl-layout-link {
+    padding: 1px 8px;
+    border-radius: 0;
+}
+.swl-layout-retro .swl-retro-menubar .swl-layout-link:hover,
+.swl-layout-retro .swl-retro-menubar .swl-layout-link[aria-current],
+.swl-layout-retro .swl-layout-dropdown[open] > .swl-layout-link {
+    background: var(--swl-retro-navy);
+    color: #fff;
+}
+.swl-layout-retro .swl-retro-menubar .swl-layout-tools { margin-left: 0; }
+.swl-retro-menubar-tools { margin-left: auto; display: flex; gap: 4px; align-items: center; }
+.swl-layout-retro .swl-layout-dropdown-menu {
+    left: 0;
+    right: auto;
+    box-shadow: var(--swl-retro-raised);
+    border: 0;
+    padding: 3px;
+}
+
+.swl-layout-retro .swl-retro-body {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 10px;
+    background: var(--swl-retro-grey);
+    box-shadow: inset -1px -1px #fff, inset 1px 1px var(--swl-retro-dark);
+}
+
+.swl-retro-statusbar { display: flex; gap: 2px; padding-top: 2px; }
+.swl-retro-statusbar > :first-child { flex: 1 1 auto; }
+
+.swl-retro-taskbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px;
+}
+.swl-layout-retro .swl-retro-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 28px;
+    margin: 0;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 0;
+    color: #000;
+    font: inherit;
+    cursor: pointer;
+}
+.swl-retro-task {
+    display: flex;
+    align-items: center;
+    height: 28px;
+    width: 220px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-weight: bold;
+    background: repeating-conic-gradient(#fff 0 25%, #dfdfdf 0 50%) 0 0 / 2px 2px;
+}
+.swl-retro-clock { margin-left: auto; height: 28px; display: flex; align-items: center; }
+
+.swl-retro-startmenu[popover] {
+    position: fixed;
+    inset: auto auto 38px 2px;
+    margin: 0;
+    padding: 3px 3px 3px 30px;
+    border: 0;
+    min-width: 210px;
+    color: #000;
+}
+.swl-retro-banner {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    bottom: 3px;
+    width: 24px;
+    padding: 6px 0;
+    background: linear-gradient(0deg, var(--swl-retro-navy), #1084d0);
+    color: #c0c0c0;
+    font-size: 16px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+.swl-retro-banner b { color: #fff; }
+
+/* menus: a navy bar on the item under the mouse */
+.swl-layout-retro .swl-menu > button,
+.swl-layout-retro .swl-menu > a { border-radius: 0; color: #000; }
+.swl-layout-retro .swl-menu > button:hover,
+.swl-layout-retro .swl-menu > a:hover,
+.swl-layout-retro .swl-menu > :focus-visible { background: var(--swl-retro-navy); color: #fff; }
+
+/* what is in the window and the dialogs: bevels, no rounded corners */
+.swl-layout-retro .swl-retro-body button:not(.swl-link),
+.swl-layout-retro .swl-retro-body .btn,
+.swl-layout-retro .swl-retro-body .button,
+.swl-layout-retro dialog button:not(.swl-modal-close),
+.swl-layout-retro dialog .btn,
+.swl-layout-retro dialog .button {
+    border: 0;
+    border-radius: 0;
+    background: var(--swl-retro-grey);
+    box-shadow: var(--swl-retro-raised);
+    color: #000;
+}
+.swl-layout-retro .swl-retro-body button:not(.swl-link):active,
+.swl-layout-retro dialog button:active,
+.swl-layout-retro .swl-retro-start:popover-open,
+.swl-layout-retro .swl-retro-start[aria-expanded="true"] {
+    box-shadow: var(--swl-retro-sunken);
+}
+.swl-layout-retro .swl-retro-body input:not([type=checkbox], [type=radio]),
+.swl-layout-retro .swl-retro-body select,
+.swl-layout-retro .swl-retro-body textarea,
+.swl-layout-retro dialog input:not([type=checkbox], [type=radio]),
+.swl-layout-retro dialog select,
+.swl-layout-retro dialog textarea {
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+    color: #000;
+    box-shadow: var(--swl-retro-sunken);
+}
+
+.swl-layout-retro .swl-modal-box {
+    border-radius: 0;
+    padding: 3px;
+    background: var(--swl-retro-grey);
+    box-shadow: var(--swl-retro-raised);
+}
+.swl-layout-retro .swl-modal-header {
+    margin-bottom: 8px;
+    padding: 3px 4px;
+    border: 0;
+    background: linear-gradient(90deg, var(--swl-retro-navy), #1084d0);
+    color: #fff;
+}
+.swl-layout-retro .swl-modal-title { margin: 0; font-size: 13px; font-weight: bold; color: #fff; }
+.swl-layout-retro .swl-modal-close {
+    width: 18px;
+    height: 16px;
+    border-radius: 0;
+    background: var(--swl-retro-grey);
+    box-shadow: var(--swl-retro-raised);
+    color: #000;
+}
+
+/* a phone: no desktop icons or task button, the window fills the screen */
+@media (max-width: 47.99rem) {
+    .swl-retro-icons, .swl-retro-task { display: none; }
+    .swl-retro-desktop { padding: 0; }
+}

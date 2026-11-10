@@ -29,7 +29,8 @@ from starlette.routing import Mount, Route, WebSocketRoute
 from swl import SWL, StaticFiles, static_dir
 from swl.dispatcher import Dispatcher
 from swl.frameworks import FrameworkCookieMiddleware
-from swl.i18n import _
+from swl.i18n import N_, _
+from swl.menu import MenuItem
 from swl.session import SessionAuthBackend, SessionSecretKey
 from swl.userbase import Userbase
 from swl.views import account
@@ -52,6 +53,17 @@ LANGUAGES = [
     ("de", "Deutsch"),
     ("es", "Español"),
 ]
+
+# SWL's layouts (swl/templates/swl/layouts/): the switch in the top bar sets the cookie
+# "swl_layout" (static/tasks.js), the page route reads it. An app picks one in its own
+# page template instead: {% extends "swl/layouts/sidebar.j2" %}.
+LAYOUTS = ["topbar", "sidebar", "retro"]
+LAYOUT_COOKIE = "swl_layout"
+
+
+def layout_of(request):
+    layout = request.cookies.get(LAYOUT_COOKIE)
+    return layout if layout in LAYOUTS else LAYOUTS[0]
 
 
 async def page(request, swl, store, **kwargs):
@@ -88,6 +100,8 @@ async def page(request, swl, store, **kwargs):
             "view_names": views.VIEWS,
             "labels": views.LABELS,
             "languages": LANGUAGES,
+            "layout": layout_of(request),
+            "layouts": LAYOUTS,
             **screen,
             "selection_html": views.render_selection(screen["task_id"], screen["tab"]),
             "detail_html": detail_html,
@@ -146,6 +160,25 @@ def create_app(data_dir, userbase=None, framework="swl"):
     swl.register_modules(account, views)  # account: login, users and password dialogs
     swl.register_action_kwargs(userbase=userbase, store=store, dispatcher=dispatcher)
     swl.add_template_globals(VERSION=swl.SWL_VERSION)
+    # the menu of the layouts: the pages, a group for admins ("Manage") and the user's
+    # own menu; "Users" and "Account" are actions that open SWL's dialogs
+    # (swl/views/account.py)
+    swl.set_menu(
+        title="SWL Tasks",
+        main=[MenuItem(N_("Tasks"), url="/", icon="bi-check2-square")],
+        admin=[
+            MenuItem(
+                N_("Users"),
+                action="users_show",
+                icon="bi-people",
+                check=lambda request: request.user.admin,
+            ),
+        ],
+        user=[
+            MenuItem(N_("Account"), action="show_account", icon="bi-person"),
+            MenuItem(N_("Log out"), url="/logout", icon="bi-box-arrow-right"),
+        ],
+    )
 
     app = Starlette(
         routes=[

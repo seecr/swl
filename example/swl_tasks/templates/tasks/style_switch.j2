@@ -11,11 +11,13 @@
 #
 ## end license #}
 {#
- # Switches for the example: the language, the CSS framework and light/dark colours.
+ # Switches for the example: the language, the CSS framework, the layout and light/dark colours.
  #   - The language is the cookie "swl_lang", read by swl.i18n_middleware (app.py); changing it
  #     reloads the page, which the server then renders in that language.
  #   - The framework is a cookie read by FrameworkCookieMiddleware (app.py); changing it reloads
  #     the page, as the page then loads other stylesheets.
+ #   - The layout is the cookie "swl_layout", read by the page route (app.py layout_of);
+ #     changing it reloads the page.
  #   - Light/dark/auto is swl/static/swl/theme.js; it changes the page right away.
  # Both are set in static/tasks.js.
  #}
@@ -30,6 +32,13 @@
         <option value="{{ name }}" {{ "selected" if name == SWL.framework }}>{{ label }}</option>
         {% endfor %}
     </select>
+    {% if layouts is defined %}
+    <select id="layout-switch" class="{{ SWL.ui.select }}" aria-label="{{ _('Layout') }}" title="{{ _('Layout') }}">
+        {% for name in layouts %}
+        <option value="{{ name }}" {{ "selected" if name == layout }}>{{ name|capitalize }}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
     <button type="button" id="theme-switch" class="{{ SWL.ui.button }} {{ SWL.ui.small }}"
             aria-label="{{ _('Colours: automatic') }}" title="{{ _('Colours: automatic') }}"
             data-title-auto="{{ _('Colours: automatic') }}" data-title-light="{{ _('Colours: light') }}"

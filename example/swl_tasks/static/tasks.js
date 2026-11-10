@@ -39,7 +39,7 @@ function focus_title() {
  * The switches in the top bar (templates/tasks/style_switch.j2). The language is the cookie
  * "swl_lang" that swl.i18n_middleware reads (app.py), so the page reloads.
  * The CSS framework is a cookie that the server reads (FrameworkCookieMiddleware in app.py), so
- * the page reloads; light/dark/auto is swl/static/swl/theme.js and changes the page right away.
+ * the page reloads; so is the layout (the cookie "swl_layout", app.py layout_of); light/dark/auto is swl/static/swl/theme.js and changes the page right away.
  */
 const THEME_ICON = {auto: "bi-circle-half", light: "bi-sun", dark: "bi-moon-stars"};
 
@@ -62,6 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     document.getElementById("framework-switch")?.addEventListener("change", (e) => {
         document.cookie = `swl_framework=${e.target.value}; path=/; max-age=31536000; samesite=lax`;
+        window.location.reload();
+    });
+    document.getElementById("layout-switch")?.addEventListener("change", (e) => {
+        document.cookie = `swl_layout=${e.target.value}; path=/; max-age=31536000; samesite=lax`;
         window.location.reload();
     });
     document.getElementById("theme-switch")?.addEventListener("click", () => {

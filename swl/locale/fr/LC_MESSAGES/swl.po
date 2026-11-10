@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-03 20:09+0000\n"
+"POT-Creation-Date: 2026-11-10 16:38+0000\n"
 "PO-Revision-Date: 2026-11-01 18:16+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -78,6 +78,10 @@ msgstr "Erreur dans la fonction"
 msgid "Saved"
 msgstr "Enregistré"
 
+#: swl/menu.py:80
+msgid "Manage"
+msgstr "Gestion"
+
 #: swl/templates/swl/account.j2:17
 msgid "My account"
 msgstr "Mon compte"
@@ -128,6 +132,18 @@ msgstr "Plus d'informations"
 #: swl/templates/swl/inputs.j2:33
 msgid "optional"
 msgstr "facultatif"
+
+#: swl/templates/swl/layouts/retro.j2:32
+#: swl/templates/swl/layouts/sidebar.j2:32
+#: swl/templates/swl/layouts/sidebar.j2:40
+#: swl/templates/swl/layouts/topbar.j2:34
+#: swl/templates/swl/layouts/topbar.j2:38
+msgid "Menu"
+msgstr "Menu"
+
+#: swl/templates/swl/layouts/retro.j2:56
+msgid "Start"
+msgstr "Démarrer"
 
 #: swl/templates/swl/users.j2:18
 msgid "Users"

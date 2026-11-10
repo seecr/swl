@@ -1,0 +1,71 @@
+{# begin license ##
+#
+# "SWL"(Seecr Web Lib) makes developing webbased apps easier
+#
+# Copyright (C) 2026 Seecr (Seek You Too B.V.) https://seecr.nl
+#
+# This file is part of "Seecr Web Lib"
+#
+# "Seecr Web Lib" is licensed under the MIT License; see the LICENSE file.
+# SPDX-License-Identifier: MIT
+#
+## end license #}
+{#
+ # Layout "retro", an easter egg: a teal desktop with the menu as icons, the page in a
+ # window (title bar, menu bar, status bar) and a taskbar with a start button, a start
+ # menu and a clock. swl-layouts.css gives what is in the window (buttons, fields,
+ # dialogs) bevels too. The menu: swl.set_menu (swl/menu.py).
+ #
+ #     {% extends "swl/layouts/retro.j2" %}
+ #     {% block content %}...{% endblock %}
+ #
+ # Blocks: brand, toolbar (on the right of the menu bar), content.
+ #}
+{%- set body_class = "swl-layout swl-layout-retro" -%}
+{%- extends "swl/base.j2" -%}
+{% import "swl/layouts/lib.j2" as swl_layout %}
+
+{% block body %}
+{% set menu = SWL.menu.for_request(request) %}
+{{ swl_layout.assets() }}
+<div class="swl-retro-desktop">
+    <nav class="swl-retro-icons" aria-label="{{ _('Menu') }}">
+        {% for item in menu.main + menu.admin %}{{ swl_layout.menu_link(item, request, class_="swl-retro-icon") }}{% endfor %}
+    </nav>
+    <div class="swl-retro-window swl-retro-raised">
+        <div class="swl-retro-titlebar">
+            <span class="swl-retro-title">{% block brand %}{{ SWL.menu.title }}{% endblock %}{% if title and title != menu.title %} - {{ title }}{% endif %}</span>
+            <span class="swl-retro-title-buttons" aria-hidden="true"><span>_</span><span>&#9633;</span><span>&times;</span></span>
+        </div>
+        <div class="swl-retro-menubar">
+            {% for item in menu.main %}{{ swl_layout.menu_link(item, request) }}{% endfor %}
+            {{ swl_layout.tools(menu, request) }}
+            <span class="swl-retro-menubar-tools">{% block toolbar %}{% endblock %}</span>
+        </div>
+        <main class="swl-retro-body swl-layout-content">
+            {% block content %}{% endblock %}
+        </main>
+        <div class="swl-retro-statusbar">
+            <span class="swl-retro-sunken">{{ request.user.display_name if request.user.is_authenticated }}</span>
+            <span class="swl-retro-sunken">{{ menu.title }}</span>
+        </div>
+    </div>
+</div>
+<div class="swl-retro-taskbar swl-retro-raised">
+    <button type="button" class="swl-retro-start swl-retro-raised" popovertarget="swl-retro-startmenu">
+        <i class="bi bi-windows" aria-hidden="true"></i> <b>{{ _("Start") }}</b>
+    </button>
+    <div id="swl-retro-startmenu" class="swl-retro-startmenu swl-retro-raised" popover>
+        <div class="swl-retro-banner"><b>{{ menu.title }}</b> 95</div>
+        <div class="swl-menu">
+            {% for item in menu.main + menu.admin %}{{ swl_layout.menu_link(item, request, class_="") }}{% endfor %}
+            {% if menu.user %}<hr>{% endif %}
+            {% for item in menu.user %}{{ swl_layout.menu_link(item, request, class_="") }}{% endfor %}
+        </div>
+    </div>
+    <span class="swl-retro-task swl-retro-sunken">{{ title or menu.title }}</span>
+    <span class="swl-retro-clock swl-retro-sunken"></span>
+</div>
+{% include "swl/modal.j2" %}
+{% include "swl/contextmenu.j2" %}
+{% endblock %}

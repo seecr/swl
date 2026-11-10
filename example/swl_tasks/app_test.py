@@ -477,6 +477,29 @@ def test_the_framework_switch_is_a_cookie(client):
     assert '<option value="swl" selected>' in client.get("/").text
 
 
+def test_the_layout_switch_is_a_cookie(client):
+    login(client)
+    html = client.get("/").text
+    assert 'class="swl-layout swl-layout-topbar"' in html
+    assert '<option value="topbar" selected>' in html
+    for layout in ["sidebar", "retro"]:
+        client.cookies.set("swl_layout", layout)
+        html = client.get("/").text
+        assert f'class="swl-layout swl-layout-{layout}"' in html
+        assert f'<option value="{layout}" selected>' in html
+        assert 'id="task-counts"' in html and 'id="tasks-list"' in html
+    client.cookies.set("swl_layout", "nonsense")
+    assert 'class="swl-layout swl-layout-topbar"' in client.get("/").text
+
+
+def test_the_menu(client):
+    login(client)
+    html = client.get("/").text
+    assert '<a href="/" class="swl-layout-link" aria-current="page">' in html
+    assert action(client, "users_show") in html  # demo is an admin
+    assert action(client, "show_account") in html and '<a href="/logout"' in html
+
+
 def second_user(client, userbase, username="alex", password="alex-password"):
     """Another user, logged in with a client of their own (same app, same event loop)."""
     userbase.create(username, password)
