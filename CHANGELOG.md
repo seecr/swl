@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## 5.8.0 (2026-11-10)
+
+> Layouts: a page with a menu in a few lines, with the menu on the left, in a bar at the top, or
+> (an easter egg) on a desktop with a start button; the menu comes from `swl.set_menu`. SWL's
+> icons have names, so an application can use its own icon set. And web resources may name
+> their packages, for tools that check for outdated libraries.
 
 ### Added
 
