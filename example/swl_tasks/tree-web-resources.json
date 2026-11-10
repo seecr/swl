@@ -2,17 +2,20 @@
     "styles": [
         {
             "href": "https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/themes/default/style.min.css",
-            "integrity": "sha384-clXSAz7utDyIerGEOzTe7HkSNZ7xrhxVuTY6yGNeF4LBW1zmtgF3AfFMP7iMZuRB"
+            "integrity": "sha384-clXSAz7utDyIerGEOzTe7HkSNZ7xrhxVuTY6yGNeF4LBW1zmtgF3AfFMP7iMZuRB",
+            "package": "jstree@3.3.17"
         }
     ],
     "scripts": [
         {
             "src": "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js",
-            "integrity": "sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
+            "integrity": "sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs",
+            "package": "jquery@3.7.1"
         },
         {
             "src": "https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/jstree.min.js",
-            "integrity": "sha384-foAvcRZ1cqpr2BrR53KQxGncZUQ2bYIq4y98ZBY0fNoWNXZW02MnL+fJ/lIyfyC+"
+            "integrity": "sha384-foAvcRZ1cqpr2BrR53KQxGncZUQ2bYIq4y98ZBY0fNoWNXZW02MnL+fJ/lIyfyC+",
+            "package": "jstree@3.3.17"
         }
     ]
 }

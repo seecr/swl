@@ -14,6 +14,9 @@
   `"jstree@3.3.17"`) or `"own": true` (your own file, not a library), for tools that check
   for outdated libraries. SWL ignores both; other unknown fields are still an error. An
   application that uses them needs this version of SWL.
+- SWL's own resource files (the presets per `ui.framework` and the example's
+  `tree-web-resources.json`) name their packages, and `swl-base.css` is marked `"own": true`;
+  a test checks that each `package` matches the version in its url.
 
 ## 5.7.1 (2026-11-09)
 

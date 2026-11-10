@@ -12,6 +12,8 @@
 ## end license ##
 
 import json
+import re
+from pathlib import Path
 
 import pytest
 
@@ -166,3 +168,25 @@ def test_icons_stylesheet_without_one_in_the_resources(tmp_path):
 def test_icons_stylesheet_invalid():
     with pytest.raises(ValueError, match="Missing href"):
         WebResources(icons_stylesheet={"src": "icons.css"})
+
+
+RESOURCE_FILES = sorted(Path(__file__).parent.glob("*-web-resources.json")) + [
+    Path(__file__).parents[2] / "example" / "swl_tasks" / "tree-web-resources.json"
+]
+JSDELIVR = re.compile(r"^https://cdn\.jsdelivr\.net/npm/((?:@[^/@]+/)?[^/@]+)@([^/]+)/")
+
+
+@pytest.mark.parametrize("path", RESOURCE_FILES, ids=lambda path: path.name)
+def test_every_entry_names_its_package(path):
+    """For tools that check for outdated libraries: every library in SWL's own resource
+    files has "package" (name@version, the same as in its url), every file of SWL itself
+    "own": true."""
+    data = json.loads(path.read_text())
+    for entry in data["styles"] + data["scripts"]:
+        url = entry.get("href") or entry.get("src")
+        if entry.get("own"):
+            assert url.startswith("/") and "package" not in entry, url
+            continue
+        match = JSDELIVR.match(url)
+        assert match, url
+        assert entry.get("package") == f"{match[1]}@{match[2]}", url
