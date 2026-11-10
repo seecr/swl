@@ -249,6 +249,24 @@ QUnit.module("swl on htmx", (hooks) => {
         await waitFor(dialog_shown, "dialog");
         assert.equal(dialog_message(), "That did not work");
         assert.equal(text("#btn"), "Go", "nothing swapped");
+        assert.equal($(".swl-dialog-header h5 i").className,
+            "bi bi-exclamation-circle-fill swl-icon swl-icon-danger", "Bootstrap's icon by default");
+    });
+
+    QUnit.test("the application's icons (#swl-icons, \"ui.icons\") in dialogs and Saved", async (assert) => {
+        fixture(DIALOG + `
+            <script type="application/json" id="swl-icons">{"error": "ph-fill ph-warning", "saved": "ph ph-check"}</script>
+            <button id="btn" type="button" hx-post="/action/swl_fail">Go</button>
+            <div id="the_field"><span class="swl-saved" role="status"></span></div>`);
+        $("#btn").click();
+        await waitFor(dialog_shown, "dialog");
+        assert.equal($(".swl-dialog-header h5 i").className, "ph-fill ph-warning swl-icon swl-icon-danger");
+        press_escape($(".swl-dialog"));
+        await waitFor(() => !dialog_shown(), "closed");
+
+        await swl_action("/action/swl_saved", {});
+        await waitFor(() => $("#the_field .swl-saved-content"), "saved shown");
+        assert.equal($("#the_field .swl-saved-content i").className, "ph ph-check swl-icon");
     });
 
     QUnit.test("failing requests are reported and not swapped into the page", async (assert) => {

@@ -17,12 +17,12 @@
 <dialog class="swl-dialog" aria-labelledby="swl-dialog-title" aria-describedby="swl-dialog-msg">
     <div class="swl-dialog-box">
         <div class="swl-dialog-header">
-            <h5 id="swl-dialog-title"><i class="bi bi-question-diamond-fill swl-icon-warning"></i><span data-swl-lang-key="confirm">{{ _("Confirm") }}</span></h5>
+            <h5 id="swl-dialog-title"><i class="{{ SWL.icons.confirm }} swl-icon swl-icon-warning" aria-hidden="true"></i><span data-swl-lang-key="confirm">{{ _("Confirm") }}</span></h5>
         </div>
         <div id="swl-dialog-msg"></div>
         <div class="swl-dialog-buttons">
-            <button class="swl-btn swl-btn-decline" type="button"><i class="bi bi-x-lg"></i><span data-swl-lang-key="no">{{ _("No") }}</span></button>
-            <button class="swl-btn swl-btn-primary swl-btn-confirm" type="button"><i class="bi bi-check-lg"></i><span data-swl-lang-key="yes">{{ _("Yes") }}</span></button>
+            <button class="swl-btn swl-btn-decline" type="button"><i class="{{ SWL.icons.no }} swl-icon" aria-hidden="true"></i><span data-swl-lang-key="no">{{ _("No") }}</span></button>
+            <button class="swl-btn swl-btn-primary swl-btn-confirm" type="button"><i class="{{ SWL.icons.yes }} swl-icon" aria-hidden="true"></i><span data-swl-lang-key="yes">{{ _("Yes") }}</span></button>
             <button class="swl-btn swl-btn-primary swl-btn-ok" type="button"><span data-swl-lang-key="ok">{{ _("Ok") }}</span></button>
         </div>
     </div>

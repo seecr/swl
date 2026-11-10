@@ -26,6 +26,7 @@
  */
 
 import { _get } from "./lang.js"
+import { _icon } from "./icons.js"
 
 const REFRESH_EVENT = "swl-refresh";
 const FORM_ELEMENTS = "button, input, select, textarea, form";
@@ -98,7 +99,8 @@ function _dialog() {
     return document.querySelector("dialog.swl-dialog") ?? document.querySelector(".swl-dialog");
 }
 
-function _show_dialog(icon_classes, title, message, buttons, on_escape) {
+// icon: a name of an SWL icon (icons.js), state: swl-icon-warning, -danger or -info
+function _show_dialog(icon, state, title, message, buttons, on_escape) {
     let dialog = _dialog();
     if (!dialog) {
         console.error("SWL: dialog not found; message: " + message);
@@ -107,9 +109,9 @@ function _show_dialog(icon_classes, title, message, buttons, on_escape) {
     for (let elem of dialog.querySelectorAll("[data-swl-lang-key]")) {
         elem.textContent = _get(elem.dataset.swlLangKey);
     }
-    let icon = dialog.querySelector(".swl-dialog-header h5 i");
-    if (icon) {
-        icon.className = "bi " + icon_classes;
+    let icon_elem = dialog.querySelector(".swl-dialog-header h5 i");
+    if (icon_elem) {
+        icon_elem.className = `${_icon(icon)} swl-icon ${state}`;
     }
     let title_elem = dialog.querySelector(".swl-dialog-header h5 span");
     if (title_elem && title !== null) {
@@ -148,7 +150,7 @@ function _show_dialog(icon_classes, title, message, buttons, on_escape) {
 
 const ui = {
     confirm: (message) => new Promise((resolve) => {
-        let shown = _show_dialog("bi-question-diamond-fill swl-icon-warning", null, message, {
+        let shown = _show_dialog("confirm", "swl-icon-warning", null, message, {
             ".swl-btn-decline": () => resolve(false),
             ".swl-btn-confirm": () => resolve(true),
         }, () => resolve(false));
@@ -156,8 +158,8 @@ const ui = {
             resolve(window.confirm(message));
         }
     }),
-    error: (message) => _show_dialog("bi-exclamation-circle-fill swl-icon-danger", _get("error"), message, {".swl-btn-ok": () => {}}, () => {}),
-    info: (message) => _show_dialog("bi-info-circle-fill swl-icon-info", _get("info"), message, {".swl-btn-ok": () => {}}, () => {}),
+    error: (message) => _show_dialog("error", "swl-icon-danger", _get("error"), message, {".swl-btn-ok": () => {}}, () => {}),
+    info: (message) => _show_dialog("info", "swl-icon-info", _get("info"), message, {".swl-btn-ok": () => {}}, () => {}),
 };
 
 /* ---------------------------------------------------------------- modal */
@@ -400,7 +402,7 @@ function _saved_content(elem) {
         return template.content.cloneNode(true);
     }
     let content = document.createDocumentFragment();
-    content.append(Object.assign(document.createElement("i"), {className: "bi bi-check2"}), " ", _get("saved"));
+    content.append(Object.assign(document.createElement("i"), {className: `${_icon("saved")} swl-icon`}), " ", _get("saved"));
     content.firstChild.setAttribute("aria-hidden", "true");
     return content;
 }

@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Your own icons: SWL's own icons (the close button of a modal, the confirm, error and info
+  dialogs, "Saved", the account and user screens) have names (`swl/icons.py`), with Bootstrap
+  Icons as the default. `ui.icons` gives an application's own classes for them, and
+  `ui.icons_stylesheet` replaces the Bootstrap Icons stylesheet (or, with `false`, leaves it
+  out). In templates: `SWL.icons.close`; `swl.js` reads them from `#swl-icons` in the page.
+  SWL's icons now also have the class `swl-icon`; `swl.css` styles that instead of `.bi`.
+
 ## 5.7.1 (2026-11-09)
 
 ### Fixed

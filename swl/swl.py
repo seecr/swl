@@ -27,6 +27,7 @@ from swl.frameworks import framework, requested_framework
 from swl.i18n import COOKIE, I18n, I18nMiddleware
 from swl.i18n import install as install_i18n
 from swl.i18n import js_messages
+from swl.icons import icons
 from swl.resources import WebResources
 from swl.responses import FailResponse, SuccessResponse
 from swl.routes_endpoint import make_routes_route
@@ -52,6 +53,11 @@ class SWL:
         # or a list of files) adds to them. FrameworkCookieMiddleware can
         # choose another one per request (swl/frameworks.py).
         self._framework = framework(self._config.get("ui.framework"))
+        # "ui.icons": the classes of SWL's own icons (Bootstrap Icons by default);
+        # "ui.icons_stylesheet" replaces the Bootstrap Icons stylesheet, or with false
+        # leaves it out (swl/icons.py)
+        self._icons = icons(self._config.get("ui.icons"))
+        self._icons_stylesheet = self._config.get("ui.icons_stylesheet")
         self._web_resources_cache = {}
         self._templates = Jinja2Templates(
             env=jinja2.Environment(
@@ -91,6 +97,7 @@ class SWL:
                 self._config.get("paths.resources") or fw.resources,
                 self.cdn_url,
                 extra=self._config.get("paths.extra_resources") or (),
+                icons_stylesheet=self._icons_stylesheet,
             )
         return self._web_resources_cache[fw.name]
 
@@ -104,6 +111,17 @@ class SWL:
         """CSS classes for form elements and buttons in this framework
         (swl/frameworks.py)."""
         return self._current_framework().classes
+
+    @property
+    def icons(self):
+        """The CSS classes of SWL's own icons, by name: {{ SWL.icons.close }}
+        (swl/icons.py)."""
+        return self._icons
+
+    @property
+    def js_icons(self):
+        """SWL's icons for swl.js (swl/base.j2 puts them in the page)."""
+        return dict(self._icons)
 
     @property
     def i18n_middleware(self):

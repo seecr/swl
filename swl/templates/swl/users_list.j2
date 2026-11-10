@@ -18,14 +18,14 @@
  #   - only administrators can change anything.
  #}
 {% set me = request.user %}
-<h6 class="swl-section-title"><i class="bi bi-person-lines-fill"></i> {% trans count=users|length %}{{ count }} user{% pluralize %}{{ count }} users{% endtrans %}</h6>
+<h6 class="swl-section-title"><i class="{{ SWL.icons.user_list }} swl-icon"></i> {% trans count=users|length %}{{ count }} user{% pluralize %}{{ count }} users{% endtrans %}</h6>
 <ul class="swl-list">
     {% for user in users|sort(attribute="username") %}
     {% set is_me = user['username'] == me.username %}
     <li>
         <form class="swl-list-row">
             <input type="hidden" name="username" value="{{ user['username'] }}">
-            <span class="swl-avatar {{ 'swl-avatar-admin' if user['admin'] }}" aria-hidden="true"><i class="bi bi-person-fill"></i></span>
+            <span class="swl-avatar {{ 'swl-avatar-admin' if user['admin'] }}" aria-hidden="true"><i class="{{ SWL.icons.user }} swl-icon"></i></span>
             <div class="swl-grow">
                 <div>
                     <strong>{{ user['username'] }}</strong>
@@ -50,7 +50,7 @@
                 <button type="button" class="swl-icon-button swl-icon-danger" aria-label="{{ delete_title }}"
                         hx-post="{{ register('user_delete') }}" hx-confirm="{{ _("Delete user '%(username)s'?", username=user['username']) }}"
                         {{ "disabled" if is_me or user['admin'] or not me.admin }}>
-                    <i class="bi bi-trash"></i>
+                    <i class="{{ SWL.icons.delete }} swl-icon"></i>
                 </button>
             </span>
         </form>

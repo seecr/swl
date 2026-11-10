@@ -28,7 +28,7 @@
     {% if self.modal_icon()|trim %}<div class="swl-modal-icon">{% block modal_icon %}{% endblock %}</div>{% endif %}
     <h5 id="swl-modal-label" class="swl-modal-title">{% block modal_title %}{% endblock %}</h5>
     <button type="button" class="swl-icon-button swl-modal-close" data-swl-close aria-label="{{ _('Close') }}">
-        <i class="bi bi-x-lg" title="{{ _('Close') }}"></i>
+        <i class="{{ SWL.icons.close }} swl-icon" title="{{ _('Close') }}"></i>
     </button>
     {% if self.modal_subtitle()|trim %}
     <p class="swl-modal-subtitle">{% block modal_subtitle %}{% endblock %}</p>

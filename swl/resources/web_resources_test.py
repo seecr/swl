@@ -105,3 +105,38 @@ def test_extra_after_default(tmp_path):
     res = WebResources(extra=[tmp_path / "tree.json"])
     assert len(res.styles) == 2
     assert res.scripts[-1]["src"] == "t.js"
+
+
+ICONS = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+
+
+def test_icons_stylesheet_kept_by_default():
+    hrefs = [style["href"] for style in WebResources().styles]
+    assert ICONS in hrefs
+
+
+def test_icons_stylesheet_replaced():
+    res = WebResources(icons_stylesheet={"href": "/static/phosphor.css"})
+    hrefs = [style["href"] for style in res.styles]
+    assert ICONS not in hrefs
+    assert hrefs[1] == "/static/phosphor.css", "in its place"
+    assert res.styles[1]["integrity"] == ""
+
+
+def test_icons_stylesheet_left_out():
+    res = WebResources(icons_stylesheet=False)
+    assert [style["href"] for style in res.styles] == [
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    ]
+
+
+def test_icons_stylesheet_without_one_in_the_resources(tmp_path):
+    path = tmp_path / "own.json"
+    path.write_text(json.dumps({"styles": [{"href": "a.css"}]}))
+    res = WebResources(path, icons_stylesheet={"href": "icons.css"})
+    assert [style["href"] for style in res.styles] == ["a.css", "icons.css"]
+
+
+def test_icons_stylesheet_invalid():
+    with pytest.raises(ValueError, match="Missing href"):
+        WebResources(icons_stylesheet={"src": "icons.css"})

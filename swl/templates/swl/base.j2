@@ -37,6 +37,8 @@
         <link rel="stylesheet" href="/static/swl/swl.css?version={{ VERSION }}">
         {# SWL's texts for swl.js, in the language of the page (lang.js) #}
         <script type="application/json" id="swl-lang">{{ SWL.js_messages|tojson }}</script>
+        {# SWL's icons for swl.js (swl/icons.py, "ui.icons") #}
+        <script type="application/json" id="swl-icons">{{ SWL.js_icons|tojson }}</script>
 {% block head_extra %}{% endblock %}
         <title>{{ title }}</title>
 {% endblock %}

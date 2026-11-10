@@ -43,22 +43,50 @@ def _load(path):
     return {} if path is None else json.loads(path.read_text())
 
 
+def _replace_icons(styles, icons_stylesheet):
+    if icons_stylesheet is not False:
+        icons_stylesheet = dict(icons_stylesheet, icons=True)
+        is_valid(
+            icons_stylesheet, mandatory=["href"], allowed=["href", "integrity", "icons"]
+        )
+    result, replaced = [], False
+    for style in styles:
+        if not style.get("icons"):
+            result.append(style)
+        elif not replaced:
+            replaced = True
+            if icons_stylesheet is not False:
+                result.append(icons_stylesheet)
+    if not replaced and icons_stylesheet is not False:
+        result.append(icons_stylesheet)  # resources without an icon font of their own
+    return result
+
+
 class WebResources:
     """The styles and scripts swl/base.j2 loads: those in path (a JSON file with "styles"
     and "scripts"), followed by those in each of the extra files (e.g. a library only some
-    applications use)."""
+    applications use).
 
-    def __init__(self, path=None, base_url=None, extra=()):
+    The style with "icons": true is the icon font (Bootstrap Icons in SWL's own files).
+    icons_stylesheet replaces it: a style ({"href": ..., "integrity": ...}), or False to
+    leave it out; None keeps it (swl/icons.py)."""
+
+    def __init__(self, path=None, base_url=None, extra=(), icons_stylesheet=None):
         confs = [_load(path or web_resources)]
         if isinstance(extra, (str, pathlib.PurePath)):
             extra = [extra]
         confs.extend(_load(each) for each in extra or ())
 
-        self._styles = [
-            {**style, "href": style["href"].format(BASE_URL=base_url)}
+        styles = [
+            style
             for conf in confs
             for style in conf.get("styles", [])
-            if is_valid(style, mandatory=["href"], allowed=["href", "integrity"])
+            if is_valid(style, mandatory=["href"], allowed=["href", "integrity", "icons"])
+        ]
+        if icons_stylesheet is not None:
+            styles = _replace_icons(styles, icons_stylesheet)
+        self._styles = [
+            {**style, "href": style["href"].format(BASE_URL=base_url)} for style in styles
         ]
         self._scripts = [
             {**script, "src": script["src"].format(BASE_URL=base_url)}

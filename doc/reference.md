@@ -568,6 +568,31 @@ head, so the page is painted in the right colours at once, and call `swl_theme.s
 {% block head_extra %}<script src="/static/swl/theme.js"></script>{% endblock %}
 ```
 
+**Your own icons.** SWL's own templates and `swl.js` use a few icons: the close button of a
+modal, the confirm/error/info dialogs (with Yes and No), the check of "Saved", and the account
+and user screens. They have names, with Bootstrap Icons as the default for every framework. An
+application with its own icon set gives its own classes for those names, and replaces the
+Bootstrap Icons stylesheet with its own:
+
+```python
+swl = SWL(config=Config({"ui": {
+    "icons": {"close": "ph-light ph-x", "confirm": "ph-fill ph-question",
+              "error": "ph-fill ph-warning-circle", "info": "ph-fill ph-info",
+              "yes": "ph ph-check", "no": "ph ph-x", "saved": "ph ph-check"},
+    "icons_stylesheet": {"href": "/static/phosphor/style.css"},
+}}))
+```
+
+A name you leave out keeps its Bootstrap icon; an unknown name is an error. With
+`"icons_stylesheet": false` no icon stylesheet is loaded (you load your own, e.g. in
+`head_extra`). Names: `close`, `confirm`, `error`, `info`, `yes`, `no`, `saved`, `user`,
+`users`, `user_list`, `user_add`, `add`, `delete`, `password`, `save`, `note` (see
+`swl/icons.py`). In a template: `<i class="{{ SWL.icons.close }} swl-icon"></i>`; `swl.js`
+reads them from `<script type="application/json" id="swl-icons">`, which `base.j2` puts in the
+page. The older Bootstrap pieces (`swl/card.j2`, `swl/breadcrumbs.j2`) keep Bootstrap's icons.
+
+The font is the application's own: SWL sets none, its dialogs use the page's font.
+
 **Switching the framework in the browser** (for a demo or a style guide): add
 `swl.frameworks.FrameworkCookieMiddleware` to the application. A cookie `swl_framework` with
 a framework name (`swl`, `bootstrap`, `tabler`, `bulma`) then overrides `ui.framework` for that visitor; set it from
@@ -790,6 +815,8 @@ request: `format_date(d, "medium")`, `format_time`, `format_datetime(dt, tzinfo=
 | `actions.path` | `/action` | url prefix of actions |
 | `actions.hash` | `true` | `false`: use function names in urls instead of hashes |
 | `ui.framework` | `"bootstrap"` | `"swl"`, `"bootstrap"`, `"tabler"` or `"bulma"`; see [Styling](#styling) |
+| `ui.icons` | Bootstrap Icons | classes for SWL's own icons, by name; see [Styling](#styling) |
+| `ui.icons_stylesheet` | Bootstrap Icons | a style (`href`, `integrity`) that replaces the Bootstrap Icons stylesheet, or `false` for none |
 | `paths.resources` | the framework's | your own JSON file with `styles` and `scripts` for `base.j2` (must include htmx) |
 | `paths.extra_resources` | none | a JSON file (or a list of them) with more `styles` and `scripts`, loaded after the framework's (or `paths.resources`); e.g. for [Trees](#trees) |
 | `urls.cdn` | `https://cdn.jsdelivr.net` | `{BASE_URL}` in resource urls; `base.j2` preconnects to it |

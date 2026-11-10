@@ -216,7 +216,7 @@ dialog.swl-modal::backdrop, dialog.swl-dialog::backdrop { background: transparen
 
 .swl-dialog-box { --swl-modal-width: 28rem; padding: 1.25rem; gap: 1rem; }
 .swl-dialog-header h5 { display: flex; align-items: center; gap: .6rem; margin: 0; font-size: 1.1rem; font-weight: 600; }
-.swl-dialog-header .bi { font-size: 1.35rem; }
+.swl-dialog-header .swl-icon { font-size: 1.35rem; }
 #swl-dialog-msg { white-space: pre-wrap; overflow-wrap: anywhere; }
 .swl-dialog-buttons { display: flex; justify-content: flex-end; gap: .5rem; }
 
@@ -350,7 +350,7 @@ dialog.swl-modal::backdrop, dialog.swl-dialog::backdrop { background: transparen
 .swl-avatar-admin { background-color: var(--seecr-orange); color: #fff; }
 
 .swl-section-title { margin: 0 0 .75rem; font-size: 1rem; font-weight: 600; }
-.swl-section-title > .bi { color: var(--swl-muted); margin-right: .25rem; }
+.swl-section-title > .swl-icon { color: var(--swl-muted); margin-right: .25rem; }
 .swl-note {
     padding: .6rem .9rem;
     border: 1px solid var(--swl-border);
@@ -488,9 +488,9 @@ input[type=checkbox].swl-switch:disabled { opacity: .55; cursor: not-allowed; }
 /* ---------------------------------------------------------------- framework touches (data-swl-framework on <html>) */
 
 /* Bulma: an icon next to a button's text, and a <select> without Bulma's wrapper <div class="select"> */
-[data-swl-framework=bulma] .button > .bi:first-child { margin-inline-end: .4em; }
+[data-swl-framework=bulma] .button > :is(.bi, .swl-icon):first-child { margin-inline-end: .4em; }
 /* Tabler: buttons are flex boxes, so the space between an icon and the text disappears */
-[data-swl-framework=tabler] .btn > .bi:first-child { margin-inline-end: .4em; }
+[data-swl-framework=tabler] .btn > :is(.bi, .swl-icon):first-child { margin-inline-end: .4em; }
 [data-swl-framework=bulma] select:not([multiple], [size]) {
     height: 2.5em;
     padding: 0 2rem 0 .75rem;

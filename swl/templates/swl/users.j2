@@ -14,7 +14,7 @@
 {% from "swl/placeholder.j2" import placeholder %}
 {% extends "swl/modal-content.j2" %}
 
-{% block modal_icon %}<span class="swl-avatar swl-avatar-lg" aria-hidden="true"><i class="bi bi-people"></i></span>{% endblock %}
+{% block modal_icon %}<span class="swl-avatar swl-avatar-lg" aria-hidden="true"><i class="{{ SWL.icons.users }} swl-icon"></i></span>{% endblock %}
 {% block modal_title %}{{ _("Users") }}{% endblock %}
 {% block modal_subtitle %}{{ _("Who can log in, and who is an administrator") }}{% endblock %}
 
@@ -22,7 +22,7 @@
 <div class="swl-stack" style="--swl-gap: 1.5rem">
     {% if user['admin'] %}
     <section class="swl-section">
-        <h6 class="swl-section-title"><i class="bi bi-person-plus"></i> {{ _("Add a user") }}</h6>
+        <h6 class="swl-section-title"><i class="{{ SWL.icons.user_add }} swl-icon"></i> {{ _("Add a user") }}</h6>
         {# The form posts itself (user_create), so Enter works too. #}
         <form class="swl-row" hx-post="{{ register('user_create') }}">
             <div class="swl-field">
@@ -41,12 +41,12 @@
                 {{ _("Administrator") }}
             </label>
             <div class="swl-fit">
-                <button type="submit" class="{{ SWL.ui.button_primary }}"><i class="bi bi-plus-lg"></i> {{ _("Add user") }}</button>
+                <button type="submit" class="{{ SWL.ui.button_primary }}"><i class="{{ SWL.icons.add }} swl-icon"></i> {{ _("Add user") }}</button>
             </div>
         </form>
     </section>
     {% else %}
-    <p class="swl-note"><i class="bi bi-info-circle"></i> {{ _("Only administrators can add, change or delete users.") }}</p>
+    <p class="swl-note"><i class="{{ SWL.icons.note }} swl-icon"></i> {{ _("Only administrators can add, change or delete users.") }}</p>
     {% endif %}
 
     <section class="swl-section">

@@ -148,3 +148,45 @@ def test_routes_route_allowlist_from_config(config, ip, status):
     swl = SWL(config=Config(config))
     client = TestClient(Starlette(routes=[swl.routes_route]), client=(ip, 50000))
     assert client.get("/.routes").status_code == status
+
+
+def test_icons_default_bootstrap():
+    swl = SWL(config=Config({}))
+    assert swl.icons["close"] == "bi bi-x-lg"
+    assert any("bootstrap-icons" in style["href"] for style in swl.styles)
+    html = swl.template("swl/modal-content.j2").render()
+    assert '<i class="bi bi-x-lg swl-icon" title="Close"></i>' in html
+
+
+def test_icons_of_the_application():
+    swl = SWL(
+        config=Config(
+            {
+                "ui": {
+                    "icons": {"close": "ph-light ph-x", "yes": "ph ph-check"},
+                    "icons_stylesheet": {"href": "/static/phosphor.css"},
+                }
+            }
+        )
+    )
+    assert swl.icons["close"] == "ph-light ph-x"
+    assert swl.js_icons["yes"] == "ph ph-check"
+    assert swl.js_icons["no"] == "bi bi-x-lg", "not given: Bootstrap's"
+    hrefs = [style["href"] for style in swl.styles]
+    assert "/static/phosphor.css" in hrefs
+    assert not any("bootstrap-icons" in href for href in hrefs)
+    modal = swl.template("swl/modal-content.j2").render()
+    assert 'class="ph-light ph-x swl-icon"' in modal
+    dialog = swl.template("swl/dialog.j2").render()
+    assert 'class="ph ph-check swl-icon"' in dialog
+    assert 'class="bi bi-x-lg swl-icon"' in dialog
+
+
+def test_icons_stylesheet_left_out():
+    swl = SWL(config=Config({"ui": {"icons_stylesheet": False}}))
+    assert not any("bootstrap-icons" in style["href"] for style in swl.styles)
+
+
+def test_icons_unknown_name():
+    with pytest.raises(ValueError, match="Unknown icon names"):
+        SWL(config=Config({"ui": {"icons": {"clsoe": "x"}}}))

@@ -244,3 +244,10 @@ def test_i18n_tool(tmp_path):
         assert _("Hello") == "Hallo"
     finally:
         i18n.deactivate(token)
+
+
+def test_the_page_has_the_icons_for_swl_js():
+    swl, client = make_app()
+    page = client.get("/").text
+    assert '<script type="application/json" id="swl-icons">' in page
+    assert '"saved": "bi bi-check2"' in page
