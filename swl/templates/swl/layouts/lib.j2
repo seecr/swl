@@ -13,11 +13,12 @@
 {#
  # What SWL's layouts share: a menu item (a link, or a button for an action) and a dropdown
  # (<details>, so it needs no framework JavaScript; layouts.js closes it on a click
- # elsewhere). Items are swl.menu.MenuItem; their label is translated here.
+ # elsewhere). Items are swl.menu.MenuItem; their label is translated here. The layouts' own
+ # icons come from SWL.icons (swl/icons.py: menu, manage, user, start).
  #}
 
 {% macro menu_link(item, request, class_="swl-layout-link") -%}
-{% set content %}{% if item.icon %}<i class="bi {{ item.icon }}" aria-hidden="true"></i>{% endif %}<span>{{ _(item.label) }}</span>{% endset %}
+{% set content %}{% if item.icon %}<i class="{{ item.icon }}" aria-hidden="true"></i>{% endif %}<span>{{ _(item.label) }}</span>{% endset %}
 {% if item.url is not none -%}
 <a href="{{ item.url }}" class="{{ class_ }}"{% if item.current(request) %} aria-current="page"{% endif %}>{{ content }}</a>
 {%- else -%}
@@ -28,7 +29,7 @@
 {% macro dropdown(label, items, request, icon=None, class_="") -%}
 {% if items %}
 <details class="swl-layout-dropdown {{ class_ }}">
-    <summary class="swl-layout-link">{% if icon %}<i class="bi {{ icon }}" aria-hidden="true"></i>{% endif %}<span>{{ label }}</span></summary>
+    <summary class="swl-layout-link">{% if icon %}<i class="{{ icon }} swl-icon" aria-hidden="true"></i>{% endif %}<span>{{ label }}</span></summary>
     <div class="swl-menu swl-layout-dropdown-menu">
         {% for item in items %}{{ menu_link(item, request, class_="") }}{% endfor %}
     </div>
@@ -38,9 +39,9 @@
 
 {# The admin group and the user's menu, as dropdowns: the same in each layout #}
 {% macro tools(menu, request) -%}
-{{ dropdown(_(menu.admin_label), menu.admin, request, icon="bi-gear") }}
+{{ dropdown(_(menu.admin_label), menu.admin, request, icon=SWL.icons.manage) }}
 {% if request.user.is_authenticated %}
-{{ dropdown(request.user.display_name, menu.user, request, icon="bi-person", class_="swl-layout-user") }}
+{{ dropdown(request.user.display_name, menu.user, request, icon=SWL.icons.user, class_="swl-layout-user") }}
 {% endif %}
 {%- endmacro %}
 

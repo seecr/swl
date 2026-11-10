@@ -589,8 +589,8 @@ swl = SWL(config=Config({"ui": {
 A name you leave out keeps its Bootstrap icon; an unknown name is an error. With
 `"icons_stylesheet": false` no icon stylesheet is loaded (you load your own, e.g. in
 `head_extra`). Names: `close`, `confirm`, `error`, `info`, `yes`, `no`, `saved`, `user`,
-`users`, `user_list`, `user_add`, `add`, `delete`, `password`, `save`, `note` (see
-`swl/icons.py`). In a template: `<i class="{{ SWL.icons.close }} swl-icon"></i>`; `swl.js`
+`users`, `user_list`, `user_add`, `add`, `delete`, `password`, `save`, `note`, and for the
+layouts `menu`, `manage` and `start` (see `swl/icons.py`). In a template: `<i class="{{ SWL.icons.close }} swl-icon"></i>`; `swl.js`
 reads them from `<script type="application/json" id="swl-icons">`, which `base.j2` puts in the
 page. The older Bootstrap pieces (`swl/card.j2`, `swl/breadcrumbs.j2`) keep Bootstrap's icons.
 
@@ -640,11 +640,11 @@ from swl.menu import MenuItem
 
 swl.set_menu(
     title="My App",
-    main=[MenuItem(N_("Tasks"), url="/tasks", icon="bi-check2-square")],
-    admin=[MenuItem(N_("Users"), action="users_show", icon="bi-people", scope="role:admin")],
+    main=[MenuItem(N_("Tasks"), url="/tasks", icon="bi bi-check2-square")],
+    admin=[MenuItem(N_("Users"), action="users_show", icon="bi bi-people", scope="role:admin")],
     user=[
-        MenuItem(N_("Account"), action="show_account", icon="bi-person"),
-        MenuItem(N_("Log out"), url="/logout", icon="bi-box-arrow-right"),
+        MenuItem(N_("Account"), action="show_account", icon="bi bi-person"),
+        MenuItem(N_("Log out"), url="/logout", icon="bi bi-box-arrow-right"),
     ],
 )
 ```
@@ -652,7 +652,9 @@ swl.set_menu(
 - `main` is the menu; `admin` a group of its own ("Manage", or `admin_label=`); `user` the
   menu under the logged-in user's name (`request.user.display_name`).
 - An item is a link (`url`, marked as the current page on that url and the pages below it) or
-  an action (`action`, e.g. one that opens a dialog). `icon` is a Bootstrap Icons class.
+  an action (`action`, e.g. one that opens a dialog). `icon` is the classes of its icon, e.g.
+  `"bi bi-people"`. The layouts' own icons (the menu button, "Manage", the user's menu, the
+  start button) are SWL's named icons `menu`, `manage`, `user` and `start` ("Your own icons").
 - `scope="role:admin"` shows the item only when the request has that scope (as your
   authentication backend sets them); `check=lambda request: request.user.admin` only when the
   check is true. A group without items is not shown.

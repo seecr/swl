@@ -15,9 +15,9 @@
 
     swl.set_menu(
         title="My App",
-        main=[MenuItem(N_("Tasks"), url="/", icon="bi-check2-square")],
+        main=[MenuItem(N_("Tasks"), url="/", icon="bi bi-check2-square")],
         admin=[MenuItem(N_("Users"), action="users_show", scope="role:admin")],
-        user=[MenuItem(N_("Log out"), url="/logout", icon="bi-box-arrow-right")],
+        user=[MenuItem(N_("Log out"), url="/logout", icon="bi bi-box-arrow-right")],
     )
 
 "main" is the menu itself, "admin" a group of its own (under "Manage"), "user" the menu
@@ -38,7 +38,8 @@ class MenuItem:
 
     scope: shown only when the request has this scope (request.auth.scopes, as the
     authentication backend sets them); check: shown only when check(request) is true.
-    icon: a Bootstrap Icons class, e.g. "bi-people"."""
+    icon: the classes of its icon, e.g. "bi bi-people" (Bootstrap Icons, or your own
+    set)."""
 
     label: str
     url: str = None

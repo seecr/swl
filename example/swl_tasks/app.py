@@ -165,18 +165,18 @@ def create_app(data_dir, userbase=None, framework="swl"):
     # (swl/views/account.py)
     swl.set_menu(
         title="SWL Tasks",
-        main=[MenuItem(N_("Tasks"), url="/", icon="bi-check2-square")],
+        main=[MenuItem(N_("Tasks"), url="/", icon="bi bi-check2-square")],
         admin=[
             MenuItem(
                 N_("Users"),
                 action="users_show",
-                icon="bi-people",
+                icon="bi bi-people",
                 check=lambda request: request.user.admin,
             ),
         ],
         user=[
-            MenuItem(N_("Account"), action="show_account", icon="bi-person"),
-            MenuItem(N_("Log out"), url="/logout", icon="bi-box-arrow-right"),
+            MenuItem(N_("Account"), action="show_account", icon="bi bi-person"),
+            MenuItem(N_("Log out"), url="/logout", icon="bi bi-box-arrow-right"),
         ],
     )
 

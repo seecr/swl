@@ -21,9 +21,11 @@
   in a bar at the top) and `swl/layouts/retro.j2` (an easter egg: a desktop with a window and
   a start menu). A page extends one and fills `content` (and `brand`, `toolbar`); using one is
   optional. They work with every `ui.framework` and on a phone (the menu opens from a button).
-  `swl-layouts.css` and `layouts.js` come with them.
+  `swl-layouts.css` and `layouts.js` come with them. Their own icons are named icons
+  (`menu`, `manage`, `user`, `start`), so `ui.icons` changes them too.
 - `swl.set_menu(title=, main=, admin=, user=)` and `swl.menu.MenuItem` (a link or an action,
-  shown by `scope` or `check`): the menu of the layouts.
+  with the classes of its icon, e.g. `icon="bi bi-people"`, shown by `scope` or `check`): the
+  menu of the layouts.
 - The example has a switch for the layout, next to the language and the framework.
 
 ## 5.7.1 (2026-11-09)

@@ -55,6 +55,11 @@ BOOTSTRAP_ICONS = MappingProxyType(
         "password": "bi bi-key",
         "save": "bi bi-check2",
         "note": "bi bi-info-circle",
+        # the layouts (swl/layouts/*.j2): the menu button on a narrow screen, the admin
+        # group, the start button of "retro"; the user's menu uses "user"
+        "menu": "bi bi-list",
+        "manage": "bi bi-gear",
+        "start": "bi bi-windows",
     }
 )
 

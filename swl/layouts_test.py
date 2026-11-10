@@ -55,14 +55,14 @@ async def client(tmp_path):
     swl.set_menu(
         title="Test App",
         main=[
-            MenuItem("Tasks", url="/page", icon="bi-list"),
+            MenuItem("Tasks", url="/page", icon="bi bi-list"),
             MenuItem("Help", url="/help"),
         ],
         admin=[
             MenuItem(
                 "Users",
                 action="users_show",
-                icon="bi-people",
+                icon="bi bi-people",
                 check=lambda request: request.user.admin,
             )
         ],
@@ -119,3 +119,33 @@ def test_without_a_menu(tmp_path):
     html = swl.template("page.j2").render(request=Request(), title="T")
     assert 'class="swl-layout swl-layout-sidebar"' in html and "X" in html
     assert "swl-layout-dropdown" not in html
+
+
+@pytest.mark.parametrize("layout", LAYOUTS)
+def test_the_layout_icons_are_named_icons(tmp_path, layout):
+    """The layouts' own icons are SWL's named icons, so "ui.icons" changes them too."""
+    templates = tmp_path / "templates"
+    templates.mkdir()
+    (templates / "page.j2").write_text(
+        f'{{% extends "swl/layouts/{layout}.j2" %}}{{% block content %}}X{{% endblock %}}'
+    )
+    swl = SWL(
+        config=Config(
+            {"ui": {"icons": {"menu": "ph ph-list", "start": "ph ph-windows-logo"}}}
+        ),
+        templates=[templates],
+    )
+    swl.add_template_globals(VERSION="test")
+    swl.set_menu(main=[MenuItem("Tasks", url="/tasks")])  # topbar: a menu button
+
+    class Request:
+        url = type("Url", (), {"path": "/"})()
+        user = type("User", (), {"is_authenticated": False})()
+        auth = type("Auth", (), {"scopes": []})()
+
+    html = swl.template("page.j2").render(request=Request(), title="T")
+    assert "bi-list" not in html and "bi-windows" not in html
+    if layout == "retro":
+        assert '<i class="ph ph-windows-logo swl-icon"' in html
+    else:
+        assert '<i class="ph ph-list swl-icon"' in html

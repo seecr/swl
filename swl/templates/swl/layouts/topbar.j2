@@ -32,7 +32,7 @@
     <a class="swl-layout-brand" href="/">{% block brand %}{{ SWL.menu.title }}{% endblock %}</a>
     {% if menu.main %}
     <button type="button" class="swl-layout-link swl-layout-menu-button" popovertarget="swl-layout-nav" aria-label="{{ _('Menu') }}">
-        <i class="bi bi-list" aria-hidden="true"></i>
+        <i class="{{ SWL.icons.menu }} swl-icon" aria-hidden="true"></i>
     </button>
     {% endif %}
     <nav id="swl-layout-nav" class="swl-layout-topnav" popover aria-label="{{ _('Menu') }}">
