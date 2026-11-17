@@ -11,6 +11,11 @@
   3.3.17 works with it; the tree tests pass.
 - Tabler 1.7.5 (was 1.6.1) for `ui.framework: "tabler"`.
 
+### Fixed
+
+- Layouts with Bulma: the page background filled only the height of the content, with
+  white below it; it now fills the window.
+
 ## 5.8.0 (2026-11-10)
 
 > Layouts: a page with a menu in a few lines, with the menu on the left, in a bar at the top, or

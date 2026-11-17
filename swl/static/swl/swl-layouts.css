@@ -25,8 +25,11 @@
     --swl-layout-side-width: 15rem;
 }
 
+/* min-height: the background fills the window, also when a framework (Bulma) gives <html>
+   a background of its own */
 body.swl-layout {
     margin: 0;
+    min-height: 100vh;
     background: var(--swl-layout-content-bg);
 }
 
