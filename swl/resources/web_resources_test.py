@@ -135,7 +135,7 @@ def test_extra_after_default(tmp_path):
     assert res.scripts[-1]["src"] == "t.js"
 
 
-ICONS = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+ICONS = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css"
 
 
 def test_icons_stylesheet_kept_by_default():
@@ -154,7 +154,7 @@ def test_icons_stylesheet_replaced():
 def test_icons_stylesheet_left_out():
     res = WebResources(icons_stylesheet=False)
     assert [style["href"] for style in res.styles] == [
-        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css"
     ]
 
 

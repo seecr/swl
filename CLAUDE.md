@@ -45,7 +45,7 @@ browser. MIT license. Maintained by Seecr (Johan Jonkers, Thijs Janssen).
 - `swl/templates/swl/layouts/`: optional page layouts (sidebar, topbar, retro) with
   `swl-layouts.css` and `layouts.js`; their menu is `swl.set_menu` (`swl/menu.py`, `MenuItem`).
 - `swl/resources/<framework>-web-resources.json`: CDN scripts/styles per framework, all from
-  cdn.jsdelivr.net with SRI hashes (htmx is `htmx.org@4.0.0`); `web_resources.py` loads them.
+  cdn.jsdelivr.net with SRI hashes (htmx is `htmx.org@4.0.1`); `web_resources.py` loads them.
 - `swl/test_utils.py`: `assert_success(response)` (returns the events), `assert_fail(response, msg)`.
 - `doc/reference.md`: full reference (deep links, tabs, debugging).
 - `site/`: the website (Hugo), published to GitHub Pages by `.github/workflows/pages.yml` after

@@ -47,7 +47,7 @@ def test_framework_resources(name, css):
     hrefs = [s["href"] for s in swl.styles]
     assert any(css in href for href in hrefs)
     assert any("bootstrap-icons" in href for href in hrefs), "icons with every framework"
-    assert any("htmx.org@4.0.0" in s["src"] for s in swl.scripts)
+    assert any("htmx.org@4.0.1" in s["src"] for s in swl.scripts)
     assert set(swl.ui) == set(UI_CLASSES)
 
 

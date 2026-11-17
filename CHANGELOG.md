@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Web resources: Bootstrap 5.3.9 (was 5.3.8), Bootstrap Icons 1.13.2 (was 1.13.1) and htmx
+  4.0.1 (was 4.0.0). They are on cdn.jsdelivr.net and on cdn.seecr.nl, with the same
+  integrity hashes.
+
 ## 5.8.0 (2026-11-10)
 
 > Layouts: a page with a menu in a few lines, with the menu on the left, in a bar at the top, or
