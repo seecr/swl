@@ -60,8 +60,8 @@ async def homepage(request):
           integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn"
           crossorigin="anonymous"></script>
         <script
-          src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
-          integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
+          src="https://cdn.jsdelivr.net/npm/jquery@4.0.0/dist/jquery.min.js"
+          integrity="sha384-fgGyf7Mo7DURSOMnOy7ed+dkq5Job205Gnzu6QIg0BOHKaqt4D76Dt8VlDCzcMHV"
           crossorigin="anonymous"></script>
         <script
           src="https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/jstree.min.js"

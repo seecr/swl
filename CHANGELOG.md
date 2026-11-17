@@ -7,6 +7,8 @@
 - Web resources: Bootstrap 5.3.9 (was 5.3.8), Bootstrap Icons 1.13.2 (was 1.13.1) and htmx
   4.0.1 (was 4.0.0). They are on cdn.jsdelivr.net and on cdn.seecr.nl, with the same
   integrity hashes.
+- The tree example, the reference and the JS tests load jQuery 4.0.0 (was 3.7.1). jstree
+  3.3.17 works with it; the tree tests pass.
 
 ## 5.8.0 (2026-11-10)
 
