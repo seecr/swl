@@ -9,6 +9,7 @@
   integrity hashes.
 - The tree example, the reference and the JS tests load jQuery 4.0.0 (was 3.7.1). jstree
   3.3.17 works with it; the tree tests pass.
+- Tabler 1.7.5 (was 1.6.1) for `ui.framework: "tabler"`.
 
 ## 5.8.0 (2026-11-10)
 

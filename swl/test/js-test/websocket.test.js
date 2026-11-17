@@ -99,6 +99,7 @@ QUnit.module("websocket.js", (hooks) => {
     });
 
     QUnit.test("no answer to a ping: reconnect and rehydrate", async (assert) => {
+        assert.timeout(10000); // waits for PONG_TIMEOUT (5 s); QUnit 3's default is 3 s
         let socket = last_socket();
         socket.sent = [];
         window.dispatchEvent(new Event("online"));

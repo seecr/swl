@@ -35,7 +35,7 @@ async def homepage(request):
     <meta charset="utf-8">
     <title>QUnit</title>
     <meta name="htmx-config" content='{"noSwap": [204, 304, "4xx", "5xx"]}'>
-    <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.25.0.css">
+    <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-3.0.0.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css"
         integrity="sha384-yEPZ7jP9S0QKiUQ0m3jjsO4ProIW7wvR9gXkI7JOGa2XVsw53Yke2bsdkBbjmmiX"
@@ -69,7 +69,7 @@ async def homepage(request):
           crossorigin="anonymous"></script>
         <script src="/static/swl/swl-run.js" id="swl-run" type="module"></script>
 
-        <script src="https://code.jquery.com/qunit/qunit-2.25.0.js"></script>"""
+        <script src="https://code.jquery.com/qunit/qunit-3.0.0.js"></script>"""
         + "".join(
             [
                 f'<script src="/test/{p.name}" type="module"></script>'
