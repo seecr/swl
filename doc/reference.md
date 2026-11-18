@@ -726,8 +726,8 @@ nodes dragged to another place. `static/swl/tree.js` drives [jstree](https://www
 {
     "styles": [{"href": "https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/themes/default/style.min.css",
                 "integrity": "sha384-clXSAz7utDyIerGEOzTe7HkSNZ7xrhxVuTY6yGNeF4LBW1zmtgF3AfFMP7iMZuRB"}],
-    "scripts": [{"src": "https://cdn.jsdelivr.net/npm/jquery@4.0.0/dist/jquery.min.js",
-                 "integrity": "sha384-fgGyf7Mo7DURSOMnOy7ed+dkq5Job205Gnzu6QIg0BOHKaqt4D76Dt8VlDCzcMHV"},
+    "scripts": [{"src": "https://cdn.jsdelivr.net/npm/jquery@4.1.0/dist/jquery.min.js",
+                 "integrity": "sha384-UGSi5euAzE1p4sK41+yKs3vtdPcidmaW6fY2NUITZkjIPyMVUUYB/BV4A5Oa8uu2"},
                 {"src": "https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/jstree.min.js",
                  "integrity": "sha384-foAvcRZ1cqpr2BrR53KQxGncZUQ2bYIq4y98ZBY0fNoWNXZW02MnL+fJ/lIyfyC+"}]
 }

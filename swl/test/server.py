@@ -56,12 +56,12 @@ async def homepage(request):
           integrity="sha384-WyOxWvTyr1QaMPfiPJSv76iReVthorl5uWlFtZPyK0IEB0hGzo9y5Bp9mYanr8Bu"
           crossorigin="anonymous"></script>
         <script
-          src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js"
-          integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn"
+          src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.2/dist/htmx.min.js"
+          integrity="sha384-6NzMyCdh08UZ4b4M17SJJKQLdDijx4z2IqqKLKD0Q/PzCFQLpFuk3konY0WgqbTy"
           crossorigin="anonymous"></script>
         <script
-          src="https://cdn.jsdelivr.net/npm/jquery@4.0.0/dist/jquery.min.js"
-          integrity="sha384-fgGyf7Mo7DURSOMnOy7ed+dkq5Job205Gnzu6QIg0BOHKaqt4D76Dt8VlDCzcMHV"
+          src="https://cdn.jsdelivr.net/npm/jquery@4.1.0/dist/jquery.min.js"
+          integrity="sha384-UGSi5euAzE1p4sK41+yKs3vtdPcidmaW6fY2NUITZkjIPyMVUUYB/BV4A5Oa8uu2"
           crossorigin="anonymous"></script>
         <script
           src="https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/jstree.min.js"
