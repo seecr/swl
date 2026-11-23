@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## 5.9.0 (2026-11-23)
+
+> Colours: `color_input` is a colour field that looks and works the same in every browser,
+> unlike `<input type="color">`: 16 colours, black and white to click, red/green/blue for a
+> colour of one's own, and "No colour" for an optional field. The example's tasks have one.
+> Also: Bootstrap 5.3.9, htmx 4.0.2, jQuery 4.1.0 and Tabler 1.7.5.
 
 ### Added
 
