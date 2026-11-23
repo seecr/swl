@@ -343,7 +343,8 @@ _on("swl-contextmenu", (e) => {
  * The help balloon (swl/info.j2): a popover opened by its (i) button (popovertarget), so the
  * browser opens and closes it (a click elsewhere, Escape). Here it is placed: below the
  * button, above it when there is no room below, and always inside the window. It stays
- * invisible until placed (data-swl-placed), so it never flashes in a corner.
+ * invisible until placed (data-swl-placed), so it never flashes in a corner. The colour panel
+ * (color_input) is placed the same way.
  */
 const INFO_GAP = 6;
 const INFO_EDGE = 8;
@@ -355,7 +356,8 @@ function place_info(text) {
     }
     let b = button.getBoundingClientRect();
     let t = text.getBoundingClientRect();
-    let left = b.left + b.width / 2 - t.width / 2;
+    // the colour panel opens like a menu, from the button's left edge; a balloon is centred
+    let left = text.matches(".swl-color-panel") ? b.left : b.left + b.width / 2 - t.width / 2;
     left = Math.max(INFO_EDGE, Math.min(left, window.innerWidth - t.width - INFO_EDGE));
     let top = b.bottom + INFO_GAP;
     if (top + t.height > window.innerHeight - INFO_EDGE && b.top - INFO_GAP - t.height >= INFO_EDGE) {
@@ -365,8 +367,10 @@ function place_info(text) {
     text.setAttribute("data-swl-placed", "");
 }
 
+const PLACED_POPOVERS = ".swl-info-text, .swl-color-panel";
+
 document.addEventListener("toggle", (e) => {
-    if (!e.target.matches?.(".swl-info-text")) {
+    if (!e.target.matches?.(PLACED_POPOVERS)) {
         return;
     }
     if (e.newState === "open") {
@@ -378,12 +382,161 @@ document.addEventListener("toggle", (e) => {
 
 /* scrolling (the page, a modal's body) or resizing moves the button: the balloon goes along */
 function _place_open_infos() {
-    for (let text of document.querySelectorAll(".swl-info-text:popover-open")) {
+    for (let text of document.querySelectorAll(`:is(${PLACED_POPOVERS}):popover-open`)) {
         place_info(text);
     }
 }
 document.addEventListener("scroll", _place_open_infos, true);
 window.addEventListener("resize", _place_open_infos);
+
+/*
+ * The colour field (color_input in swl/inputs.j2): a hidden input with "#rrggbb", a button
+ * that shows it and opens the panel (a popover, placed like the help balloon), with colours
+ * to click, perhaps "No colour", and red/green/blue fields for a colour of one's own. Choosing sets the hidden input
+ * and sends it input and change events, as if one had typed in it. The red/green/blue fields
+ * have no name; their own events stay here, so a form that listens for changes only hears
+ * the hidden input.
+ */
+const COLOR_RE = /^#[0-9a-f]{6}$/;
+const COLOR_COLUMNS = 6;
+
+function _color_parts(field) {
+    let panel = field.querySelector(".swl-color-panel");
+    return {
+        input: field.querySelector('input[type="hidden"]'),
+        button: field.querySelector(".swl-color-button"),
+        panel: panel,
+        swatches: [...panel.querySelectorAll(".swl-color-swatch")],
+        clear: panel.querySelector(".swl-color-clear"),
+        channels: [...panel.querySelectorAll(".swl-color-custom input")],
+    };
+}
+
+function _hex(rgb) {
+    return "#" + rgb.map((n) => n.toString(16).padStart(2, "0")).join("");
+}
+
+/* shows `value` everywhere in the field; the red/green/blue fields only when asked, so they
+ * are not changed under the fingers of someone typing in them */
+function _show_color(field, value, channels_too) {
+    let parts = _color_parts(field);
+    for (let sample of field.querySelectorAll(".swl-color-sample:not(.swl-color-clear *)")) {
+        if (value) {
+            sample.style.backgroundColor = value;
+        } else {
+            sample.removeAttribute("style");  // no colour: struck through (swl.css)
+        }
+    }
+    field.querySelector(".swl-color-value").textContent = value;
+    for (let swatch of parts.swatches) {
+        swatch.setAttribute("aria-pressed", swatch.dataset.swlColor === value ? "true" : "false");
+    }
+    parts.clear?.setAttribute("aria-pressed", value ? "false" : "true");
+    if (channels_too) {
+        parts.channels.forEach((channel, i) => {
+            channel.value = value ? parseInt(value.slice(1 + 2 * i, 3 + 2 * i), 16) : "";
+        });
+    }
+}
+
+/*
+ * Sets the colour of a color_input (the .swl-color element or anything in it) to "#rrggbb"
+ * (or "" for none). With notify the hidden input gets input and change events.
+ */
+function set_color(elem, value, notify = false) {
+    let field = elem.closest(".swl-color");
+    value = (value || "").toLowerCase();
+    if (value && !COLOR_RE.test(value)) {
+        throw new Error("SWL: not a colour (#rrggbb): " + value);
+    }
+    let input = _color_parts(field).input;
+    let changed = input.value !== value;
+    input.value = value;
+    _show_color(field, value, true);
+    if (notify && changed) {
+        input.dispatchEvent(new Event("input", {bubbles: true}));
+        input.dispatchEvent(new Event("change", {bubbles: true}));
+    }
+}
+
+function _close_color_panel(field) {
+    let parts = _color_parts(field);
+    if (parts.panel.matches(":popover-open")) {
+        parts.panel.hidePopover();
+    }
+    parts.button.focus();
+}
+
+/* a colour, or "No colour" (clear) */
+document.addEventListener("click", (e) => {
+    let swatch = e.target.closest?.(".swl-color-swatch, .swl-color-clear");
+    if (!swatch) {
+        return;
+    }
+    let field = swatch.closest(".swl-color");
+    set_color(field, swatch.dataset.swlColor || "", true);
+    _close_color_panel(field);
+});
+
+/* opening: the red/green/blue fields show the current colour, the chosen one has the focus */
+document.addEventListener("toggle", (e) => {
+    if (!e.target.matches?.(".swl-color-panel") || e.newState !== "open") {
+        return;
+    }
+    let field = e.target.closest(".swl-color");
+    let parts = _color_parts(field);
+    _show_color(field, parts.input.value, true);
+    let chosen = [...parts.swatches, parts.clear].find((s) => s?.getAttribute("aria-pressed") === "true");
+    (chosen || parts.swatches[0] || parts.channels[0])?.focus();
+}, true);
+
+/* red/green/blue: the colour follows the typing (input), change when one leaves a field */
+for (let type of ["input", "change"]) {
+    document.addEventListener(type, (e) => {
+        if (!e.target.matches?.(".swl-color-custom input")) {
+            return;
+        }
+        e.stopPropagation();
+        let field = e.target.closest(".swl-color");
+        let parts = _color_parts(field);
+        let rgb = parts.channels.map((c) => c.valueAsNumber);
+        if (rgb.some((n) => !Number.isInteger(n) || n < 0 || n > 255)) {
+            return;  // not (yet) a colour, e.g. an empty field or 300
+        }
+        let value = _hex(rgb);
+        let input = parts.input;
+        if (input.value !== value) {
+            input.value = value;
+            _show_color(field, value, false);
+            input.dispatchEvent(new Event("input", {bubbles: true}));
+        }
+        if (type === "change") {
+            input.dispatchEvent(new Event("change", {bubbles: true}));
+        }
+    }, true);  // capture: before a form's own listeners
+}
+
+/* Enter in red/green/blue closes the panel (and does not send the form); arrow keys move
+ * through the colours */
+document.addEventListener("keydown", (e) => {
+    let field = e.target.closest?.(".swl-color-panel")?.closest(".swl-color");
+    if (!field) {
+        return;
+    }
+    if (e.key === "Enter" && e.target.matches(".swl-color-custom input")) {
+        e.preventDefault();
+        e.target.dispatchEvent(new Event("change", {bubbles: true}));
+        _close_color_panel(field);
+        return;
+    }
+    let step = {ArrowLeft: -1, ArrowRight: 1, ArrowUp: -COLOR_COLUMNS, ArrowDown: COLOR_COLUMNS}[e.key];
+    let swatches = _color_parts(field).swatches;
+    let i = swatches.indexOf(e.target);
+    if (step && i >= 0) {
+        e.preventDefault();
+        swatches[Math.max(0, Math.min(swatches.length - 1, i + step))].focus();
+    }
+});
 
 /*
  * "Saved" for a moment at an element (SuccessResponse.saved). SWL is the mechanism, the
@@ -652,4 +805,4 @@ function rehydrate(placeholder_id, context) {
     }
 }
 
-export { swl_action, kickstart, rehydrate, ui, place_info };
+export { swl_action, kickstart, rehydrate, ui, place_info, set_color };

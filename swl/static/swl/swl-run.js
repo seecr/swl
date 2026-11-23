@@ -11,11 +11,11 @@
  *
  * end license */
 
-import { swl_action, kickstart, rehydrate, ui } from "./swl.js"
+import { swl_action, kickstart, rehydrate, ui, set_color } from "./swl.js"
 import { set_lang } from "./lang.js"
 
 // For inline scripts such as swl/kickstart.j2 and application code, which cannot import the module.
 window.swl_action = swl_action;
-window.swl = { action: swl_action, kickstart, rehydrate, ui };
+window.swl = { action: swl_action, kickstart, rehydrate, ui, set_color };
 
 set_lang(document.getElementById("swl-run")?.getAttribute("lang") || "en_US");

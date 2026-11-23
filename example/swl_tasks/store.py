@@ -38,6 +38,7 @@ class Task:
     done: bool = False
     owner: str = ""  # username of who made it
     private: bool = False  # only the owner sees it
+    color: str = ""  # "#rrggbb" or "" (color_input in form.j2)
     # [{"at": "2026-10-28T16:05:00", "what": "Created"}, ...]; "what" is English, shown
     # translated (tab_history.j2)
     history: list = field(default_factory=list)
@@ -82,23 +83,24 @@ class TaskStore:
         task = self._tasks.get(task_id)
         return task if task is not None and task.visible_to(username) else None
 
-    def add(self, title, owner, notes="", private=False):
+    def add(self, title, owner, notes="", private=False, color=""):
         task = Task(
             id=uuid.uuid4().hex[:8],
             title=title,
             notes=notes,
             owner=owner,
             private=private,
+            color=color,
         )
         task.log(N_("Created"))
         self._tasks[task.id] = task
         self._save()
         return task
 
-    def update(self, task_id, title, notes, private):
+    def update(self, task_id, title, notes, private, color=""):
         task = self._tasks[task_id]
-        if (title, notes) != (task.title, task.notes):
-            task.title, task.notes = title, notes
+        if (title, notes, color) != (task.title, task.notes, task.color):
+            task.title, task.notes, task.color = title, notes, color
             task.log(N_("Edited"))
         if private != task.private:
             task.private = private

@@ -367,6 +367,104 @@ dialog.swl-modal::backdrop, dialog.swl-dialog::backdrop { background: transparen
 /* "(optional)" after a label (swl/inputs.j2): quieter than the label, never split over two lines */
 .swl-optional { font-weight: normal; font-size: .875em; color: var(--swl-muted); white-space: nowrap; }
 .swl-hint { margin-top: .25rem; font-size: .875em; color: var(--swl-muted); }
+/* A colour (color_input, swl/inputs.j2): a button with the colour, a panel with colours to
+   choose from and red/green/blue for one's own; swl.js places the panel like the help balloon */
+.swl-color-button {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: 2.375rem;
+    padding: .3rem .75rem .3rem .35rem;
+    border: 1px solid var(--swl-border);
+    border-radius: var(--swl-radius);
+    background: var(--swl-bg);
+    color: var(--swl-fg);
+    font: inherit;
+    cursor: pointer;
+}
+.swl-color-button:focus-visible { outline: 2px solid var(--swl-accent); outline-offset: 1px; }
+.swl-color-value:empty { display: none; }
+.swl-color-value { font-family: var(--bs-font-monospace, ui-monospace, monospace); font-size: .875em; color: var(--swl-muted); }
+/* the colour; without one, a red line through it */
+.swl-color-sample {
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid var(--swl-border);
+    border-radius: calc(var(--swl-radius) * .75);
+    background: linear-gradient(to top right, transparent calc(50% - 1px), var(--swl-danger) 50%, transparent calc(50% + 1px)) var(--swl-bg);
+}
+.swl-color-sample[style] { background-image: none; }
+.swl-color-panel[popover] {
+    inset: auto;
+    width: max-content;
+    max-width: calc(100vw - 1rem);
+    margin: 0;
+    padding: .6rem;
+    border: 1px solid var(--swl-border);
+    border-radius: var(--swl-radius);
+    background: var(--swl-bg);
+    color: var(--swl-fg);
+    box-shadow: var(--swl-shadow);
+}
+.swl-color-panel[popover]:not([data-swl-placed]) { visibility: hidden; }
+.swl-color-swatches { display: grid; grid-template-columns: repeat(6, 2.5rem); gap: .35rem; }
+.swl-color-swatch {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--swl-fg) 20%, transparent);
+    border-radius: calc(var(--swl-radius) * .75);
+    cursor: pointer;
+}
+.swl-color-swatch:hover { transform: scale(1.08); }
+.swl-color-swatch:focus-visible { outline: 2px solid var(--swl-accent); outline-offset: 2px; }
+.swl-color-swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--swl-bg), 0 0 0 4px var(--swl-fg); }
+.swl-color-clear {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    gap: .5rem;
+    width: 0;  /* like .swl-color-custom: the colours set the width */
+    min-width: 100%;
+    margin-top: .45rem;
+    padding: .25rem .4rem .25rem .25rem;
+    border: 1px solid transparent;
+    border-radius: var(--swl-radius);
+    background: transparent;
+    color: var(--swl-fg);
+    font-size: .875em;
+    cursor: pointer;
+}
+.swl-color-clear:hover { background: var(--swl-subtle-bg); }
+.swl-color-clear:focus-visible { outline: 2px solid var(--swl-accent); outline-offset: 1px; }
+.swl-color-clear[aria-pressed="true"] { border-color: var(--swl-fg); }
+.swl-color-clear > .swl-color-sample { width: 1.5rem; height: 1.5rem; }
+.swl-color-custom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem;
+    width: 0;  /* the colours above set the width of the panel, not this row */
+    min-width: 100%;
+    margin-top: .6rem;
+    padding-top: .6rem;
+    border-top: 1px solid var(--swl-border);
+}
+.swl-color-custom-label { flex: 1 0 100%; font-size: .875em; color: var(--swl-muted); }
+.swl-color-custom > label { display: inline-flex; align-items: center; gap: .25rem; margin: 0; font-size: .875em; }
+.swl-color-custom input {
+    width: 3.5rem;
+    min-width: 0;
+    margin: 0;
+    padding-left: .45rem;
+    padding-right: .3rem;
+    appearance: textfield;  /* no spinner: room for 3 digits; arrow up/down still count */
+}
+.swl-color-custom input::-webkit-inner-spin-button,
+.swl-color-custom input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.swl-color-custom > .swl-color-sample { margin-left: auto; }
 .swl-check { display: flex; align-items: center; gap: .5rem; margin: 0; padding-bottom: .55rem; }
 .swl-check > input { margin: 0; }
 

@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Added
+
+- `color_input` in `swl/inputs.j2`: a colour field that is the same in every browser, unlike
+  `<input type="color">`. A button with the colour opens a panel with 16 colours, black and
+  white, and red/green/blue (0-255) for a colour of one's own; the form gets `#rrggbb`. Own
+  colours with `colors=[...]`, without red/green/blue with `custom=False`, "No colour" with
+  `clear=True` (the default for an optional field);
+  `swl.set_color(elem, value)` from code. Its texts are in nl, de, fr and es.
+- The example: a task can have a colour (`color_input` in the task form), shown as a dot
+  before its title.
+
 ### Changed
 
 - Web resources: Bootstrap 5.3.9 (was 5.3.8), Bootstrap Icons 1.13.2 (was 1.13.1) and htmx

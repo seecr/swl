@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-10 16:38+0000\n"
+"POT-Creation-Date: 2026-11-23 14:27+0000\n"
 "PO-Revision-Date: 2026-11-01 18:16+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -78,7 +78,7 @@ msgstr "Fehler in Funktion"
 msgid "Saved"
 msgstr "Gespeichert"
 
-#: swl/menu.py:80
+#: swl/menu.py:81
 msgid "Manage"
 msgstr "Verwaltung"
 
@@ -132,6 +132,86 @@ msgstr "Mehr Informationen"
 #: swl/templates/swl/inputs.j2:33
 msgid "optional"
 msgstr "optional"
+
+#: swl/templates/swl/inputs.j2:109
+msgid "Orange"
+msgstr "Orange"
+
+#: swl/templates/swl/inputs.j2:109
+msgid "Yellow"
+msgstr "Gelb"
+
+#: swl/templates/swl/inputs.j2:109 swl/templates/swl/inputs.j2:141
+msgid "Red"
+msgstr "Rot"
+
+#: swl/templates/swl/inputs.j2:110
+msgid "Lime"
+msgstr "Hellgrün"
+
+#: swl/templates/swl/inputs.j2:110
+msgid "Teal"
+msgstr "Blaugrün"
+
+#: swl/templates/swl/inputs.j2:110 swl/templates/swl/inputs.j2:141
+msgid "Green"
+msgstr "Grün"
+
+#: swl/templates/swl/inputs.j2:111
+msgid "Cyan"
+msgstr "Cyan"
+
+#: swl/templates/swl/inputs.j2:111
+msgid "Indigo"
+msgstr "Indigo"
+
+#: swl/templates/swl/inputs.j2:111 swl/templates/swl/inputs.j2:141
+msgid "Blue"
+msgstr "Blau"
+
+#: swl/templates/swl/inputs.j2:112
+msgid "Violet"
+msgstr "Violett"
+
+#: swl/templates/swl/inputs.j2:112
+msgid "Purple"
+msgstr "Lila"
+
+#: swl/templates/swl/inputs.j2:112
+msgid "Pink"
+msgstr "Rosa"
+
+#: swl/templates/swl/inputs.j2:113
+msgid "Brown"
+msgstr "Braun"
+
+#: swl/templates/swl/inputs.j2:113
+msgid "Light grey"
+msgstr "Hellgrau"
+
+#: swl/templates/swl/inputs.j2:113
+msgid "Grey"
+msgstr "Grau"
+
+#: swl/templates/swl/inputs.j2:114
+msgid "Dark grey"
+msgstr "Dunkelgrau"
+
+#: swl/templates/swl/inputs.j2:114
+msgid "Black"
+msgstr "Schwarz"
+
+#: swl/templates/swl/inputs.j2:114
+msgid "White"
+msgstr "Weiß"
+
+#: swl/templates/swl/inputs.j2:135
+msgid "No colour"
+msgstr "Keine Farbe"
+
+#: swl/templates/swl/inputs.j2:140
+msgid "Custom colour"
+msgstr "Eigene Farbe"
 
 #: swl/templates/swl/layouts/retro.j2:32
 #: swl/templates/swl/layouts/sidebar.j2:32

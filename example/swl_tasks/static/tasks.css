@@ -47,3 +47,14 @@
 
 .task-private { margin-left: .35rem; color: var(--swl-muted); font-size: .85em; }
 .task-tree { min-height: 4rem; margin-bottom: .5rem; }
+
+/* The colour of a task (color_input in form.j2), as a dot before its title */
+.task-color {
+    display: inline-block;
+    width: .75em;
+    height: .75em;
+    margin-right: .45em;
+    border: 1px solid color-mix(in srgb, var(--swl-fg) 25%, transparent);
+    border-radius: 50%;
+    vertical-align: baseline;
+}

@@ -11,7 +11,7 @@
 #
 ## end license #}
 {# The "Details" tab of the detail panel. The buttons post task_id (hx-vals:inherited in detail.j2). #}
-<h2 class="task-title {{ 'task-done' if task.done }}">{{ task.title }}</h2>
+<h2 class="task-title {{ 'task-done' if task.done }}">{% if task.color %}<span class="task-color" style="background-color: {{ task.color }}"></span>{% endif %}{{ task.title }}</h2>
 <p><span class="task-status {{ 'task-status-done' if task.done }}">{{ _("Done") if task.done else _("Open") }}</span>
 {% if task.private %}<span class="swl-badge"><i class="bi bi-lock"></i> {{ _("Private") }}</span>{% endif %}</p>
 {% if task.notes %}

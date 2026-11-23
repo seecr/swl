@@ -29,7 +29,7 @@ def render(source, framework="bootstrap", locales=None, **context):
     swl = SWL(config=Config(config))
     template = swl._templates.env.from_string(
         '{% from "swl/inputs.j2" import text_input, password_input, number_input, '
-        "date_input, textarea_input %}" + source
+        "date_input, textarea_input, color_input %}" + source
     )
     return swl, template.render(**context)
 
@@ -146,3 +146,85 @@ def test_random_ids_link_label_and_control():
     _, html = render('{{ text_input("Name", "name") }}')
     (label_for,) = re.findall(r'<label for="([0-9a-f]{10})"', html)
     assert f'id="{label_for}"' in html
+
+
+def test_color_input():
+    _, html = render('{{ color_input("Colour", "color", value="#1C7ED6", id="c") }}')
+    html = squash(html)
+    assert '<label for="c">Colour</label>' in html
+    assert '<input type="hidden" name="color" value="#1c7ed6">' in html, "lower case"
+    assert (
+        '<button type="button" class="swl-color-button" id="c"'
+        ' popovertarget="c-colors"' in html
+    )
+    assert '<span class="swl-color-value">#1c7ed6</span>' in html
+    assert '<div class="swl-color-panel" id="c-colors" popover>' in html
+    swatches = re.findall(r'data-swl-color="(#[0-9a-f]{6})"', html)
+    assert len(swatches) == 18
+    assert swatches[-2:] == ["#000000", "#ffffff"]
+    assert len(set(swatches)) == 18
+    assert html.count('aria-pressed="true"') == 1
+    assert (
+        'data-swl-color="#1c7ed6" style="background-color: #1c7ed6" title="Blue"' in html
+    )
+    assert html.count('type="number" class="form-control" min="0" max="255"') == 3
+    assert "Custom colour" in html
+    assert "swl-color-clear" not in html, "not optional: no 'No colour'"
+
+
+def test_color_input_clear():
+    _, html = render('{{ color_input("Colour", "color", id="c", optional=True) }}')
+    html = squash(html)
+    assert (
+        '<button type="button" class="swl-color-clear" aria-pressed="true">'
+        ' <span class="swl-color-sample"></span>No colour </button>' in html
+    )
+    _, html = render(
+        '{{ color_input("Colour", "color", value="#000000", optional=True) }}'
+    )
+    assert 'class="swl-color-clear" aria-pressed="false"' in html
+    _, html = render('{{ color_input("Colour", "color", optional=True, clear=False) }}')
+    assert "swl-color-clear" not in html
+    _, html = render('{{ color_input("Colour", "color", clear=True) }}')
+    assert "swl-color-clear" in html and "swl-optional" not in html
+
+
+def test_color_input_own_colors_no_custom():
+    _, html = render(
+        '{{ color_input("Colour", "color", colors=["#ff0000", ("#00ff00", "Grass")],'
+        ' custom=False, id="c", form="f1") }}'
+    )
+    html = squash(html)
+    assert re.findall(r'data-swl-color="([^"]*)"', html) == ["#ff0000", "#00ff00"]
+    assert 'title="#ff0000"' in html and 'title="Grass"' in html
+    assert "swl-color-custom" not in html
+    assert '<input type="hidden" name="color" value="" form="f1">' in html
+    assert 'aria-pressed="true"' not in html
+
+
+@pytest.mark.parametrize(
+    "value", ["red", "#fff", "#12345g", 'x" onclick="evil', "#123456; color: red", None]
+)
+def test_color_input_only_takes_a_colour(value):
+    _, html = render(
+        '{{ color_input("Colour", "color", value=value, colors=[value or "x"],'
+        ' id="c") }}',
+        value=value,
+    )
+    assert '<input type="hidden" name="color" value="">' in html
+    assert "data-swl-color" not in html
+    assert "evil" not in html and "color: red" not in html
+
+
+def test_color_input_translated():
+    swl, _ = render("", locales=["en", "nl"])
+    token = swl.i18n.activate("nl")
+    try:
+        html = swl._templates.env.from_string(
+            '{% from "swl/inputs.j2" import color_input %}'
+            '{{ color_input("Kleur", "color", id="c") }}'
+        ).render()
+    finally:
+        swl.i18n.deactivate(token)
+    assert 'title="Rood"' in html
+    assert "Eigen kleur" in html

@@ -29,6 +29,7 @@
                        hx-post="{{ register('task_toggle') }}" {{ "checked" if task.done }}>
             </td>
             <td>
+                {% if task.color %}<span class="task-color" style="background-color: {{ task.color }}"></span>{% endif %}
                 <button type="button" class="swl-link {{ 'task-done' if task.done }}"
                         hx-post="{{ register('task_detail') }}" hx-include="#filters"
                         hx-vals='{{ {"task": task.id}|tojson }}'>{{ task.title }}</button>

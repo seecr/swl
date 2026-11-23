@@ -83,3 +83,68 @@
     <textarea class="{{ SWL.ui.textarea }}" id="{{ _id }}" name="{{ name }}" style="height: {{ height }}"{{ _attrs(form, mandatory, "", hint, _id) }}>{{ value }}</textarea>
     {% endcall %}
 {% endmacro %}
+
+{#
+ # A colour: a button with the colour opens a small panel with a fixed set of colours and,
+ # below them, red, green and blue (0-255) for a colour of your own. It looks and works the
+ # same in every browser, unlike <input type="color">. The value is "#rrggbb" (lower case),
+ # in a hidden input, which gets input and change events like any other field.
+ #
+ #   colors - the colours to choose from: "#rrggbb" or ("#rrggbb", "name") pairs; the
+ #            default is 16 colours, black and white (6 in a row)
+ #   custom - False: only the colours, no red/green/blue
+ #   clear  - a "No colour" button, to go back to no colour (""); default: when optional
+ #   value  - "#rrggbb"; anything else counts as no colour (yet)
+ #}
+{% macro _is_color(value) -%}
+    {%- if value is string and value|length == 7 and value[0] == "#"
+            and value[1:].lower().strip("0123456789abcdef") == "" %}1{% endif -%}
+{%- endmacro %}
+
+{% macro color_input(label, name, value="", colors=None, custom=True, clear=None, form=None, optional=False, id=None, hint="") %}
+    {% set _id = id or random_id(10) %}
+    {% set _value = value.lower() if _is_color(value) else "" %}
+    {# in the macro, not at the top: names in the language of this request #}
+    {% set _default = [
+        ("#e03131", _("Red")), ("#f76707", _("Orange")), ("#fab005", _("Yellow")),
+        ("#74b816", _("Lime")), ("#2f9e44", _("Green")), ("#0ca678", _("Teal")),
+        ("#1098ad", _("Cyan")), ("#1c7ed6", _("Blue")), ("#4263eb", _("Indigo")),
+        ("#7048e8", _("Violet")), ("#ae3ec9", _("Purple")), ("#d6336c", _("Pink")),
+        ("#8d5524", _("Brown")), ("#dee2e6", _("Light grey")), ("#868e96", _("Grey")),
+        ("#495057", _("Dark grey")), ("#000000", _("Black")), ("#ffffff", _("White")),
+    ] %}
+    {% call field(_id, label, optional, hint) %}
+    <div class="swl-color">
+        <input type="hidden" name="{{ name }}" value="{{ _value }}"{% if form != None %} form="{{ form }}"{% endif %}>
+        <button type="button" class="swl-color-button" id="{{ _id }}" popovertarget="{{ _id }}-colors" aria-haspopup="true"{% if hint %} aria-describedby="{{ _id }}-hint"{% endif %}>
+            <span class="swl-color-sample"{% if _value %} style="background-color: {{ _value }}"{% endif %}></span>
+            <span class="swl-color-value">{{ _value }}</span>
+        </button>
+        <div class="swl-color-panel" id="{{ _id }}-colors" popover>
+            <div class="swl-color-swatches">
+            {% for color in colors or _default %}
+                {% set hex, title = (color, color) if color is string else color %}
+                {% if _is_color(hex) %}
+                <button type="button" class="swl-color-swatch" data-swl-color="{{ hex|lower }}" style="background-color: {{ hex|lower }}" title="{{ title }}" aria-label="{{ title }}" aria-pressed="{{ 'true' if hex|lower == _value else 'false' }}"></button>
+                {% endif %}
+            {% endfor %}
+            </div>
+            {% set _clear = optional if clear == None else clear %}
+            {% if _clear %}
+            <button type="button" class="swl-color-clear" aria-pressed="{{ 'false' if _value else 'true' }}">
+                <span class="swl-color-sample"></span>{{ _("No colour") }}
+            </button>
+            {% endif %}
+            {% if custom %}
+            <div class="swl-color-custom">
+                <span class="swl-color-custom-label">{{ _("Custom colour") }}</span>
+                {% for letter, channel in [("R", _("Red")), ("G", _("Green")), ("B", _("Blue"))] %}
+                <label>{{ letter }} <input type="number" class="{{ SWL.ui.input }}" min="0" max="255" step="1" inputmode="numeric" aria-label="{{ channel }}"></label>
+                {% endfor %}
+                <span class="swl-color-sample"{% if _value %} style="background-color: {{ _value }}"{% endif %}></span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endcall %}
+{% endmacro %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl_tasks VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-10 16:38+0000\n"
+"POT-Creation-Date: 2026-11-23 14:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,43 +21,43 @@ msgstr ""
 msgid "Log in"
 msgstr ""
 
-#: swl_tasks/app.py:167
+#: swl_tasks/app.py:168
 msgid "Tasks"
 msgstr ""
 
-#: swl_tasks/app.py:170
+#: swl_tasks/app.py:171
 msgid "Users"
 msgstr ""
 
-#: swl_tasks/app.py:177
+#: swl_tasks/app.py:178
 msgid "Account"
 msgstr ""
 
-#: swl_tasks/app.py:178
+#: swl_tasks/app.py:179
 msgid "Log out"
 msgstr ""
 
-#: swl_tasks/store.py:93
+#: swl_tasks/store.py:95
 msgid "Created"
 msgstr ""
 
-#: swl_tasks/store.py:102
+#: swl_tasks/store.py:104
 msgid "Edited"
 msgstr ""
 
-#: swl_tasks/store.py:105
+#: swl_tasks/store.py:107
 msgid "Made private"
 msgstr ""
 
-#: swl_tasks/store.py:105
+#: swl_tasks/store.py:107
 msgid "Shared"
 msgstr ""
 
-#: swl_tasks/store.py:112 swl_tasks/store.py:123
+#: swl_tasks/store.py:114 swl_tasks/store.py:125
 msgid "Marked as done"
 msgstr ""
 
-#: swl_tasks/store.py:112 swl_tasks/store.py:123
+#: swl_tasks/store.py:114 swl_tasks/store.py:125
 msgid "Marked as open"
 msgstr ""
 
@@ -69,65 +69,69 @@ msgstr ""
 msgid "Select a task to see its details here."
 msgstr ""
 
-#: swl_tasks/templates/tasks/form.j2:19
+#: swl_tasks/templates/tasks/form.j2:20
 msgid "Edit task"
 msgstr ""
 
-#: swl_tasks/templates/tasks/form.j2:19 swl_tasks/templates/tasks/page.j2:56
+#: swl_tasks/templates/tasks/form.j2:20 swl_tasks/templates/tasks/page.j2:56
 msgid "New task"
 msgstr ""
 
-#: swl_tasks/templates/tasks/form.j2:25
+#: swl_tasks/templates/tasks/form.j2:26
 msgid "Title"
 msgstr ""
 
-#: swl_tasks/templates/tasks/form.j2:29
+#: swl_tasks/templates/tasks/form.j2:30
 msgid "Notes"
 msgstr ""
 
-#: swl_tasks/templates/tasks/form.j2:29
+#: swl_tasks/templates/tasks/form.j2:30
 msgid "(optional)"
 msgstr ""
 
-#: swl_tasks/templates/tasks/form.j2:36
+#: swl_tasks/templates/tasks/form.j2:34
+msgid "Colour"
+msgstr ""
+
+#: swl_tasks/templates/tasks/form.j2:39
 msgid "Private: only I see this task"
 msgstr ""
 
-#: swl_tasks/templates/tasks/form.j2:40
+#: swl_tasks/templates/tasks/form.j2:43
 msgid "Cancel"
 msgstr ""
 
-#: swl_tasks/templates/tasks/form.j2:41
+#: swl_tasks/templates/tasks/form.j2:44
 msgid "Save"
 msgstr ""
 
-#: swl_tasks/templates/tasks/list.j2:35
+#: swl_tasks/templates/tasks/list.j2:36
 msgid "Private: only you see this task"
 msgstr ""
 
-#: swl_tasks/templates/tasks/list.j2:39 swl_tasks/templates/tasks/menu.j2:24
+#: swl_tasks/templates/tasks/list.j2:40 swl_tasks/templates/tasks/menu.j2:24
 #: swl_tasks/templates/tasks/tab_details.j2:31
 msgid "Delete"
 msgstr ""
 
-#: swl_tasks/templates/tasks/list.j2:40 swl_tasks/templates/tasks/menu.j2:23
+#: swl_tasks/templates/tasks/list.j2:41 swl_tasks/templates/tasks/menu.j2:23
 #: swl_tasks/templates/tasks/tab_details.j2:30
 #, python-format
 msgid "Delete '%(title)s'?"
 msgstr ""
 
-#: swl_tasks/templates/tasks/list.j2:48
+#: swl_tasks/templates/tasks/list.j2:49
 msgid ""
 "Click a task to see it on the right. Right-click a task for more actions."
 " Reload the page: you are back where you were. Changes show up in other "
 "open browser tabs too; private tasks only in yours."
 msgstr ""
 
-#: swl_tasks/templates/tasks/list.j2:50
+#: swl_tasks/templates/tasks/list.j2:51
 msgid "No tasks match the filter."
 msgstr ""
 
-#: swl_tasks/templates/tasks/list.j2:52
+#: swl_tasks/templates/tasks/list.j2:53
 msgid "No tasks yet. Add one with \"New task\"."
 msgstr ""
 
@@ -218,67 +222,71 @@ msgid ""
 "to move it between Open and Done."
 msgstr ""
 
-#: swl_tasks/views.py:59
+#: swl_tasks/views.py:61
 msgid "All"
 msgstr ""
 
-#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:60
+#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:62
 msgid "Open"
 msgstr ""
 
 #: swl_tasks/templates/tasks/list.j2:28
-#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:61
+#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:63
 msgid "Done"
 msgstr ""
 
-#: swl_tasks/views.py:62
+#: swl_tasks/views.py:64
 msgid "Details"
 msgstr ""
 
-#: swl_tasks/views.py:63
+#: swl_tasks/views.py:65
 msgid "History"
 msgstr ""
 
-#: swl_tasks/views.py:64
+#: swl_tasks/views.py:66
 msgid "List"
 msgstr ""
 
-#: swl_tasks/views.py:65
+#: swl_tasks/views.py:67
 msgid "Tree"
 msgstr ""
 
-#: swl_tasks/views.py:160
+#: swl_tasks/views.py:162
 #, python-format
 msgid "%(open)d open / %(done)d done"
 msgstr ""
 
-#: swl_tasks/views.py:208 swl_tasks/views.py:228 swl_tasks/views.py:249
-#: swl_tasks/views.py:260 swl_tasks/views.py:394
+#: swl_tasks/views.py:210 swl_tasks/views.py:234 swl_tasks/views.py:259
+#: swl_tasks/views.py:270 swl_tasks/views.py:404
 msgid "This task no longer exists"
 msgstr ""
 
-#: swl_tasks/views.py:223
+#: swl_tasks/views.py:226
+msgid "Not a colour"
+msgstr ""
+
+#: swl_tasks/views.py:229
 msgid "A task needs a title"
 msgstr ""
 
-#: swl_tasks/views.py:230
+#: swl_tasks/views.py:236
 msgid "Only its owner can make a task private"
 msgstr ""
 
-#: swl_tasks/views.py:242
+#: swl_tasks/views.py:252
 msgid "Task saved"
 msgstr ""
 
-#: swl_tasks/views.py:266
+#: swl_tasks/views.py:276
 #, python-format
 msgid "Deleted '%(title)s'"
 msgstr ""
 
-#: swl_tasks/views.py:391
+#: swl_tasks/views.py:401
 msgid "Invalid position"
 msgstr ""
 
-#: swl_tasks/views.py:396
+#: swl_tasks/views.py:406
 msgid "A task can only go into Open or Done"
 msgstr ""
 

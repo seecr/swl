@@ -15,6 +15,7 @@
  # so both the Save button and Enter in the title field save the task.
  #}
 {% extends "swl/modal-content.j2" %}
+{% from "swl/inputs.j2" import color_input %}
 
 {% block modal_title %}{{ _("Edit task") if task else _("New task") }}{% endblock %}
 
@@ -29,6 +30,8 @@
         <label for="task-notes">{{ _("Notes") }} <span class="swl-muted">{{ _("(optional)") }}</span></label>
         <textarea id="task-notes" name="notes" class="{{ SWL.ui.textarea }}" rows="3">{{ task.notes if task else '' }}</textarea>
     </div>
+    {# the same in every browser, unlike <input type="color">; sends "#rrggbb" #}
+    {{ color_input(_("Colour"), "color", value=task.color if task else "", optional=True) }}
     {# only the owner decides who sees a task (views.task_save) #}
     {% if not task or task.owner == username %}
     <label class="swl-check" for="task-private">

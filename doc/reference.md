@@ -452,7 +452,7 @@ Load SWL itself in `body_extra`:
 | `swl/contextmenu.j2` | the context menu: a popover `#swl-contextmenu`; put a `<div class="swl-menu">` with buttons in it | `open_contextmenu` |
 | `swl/dialog.j2`, `swl/toast.j2` | message dialog (`<dialog>`) and toast (popover); included by `base.j2` | errors, `hx-confirm`, `toast` |
 | `swl/placeholder.j2` | the `placeholder` macro | |
-| `swl/inputs.j2` | macros `text_input`, `password_input`, `number_input`, `date_input`, `textarea_input`: a label above the control (`swl-field`) with `SWL.ui` classes, for every framework. `mandatory=True` makes it required, `optional=True` adds "(optional)" to the label, `hint` a help text below it, `id` a fixed id. See [Form fields](#form-fields) | |
+| `swl/inputs.j2` | macros `text_input`, `password_input`, `number_input`, `date_input`, `textarea_input`, `color_input`: a label above the control (`swl-field`) with `SWL.ui` classes, for every framework. `mandatory=True` makes it required, `optional=True` adds "(optional)" to the label, `hint` a help text below it, `id` a fixed id. See [Form fields](#form-fields) | |
 | `swl/info.j2` | the `info(text, label=None)` macro: a small (i) button that shows `text` in a balloon. See [Help balloons](#help-balloons) | |
 | `swl/card.j2`, `swl/footer.j2`, `swl/alert.j2`, `swl/breadcrumbs.j2` | small Bootstrap pieces (older; need Bootstrap's CSS) | |
 
@@ -474,6 +474,33 @@ classes of the framework.
 When most fields of a form are required, mark the few optional ones (`optional=True` shows a
 quiet "(optional)" that is never split over two lines) instead of an asterisk on every required
 one. `mandatory=True` adds `required`, so the browser asks for the field before the form is sent.
+
+#### Colours
+
+`color_input` is a colour field that looks and works the same in every browser, unlike
+`<input type="color">`, whose picker differs per system and is hard to use on some. A button with
+the colour opens a panel: 16 colours, black and white to click, and below them red, green and
+blue (0-255) for a colour of one's own.
+
+```jinja
+{% from "swl/inputs.j2" import color_input %}
+{{ color_input(_("Colour"), "color", value=team.color) }}
+{{ color_input(_("Label"), "label_color", value=label.color, custom=False,
+               colors=[("#e03131", _("Urgent")), ("#2f9e44", _("Done")), "#868e96"]) }}
+```
+
+The form gets `#rrggbb` (lower case) from a hidden input, which gets `input` and `change` events
+when a colour is chosen, so `hx-trigger="change"` works as for other fields; the red/green/blue
+fields have no name and their own events do not reach the form. A `value` that is not `#rrggbb`
+counts as no colour: the button then shows a struck-through square and the form gets an empty
+string. `clear=True` adds a "No colour" button to go back to none (the default for
+`optional=True` fields; `clear=False` leaves it out). `colors` takes `"#rrggbb"` or `("#rrggbb", name)` (the name is the tooltip and what a
+screen reader says; the default colours have translated names), 6 in a row; `custom=False`
+leaves out red/green/blue. In the panel the arrow keys move through the colours, Enter in
+red/green/blue closes it (without sending the form). From code: `swl.set_color(elem, "#rrggbb",
+notify)` (`elem` the field or anything in it; `notify=true` sends the events). The look:
+`.swl-color-button`, `.swl-color-panel`, `.swl-color-swatch` (`aria-pressed="true"` for the
+chosen one) and `.swl-color-custom`, with the `--swl-*` variables.
 
 ### Help balloons
 

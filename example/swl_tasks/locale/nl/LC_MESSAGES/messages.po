@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swl_tasks VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-10 16:38+0000\n"
+"POT-Creation-Date: 2026-11-23 14:24+0000\n"
 "PO-Revision-Date: 2026-11-01 18:24+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -22,43 +22,43 @@ msgstr ""
 msgid "Log in"
 msgstr "Inloggen"
 
-#: swl_tasks/app.py:167
+#: swl_tasks/app.py:168
 msgid "Tasks"
 msgstr "Taken"
 
-#: swl_tasks/app.py:170
+#: swl_tasks/app.py:171
 msgid "Users"
 msgstr "Gebruikers"
 
-#: swl_tasks/app.py:177
+#: swl_tasks/app.py:178
 msgid "Account"
 msgstr "Account"
 
-#: swl_tasks/app.py:178
+#: swl_tasks/app.py:179
 msgid "Log out"
 msgstr "Uitloggen"
 
-#: swl_tasks/store.py:93
+#: swl_tasks/store.py:95
 msgid "Created"
 msgstr "Aangemaakt"
 
-#: swl_tasks/store.py:102
+#: swl_tasks/store.py:104
 msgid "Edited"
 msgstr "Gewijzigd"
 
-#: swl_tasks/store.py:105
+#: swl_tasks/store.py:107
 msgid "Made private"
 msgstr "Privé gemaakt"
 
-#: swl_tasks/store.py:105
+#: swl_tasks/store.py:107
 msgid "Shared"
 msgstr "Gedeeld"
 
-#: swl_tasks/store.py:112 swl_tasks/store.py:123
+#: swl_tasks/store.py:114 swl_tasks/store.py:125
 msgid "Marked as done"
 msgstr "Afgevinkt"
 
-#: swl_tasks/store.py:112 swl_tasks/store.py:123
+#: swl_tasks/store.py:114 swl_tasks/store.py:125
 msgid "Marked as open"
 msgstr "Weer open gezet"
 
@@ -70,54 +70,58 @@ msgstr "Deze taak bestaat niet meer."
 msgid "Select a task to see its details here."
 msgstr "Kies een taak om de details hier te zien."
 
-#: swl_tasks/templates/tasks/form.j2:19
+#: swl_tasks/templates/tasks/form.j2:20
 msgid "Edit task"
 msgstr "Taak wijzigen"
 
-#: swl_tasks/templates/tasks/form.j2:19 swl_tasks/templates/tasks/page.j2:56
+#: swl_tasks/templates/tasks/form.j2:20 swl_tasks/templates/tasks/page.j2:56
 msgid "New task"
 msgstr "Nieuwe taak"
 
-#: swl_tasks/templates/tasks/form.j2:25
+#: swl_tasks/templates/tasks/form.j2:26
 msgid "Title"
 msgstr "Titel"
 
-#: swl_tasks/templates/tasks/form.j2:29
+#: swl_tasks/templates/tasks/form.j2:30
 msgid "Notes"
 msgstr "Notities"
 
-#: swl_tasks/templates/tasks/form.j2:29
+#: swl_tasks/templates/tasks/form.j2:30
 msgid "(optional)"
 msgstr "(niet verplicht)"
 
-#: swl_tasks/templates/tasks/form.j2:36
+#: swl_tasks/templates/tasks/form.j2:34
+msgid "Colour"
+msgstr "Kleur"
+
+#: swl_tasks/templates/tasks/form.j2:39
 msgid "Private: only I see this task"
 msgstr "Privé: alleen ik zie deze taak"
 
-#: swl_tasks/templates/tasks/form.j2:40
+#: swl_tasks/templates/tasks/form.j2:43
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: swl_tasks/templates/tasks/form.j2:41
+#: swl_tasks/templates/tasks/form.j2:44
 msgid "Save"
 msgstr "Opslaan"
 
-#: swl_tasks/templates/tasks/list.j2:35
+#: swl_tasks/templates/tasks/list.j2:36
 msgid "Private: only you see this task"
 msgstr "Privé: alleen u ziet deze taak"
 
-#: swl_tasks/templates/tasks/list.j2:39 swl_tasks/templates/tasks/menu.j2:24
+#: swl_tasks/templates/tasks/list.j2:40 swl_tasks/templates/tasks/menu.j2:24
 #: swl_tasks/templates/tasks/tab_details.j2:31
 msgid "Delete"
 msgstr "Verwijderen"
 
-#: swl_tasks/templates/tasks/list.j2:40 swl_tasks/templates/tasks/menu.j2:23
+#: swl_tasks/templates/tasks/list.j2:41 swl_tasks/templates/tasks/menu.j2:23
 #: swl_tasks/templates/tasks/tab_details.j2:30
 #, python-format
 msgid "Delete '%(title)s'?"
 msgstr "'%(title)s' verwijderen?"
 
-#: swl_tasks/templates/tasks/list.j2:48
+#: swl_tasks/templates/tasks/list.j2:49
 msgid ""
 "Click a task to see it on the right. Right-click a task for more actions."
 " Reload the page: you are back where you were. Changes show up in other "
@@ -127,11 +131,11 @@ msgstr ""
 "meer acties. Herlaad de pagina: u bent terug waar u was. Wijzigingen "
 "verschijnen ook in andere open tabbladen; privétaken alleen in die van u."
 
-#: swl_tasks/templates/tasks/list.j2:50
+#: swl_tasks/templates/tasks/list.j2:51
 msgid "No tasks match the filter."
 msgstr "Geen taken voor dit filter."
 
-#: swl_tasks/templates/tasks/list.j2:52
+#: swl_tasks/templates/tasks/list.j2:53
 msgid "No tasks yet. Add one with \"New task\"."
 msgstr "Nog geen taken. Voeg er een toe met \"Nieuwe taak\"."
 
@@ -224,67 +228,71 @@ msgstr ""
 "Klik op een taak om die rechts te zien. Sleep een taak om de volgorde te "
 "veranderen, of om hem tussen Open en Klaar te verplaatsen."
 
-#: swl_tasks/views.py:59
+#: swl_tasks/views.py:61
 msgid "All"
 msgstr "Alle"
 
-#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:60
+#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:62
 msgid "Open"
 msgstr "Open"
 
 #: swl_tasks/templates/tasks/list.j2:28
-#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:61
+#: swl_tasks/templates/tasks/tab_details.j2:15 swl_tasks/views.py:63
 msgid "Done"
 msgstr "Klaar"
 
-#: swl_tasks/views.py:62
+#: swl_tasks/views.py:64
 msgid "Details"
 msgstr "Details"
 
-#: swl_tasks/views.py:63
+#: swl_tasks/views.py:65
 msgid "History"
 msgstr "Geschiedenis"
 
-#: swl_tasks/views.py:64
+#: swl_tasks/views.py:66
 msgid "List"
 msgstr "Lijst"
 
-#: swl_tasks/views.py:65
+#: swl_tasks/views.py:67
 msgid "Tree"
 msgstr "Boom"
 
-#: swl_tasks/views.py:160
+#: swl_tasks/views.py:162
 #, python-format
 msgid "%(open)d open / %(done)d done"
 msgstr "%(open)d open / %(done)d klaar"
 
-#: swl_tasks/views.py:208 swl_tasks/views.py:228 swl_tasks/views.py:249
-#: swl_tasks/views.py:260 swl_tasks/views.py:394
+#: swl_tasks/views.py:210 swl_tasks/views.py:234 swl_tasks/views.py:259
+#: swl_tasks/views.py:270 swl_tasks/views.py:404
 msgid "This task no longer exists"
 msgstr "Deze taak bestaat niet meer"
 
-#: swl_tasks/views.py:223
+#: swl_tasks/views.py:226
+msgid "Not a colour"
+msgstr "Geen geldige kleur"
+
+#: swl_tasks/views.py:229
 msgid "A task needs a title"
 msgstr "Een taak heeft een titel nodig"
 
-#: swl_tasks/views.py:230
+#: swl_tasks/views.py:236
 msgid "Only its owner can make a task private"
 msgstr "Alleen de eigenaar kan een taak privé maken"
 
-#: swl_tasks/views.py:242
+#: swl_tasks/views.py:252
 msgid "Task saved"
 msgstr "Taak opgeslagen"
 
-#: swl_tasks/views.py:266
+#: swl_tasks/views.py:276
 #, python-format
 msgid "Deleted '%(title)s'"
 msgstr "'%(title)s' verwijderd"
 
-#: swl_tasks/views.py:391
+#: swl_tasks/views.py:401
 msgid "Invalid position"
 msgstr "Ongeldige positie"
 
-#: swl_tasks/views.py:396
+#: swl_tasks/views.py:406
 msgid "A task can only go into Open or Done"
 msgstr "Een taak kan alleen in Open of Klaar"
 

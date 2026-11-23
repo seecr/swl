@@ -36,6 +36,7 @@ Texts are written in English and marked with _() (or N_ for constants), so they 
 the visitor's language (see "Translations" in the README).
 """
 
+import re
 from types import SimpleNamespace
 from urllib.parse import urlencode
 
@@ -52,6 +53,7 @@ TASK_DETAIL = "task-detail"  # id of the placeholder with the selected task (pag
 SELECTION = "selection"  # id of the hidden fields that remember the selected task and tab
 TASK_TREE = "task-tree"  # id of the tree (tree.j2), in the "tasks-list" placeholder
 STATUSES = ["all", "open", "done"]
+COLOR = re.compile("#[0-9a-f]{6}")  # what color_input sends (form.j2)
 TABS = ["details", "history"]
 VIEWS = ["list", "tree"]  # the tasks as a table (list.j2) or as a tree (tree.j2)
 # what the select and the tabs show; translated where they are shown
@@ -218,6 +220,10 @@ async def task_save(request, swl, store, dispatcher, **kwargs):
         title = form.get("title", "").strip()
         notes = form.get("notes", "").strip()
         private = form.get("private") is not None
+        color = form.get("color", "")
+
+    if color and not COLOR.fullmatch(color):
+        return swl.fail().message(_("Not a colour"))
 
     if not title:
         return swl.fail().message(_("A task needs a title"))
@@ -229,9 +235,13 @@ async def task_save(request, swl, store, dispatcher, **kwargs):
         if task.owner != username and private:
             return swl.fail().message(_("Only its owner can make a task private"))
         was_private = task.private
-        task = store.update(task_id, title=title, notes=notes, private=private)
+        task = store.update(
+            task_id, title=title, notes=notes, private=private, color=color
+        )
     else:
-        task = store.add(title=title, owner=username, notes=notes, private=private)
+        task = store.add(
+            title=title, owner=username, notes=notes, private=private, color=color
+        )
         was_private = private
 
     await _signal_change(dispatcher, task, was_private)

@@ -129,12 +129,36 @@ def test_add_edit_toggle_delete(client):
     )
     assert store.get(task.id, "demo").title == "Write the example"
 
+    # a colour (color_input in the form)
+    response = client.post(action(client, "task_edit"), data={"task_id": task.id})
+    assert 'class="swl-color-button"' in partials(response)["modal-content"]
+    assert_fail(
+        client.post(
+            action(client, "task_save"),
+            data={"task_id": task.id, "title": "Write the example", "color": "red"},
+        ),
+        "Not a colour",
+    )
+    client.post(
+        action(client, "task_save"),
+        data={"task_id": task.id, "title": "Write the example", "color": "#2f9e44"},
+    )
+    assert store.get(task.id, "demo").color == "#2f9e44"
+    response = client.post(action(client, "tasks_list"))
+    assert (
+        '<span class="task-color" style="background-color: #2f9e44"></span>'
+        in partials(response)["tasks-list"]
+    )
+    response = client.post(action(client, "task_edit"), data={"task_id": task.id})
+    assert 'name="color" value="#2f9e44"' in partials(response)["modal-content"]
+
     # toggle
     assert_success(client.post(action(client, "task_toggle"), data={"task_id": task.id}))
     assert store.get(task.id, "demo").done is True
 
     assert [entry["what"] for entry in store.get(task.id, "demo").history] == [
         "Created",
+        "Edited",
         "Edited",
         "Marked as done",
     ]
